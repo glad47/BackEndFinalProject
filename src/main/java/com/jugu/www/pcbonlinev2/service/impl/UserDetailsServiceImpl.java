@@ -24,7 +24,9 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         QueryWrapper<UserDO> queryWrapper = new QueryWrapper<>(query);
         UserDO userDO = userMapper.selectOne(queryWrapper);
         UserDetailsDTO result = new UserDetailsDTO();
-        BeanUtils.copyProperties(userDO,result);
+        result.setId(userDO.getId());
+        result.setPassword(userDO.getPassword());
+        result.setUsername(userDO.getEmail());
         return result;
     }
 }

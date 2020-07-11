@@ -16,7 +16,6 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.util.DigestUtils;
 
 @Slf4j
 @Configuration
@@ -69,6 +68,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                 ////登录接口放行
                 .antMatchers("/api/auth/login").permitAll()
+                //其他接口全部接受验证
                 .anyRequest().authenticated();
 
         //使用自定义的 Token过滤器 验证请求的Token是否合法

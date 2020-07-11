@@ -28,6 +28,7 @@ public enum ErrorCodeEnum {
     // 2*** 系统异常
     SYSTEM_ERROR("2001", "服务异常"),
     UNKNOWN_ERROR("2002", "未知异常"),
+    USER_PASS_ERROR("2003","用户名或密码错误"),
 
     // 3*** 业务异常
     XXX("3001", "业务异常"),

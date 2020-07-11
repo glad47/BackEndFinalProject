@@ -2,6 +2,7 @@ package com.jugu.www.pcbonlinev2.exception;
 
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,7 +30,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
     public ResponseResult businessExceptionHandle(BusinessException e) {
-        log.error("捕捉到业务类异常：", e);
+        log.error("捕捉到业务类异常：【{}】", e);
 
         return ResponseResult.failure(e.getCode(), e.getMessage());
     }
@@ -37,10 +38,17 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = BindException.class)
     public ResponseResult bindExceptionHandle(BindException bindException){
-        log.error("捕捉到参数异常", bindException);
+        log.error("捕捉到参数异常: 【{}】", bindException);
         StringBuilder errMsg = new StringBuilder();
         bindException.getAllErrors().forEach(x -> errMsg.append(x.getDefaultMessage()).append(" "));
         return  ResponseResult.failure(ErrorCodeEnum.PARAM_ERROR.getCode(),errMsg.toString().trim());
+    }
+
+    @ResponseBody
+    @ExceptionHandler(value = BadCredentialsException.class)
+    public ResponseResult badCredentialsExceptionHandle(BadCredentialsException b){
+        log.error("捕捉的异常: 【{}】",b);
+        return ResponseResult.failure(ErrorCodeEnum.USER_PASS_ERROR);
     }
 
 
