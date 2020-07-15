@@ -1,8 +1,14 @@
 package com.jugu.www.pcbonlinev2.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
+import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
+import com.jugu.www.pcbonlinev2.exception.BusinessException;
+import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
+import com.jugu.www.pcbonlinev2.mapper.UserMapper;
 import com.jugu.www.pcbonlinev2.service.AuthService;
 import com.jugu.www.pcbonlinev2.utils.JwtTokenUtil;
+import com.jugu.www.pcbonlinev2.utils.SHA256Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -24,6 +30,11 @@ public class AuthServiceImpl implements AuthService {
     @Autowired
     private JwtTokenUtil jwtTokenUtil;
 
+    @Autowired
+    private UserMapper userMapper;
+
+    private static final String PASSWORD_KEY = "password";
+
     @Override
     public ResponseResult login(String username, String password) {
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username,password);
@@ -33,5 +44,17 @@ public class AuthServiceImpl implements AuthService {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseResult.success(token);
+    }
+
+    @Override
+    public int register(String username, String password) {
+        UserDO query = new UserDO();
+        query.setEmail(username);
+        UserDO userDO = userMapper.selectOne(new QueryWrapper<UserDO>(query));
+        if (userDO != null && userDO.getId() != null) throw new BusinessException(ErrorCodeEnum.PARAM_EMAIL_ERROR);
+
+        query.setPassword(SHA256Util.getSHA256StrJava(password)+PASSWORD_KEY);
+
+        return userMapper.insert(query);
     }
 }

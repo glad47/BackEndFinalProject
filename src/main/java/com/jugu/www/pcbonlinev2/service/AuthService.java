@@ -4,4 +4,6 @@ import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 
 public interface AuthService {
     ResponseResult login(String username, String password);
+
+    int register(String username, String password);
 }

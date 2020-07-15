@@ -37,7 +37,7 @@ public class Swagger2Config {
                 // 设置允许暴露的接口
                 .select()
                 .apis(RequestHandlerSelectors
-                        .basePackage("com.imooc.zhangxiaoxi.alllearning.controller"))
+                        .basePackage("com.jugu.www.pcbonlinev2.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
@@ -48,9 +48,9 @@ public class Swagger2Config {
      */
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("ALL-LEARNING项目")
-                .description("综合课程所有知识点，整合实战项目。")
-                .contact(new Contact("张小喜", "", ""))
+                .title("PCB-ONLINE-V2")
+                .description("pcbonlien所有的接口")
+                .contact(new Contact("zl", "", "miss-zl@qq.com"))
                 .version("1.0.0")
                 .build();
     }

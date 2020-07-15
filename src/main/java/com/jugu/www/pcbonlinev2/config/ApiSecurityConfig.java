@@ -1,6 +1,8 @@
 package com.jugu.www.pcbonlinev2.config;
 
 import com.jugu.www.pcbonlinev2.filter.JwtTokenFilter;
+import com.jugu.www.pcbonlinev2.utils.RestAccessDeniedHandler;
+import com.jugu.www.pcbonlinev2.utils.RestAuthenticationEntryPoint;
 import com.jugu.www.pcbonlinev2.utils.SHA256Util;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +12,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Slf4j
@@ -24,6 +29,16 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    private static final String[] AUTH_WHITELIST = {
+            // -- swagger ui
+            "/swagger-resources/**",
+            "/swagger-ui.html",
+            "/v2/api-docs",
+            "/webjars/**",
+            "/csrf",
+            "/",
+    };
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
@@ -52,28 +67,40 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .antMatcher("/api/**")
-//                .httpBasic().and()
-//                .csrf().disable()
-//                .authorizeRequests()
-////                .antMatchers(HttpMethod.POST,"/api/login").permitAll()
-//                .anyRequest().authenticated();
-        http.csrf().disable()
+        http.cors().and().csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
+                .antMatchers(AUTH_WHITELIST).permitAll()
                 //OPTIONS请求全部放行
-                .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 ////登录接口放行
-                .antMatchers("/api/auth/login").permitAll()
+                .antMatchers("/api/auth/login","/api/auth/register").permitAll()
                 //其他接口全部接受验证
                 .anyRequest().authenticated();
 
         //使用自定义的 Token过滤器 验证请求的Token是否合法
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+        //添加自定义的异常处理
+        http.exceptionHandling().accessDeniedHandler(accessDeniedHandlerBean()).authenticationEntryPoint(unauthorizedHandlerBean());
         http.headers().cacheControl();
+    }
+
+    @Bean
+    public AuthenticationEntryPoint unauthorizedHandlerBean() {
+        return new RestAccessDeniedHandler();
+    }
+
+    @Bean
+    public AccessDeniedHandler accessDeniedHandlerBean() {
+        return new RestAuthenticationEntryPoint();
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers("/webjars/**/*.css","/webjars/**/*.js","/webjars/**/*.jpg","/webjars/**/*.png");
+//        super.configure(web);
     }
 
     @Bean

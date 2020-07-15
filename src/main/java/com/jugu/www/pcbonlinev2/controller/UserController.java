@@ -7,6 +7,7 @@ import com.jugu.www.pcbonlinev2.domain.dto.UserDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.UserQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.vo.UserVO;
 import com.jugu.www.pcbonlinev2.service.UserService;
+import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,12 @@ import java.util.stream.Stream;
 @RequestMapping("/api/users")
 @Slf4j
 @Validated
+@Api(
+        value = "用户管理",
+        tags = {"用户管理Controller"},
+        produces = "http, https",
+        hidden = false
+)
 public class UserController {
 
     @Autowired
@@ -32,11 +39,44 @@ public class UserController {
 
 
     @GetMapping
+    @ApiOperation(
+            value = "查询用户信息",
+            notes = "",
+            response = ResponseResult.class,
+            httpMethod = "GET"
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "pageNo",
+                    value = "页码",
+                    required = true,
+                    paramType = "query",
+                    dataType = "int"
+            ),
+            @ApiImplicitParam(
+                    name = "pageSize",
+                    value = "显示多少条",
+                    required = true,
+                    paramType = "query",
+                    dataType = "int"
+            ),
+            @ApiImplicitParam(
+                    name = "query",
+                    value = "查询封装的对象",
+                    required = false,
+                    paramType = "query",
+                    dataType = "object",
+                    dataTypeClass = UserQueryDTO.class
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(code = 0000, message = "操作成功")
+    })
     public ResponseResult<PageResult> query(
             @NotNull Integer pageNo,
             @NotNull Integer pageSize,
             @Validated UserQueryDTO query
-            ){
+    ){
         log.info("query:[{}]",query);
 
         //构造查询条件

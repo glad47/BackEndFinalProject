@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = BusinessException.class)
     public ResponseResult businessExceptionHandle(BusinessException e) {
-        log.error("捕捉到业务类异常：【{}】", e);
+        log.error("捕捉到业务类异常==>", e);
 
         return ResponseResult.failure(e.getCode(), e.getMessage());
     }

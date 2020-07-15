@@ -1,6 +1,7 @@
 package com.jugu.www.pcbonlinev2.config;
 
 
+import com.jugu.www.pcbonlinev2.utils.IPUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -31,7 +32,7 @@ public class LogAspectConfig {
         //记录如下日志
         log.info("请求URL >>>>> [{}]", request.getRequestURL().toString());
         log.info("请求类型 >>>> [{}]", request.getMethod());
-        log.info("IP >>>>> [{}]", request.getRemoteAddr());
+        log.info("IP >>>>> [{}]", IPUtils.getIpAddr(request));
         log.info("处理类 >>>>> [{}]", joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName());
         log.info("方法参数 >>> [{}]", Arrays.toString(joinPoint.getArgs()));
     }

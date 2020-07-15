@@ -26,7 +26,7 @@ public class ResponseResult<T> implements Serializable {
             name = "success",
             value = "是否成功",
             required = true,
-            dataType = "Boolean"
+            dataType = "boolean"
     )
     private Boolean success;
 
@@ -37,7 +37,7 @@ public class ResponseResult<T> implements Serializable {
             name = "code",
             value = "编码",
             required = false,
-            dataType = "String"
+            dataType = "string"
     )
     private String code;
 

@@ -49,10 +49,10 @@ public class WebConfig implements WebMvcConfigurer {
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
 
         // 配置本地文件夹目录映射
-        registry.addResourceHandler("/uploads/**")
-                .addResourceLocations("file:/Users/if/Desktop/MOOC/" +
-                        "04-告别996系列" +
-                        "/百度网盘/版本管理代码/all-learning/uploads/");
+//        registry.addResourceHandler("/uploads/**")
+//                .addResourceLocations("file:/Users/if/Desktop/MOOC/" +
+//                        "04-告别996系列" +
+//                        "/百度网盘/版本管理代码/all-learning/uploads/");
 
         // Swagger2做的映射
         registry.addResourceHandler("/swagger-ui.html")

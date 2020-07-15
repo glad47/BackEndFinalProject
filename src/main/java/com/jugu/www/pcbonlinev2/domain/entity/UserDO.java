@@ -1,7 +1,7 @@
 package com.jugu.www.pcbonlinev2.domain.entity;
 
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 public class UserDO implements Serializable {
     private static final long serialVersionUID = -1957436261893417540L;
 
+    @TableId(type = IdType.AUTO)
     private Integer id;
 
     private String userName;
@@ -45,12 +46,16 @@ public class UserDO implements Serializable {
 
     private Byte invalidMark;
 
+    @TableField(fill = FieldFill.INSERT)
     private String favicon;
 
+    @TableField(fill = FieldFill.INSERT)
     private LocalDateTime gmtCreate;
 
+    @TableField(fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime gmtModified;
 
+    @TableField(fill = FieldFill.INSERT)
     private String uuid;
 
     private Integer businessId;
@@ -65,6 +70,7 @@ public class UserDO implements Serializable {
 
     private Integer invitationUserId;
 
+    @TableField(fill = FieldFill.INSERT)
     private String userIp;
 
     private Integer auditMark;//是否需要审核标识(0默认需要 1不需要)
