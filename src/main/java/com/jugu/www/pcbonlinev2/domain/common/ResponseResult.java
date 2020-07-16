@@ -8,10 +8,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ApiModel(
-        value = "统一返回结果实体",
-        description = "封装统一返回结果信息实体"
-)
+@ApiModel(value = "统一返回结果实体")
 public class ResponseResult<T> implements Serializable {
 
     /**

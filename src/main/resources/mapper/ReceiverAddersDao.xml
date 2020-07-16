@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.ReceiverAddersMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.ReceiverAddersDO" id="receiverAddersMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="receiverCompany" column="receiver_company"/>
+        <result property="receiverEmail" column="receiver_email"/>
+        <result property="receiverName" column="receiver_name"/>
+        <result property="receiverTelephone" column="receiver_telephone"/>
+        <result property="receiverCountry" column="receiver_country"/>
+        <result property="receiverCountryName" column="receiver_country_name"/>
+        <result property="receiverCity" column="receiver_city"/>
+        <result property="receiverPostcode" column="receiver_postcode"/>
+        <result property="receiverAddress" column="receiver_address"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="isDefault" column="is_default"/>
+        <result property="courierName" column="courier_name"/>
+        <result property="courierAccount" column="courier_account"/>
+    </resultMap>
+
+
+</mapper>

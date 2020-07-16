@@ -33,11 +33,9 @@ public class Swagger2Config {
         return new Docket(DocumentationType.SWAGGER_2)
                 // API 基本信息
                 .apiInfo(apiInfo())
-
                 // 设置允许暴露的接口
                 .select()
-                .apis(RequestHandlerSelectors
-                        .basePackage("com.jugu.www.pcbonlinev2.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.jugu.www.pcbonlinev2.controller"))
                 .paths(PathSelectors.any())
                 .build();
     }
@@ -49,8 +47,8 @@ public class Swagger2Config {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("PCB-ONLINE-V2")
-                .description("pcbonlien所有的接口")
-                .contact(new Contact("zl", "", "miss-zl@qq.com"))
+                .description("PCB-ON-LINE所有的接口")
+                .contact(new Contact("Turing", "", "miss-zl@qq.com"))
                 .version("1.0.0")
                 .build();
     }

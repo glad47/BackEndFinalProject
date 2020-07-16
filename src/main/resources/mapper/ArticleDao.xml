@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.ArticleMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.ArticleDO" id="articleMap">
+        <result property="id" column="id"/>
+        <result property="articleName" column="article_name"/>
+        <result property="articleTime" column="article_time"/>
+        <result property="articleIp" column="article_ip"/>
+        <result property="articleClick" column="article_click"/>
+        <result property="articleLike" column="article_like"/>
+        <result property="articleComment" column="article_comment"/>
+        <result property="articleContent" column="article_content"/>
+        <result property="articleClassify" column="article_classify"/>
+        <result property="articleType" column="article_type"/>
+        <result property="articleUserId" column="article_user_id"/>
+        <result property="articleStatus" column="article_status"/>
+        <result property="articleUserName" column="article_user_name"/>
+        <result property="articleScore" column="article_score"/>
+        <result property="articleTitle" column="article_title"/>
+        <result property="articleKeyword" column="article_keyword"/>
+        <result property="articleDescribe" column="article_describe"/>
+        <result property="articleKing" column="article_king"/>
+        <result property="articleUpdateTime" column="article_update_time"/>
+        <result property="articleInternalChain" column="article_internal_chain"/>
+    </resultMap>
+
+
+</mapper>

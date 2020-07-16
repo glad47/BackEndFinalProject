@@ -1,7 +1,6 @@
 package com.jugu.www.pcbonlinev2.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
@@ -31,28 +30,28 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public PageResult<List<UserDTO>> query(PageQuery<UserQueryDTO> pageQuery) {
+    public PageResult<List<UserDTO>> query(PageQuery<UserQueryDTO,UserDO> pageQuery) {
 
         //手动校验
         ValidatorUtil.validate(pageQuery);
 
-        Page page = new Page(pageQuery.getPageNo(),pageQuery.getPageSize());
+//        Page<UserDO> page = new Page<>(pageQuery.getPageNo(),pageQuery.getPageSize());
 
         UserDO query = new UserDO();
         BeanUtils.copyProperties(pageQuery.getQuery(),query);
 
 
-        QueryWrapper queryWrapper = new QueryWrapper(query);
+        QueryWrapper<UserDO> queryWrapper = new QueryWrapper<>(query);
 
-        IPage<UserDO> userDOIPage = userMapper.selectPage(page, queryWrapper);
+        Page<UserDO> userDOIPage = userMapper.selectPage(pageQuery.getPage(), queryWrapper);
 
         //解析
-        PageResult pageResult = new PageResult();
-
-        pageResult.setPageNo((int) userDOIPage.getCurrent());
-        pageResult.setPageSize((int) userDOIPage.getSize());
-        pageResult.setPageNum(userDOIPage.getPages());
-        pageResult.setTotal(userDOIPage.getTotal());
+//        PageResult<List<UserDTO>> pageResult = new PageResult<>();
+//
+//        pageResult.setPageNo((int) userDOIPage.getCurrent());
+//        pageResult.setPageSize((int) userDOIPage.getSize());
+//        pageResult.setPageNum(userDOIPage.getPages());
+//        pageResult.setTotal(userDOIPage.getTotal());
 
         //数据转换
         List<UserDTO> userDTOList = Optional.ofNullable(userDOIPage.getRecords())
@@ -65,8 +64,8 @@ public class UserServiceImpl implements UserService {
                 })
                 .collect(Collectors.toList());
 
-        pageResult.setData(userDTOList);
+//        pageResult.setData(userDTOList);
 
-        return pageResult;
+        return new PageResult<>(userDOIPage,userDTOList);
     }
 }

@@ -1,5 +1,6 @@
 package com.jugu.www.pcbonlinev2.domain.common;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -7,10 +8,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 @Data
-@ApiModel(
-        value = "统一返回分页结果实体",
-        description = "封装统一返回分页结果信息实体"
-)
+@ApiModel(value = "统一返回分页结果实体")
 public  class PageResult<T> implements Serializable {
 
     /**
@@ -47,4 +45,24 @@ public  class PageResult<T> implements Serializable {
      */
     @ApiModelProperty(value = "返回数据")
     private T data;
+
+    public PageResult() {
+    }
+
+    public PageResult(Integer pageNo, Integer pageSize, Long total, Long pageNum, T data) {
+        this.pageNo = pageNo;
+        this.pageSize = pageSize;
+        this.total = total;
+        this.pageNum = pageNum;
+        this.data = data;
+    }
+
+
+    public PageResult(IPage iPage, T list) {
+        this.pageNo = Math.toIntExact(iPage.getCurrent());
+        this.pageSize = Math.toIntExact(iPage.getSize());
+        this.pageNum = iPage.getPages();
+        this.total = iPage.getTotal();
+        this.data = list;
+    }
 }

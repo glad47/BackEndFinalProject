@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.QuoteConfigMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.QuoteConfigDO" id="quoteConfigMap">
+        <result property="id" column="id"/>
+        <result property="areaSq" column="area_sq"/>
+        <result property="pcbtype" column="pcbtype"/>
+        <result property="layerNum" column="layer_num"/>
+        <result property="urgentType" column="urgent_type"/>
+        <result property="parameterType" column="parameter_type"/>
+        <result property="parameterName" column="parameter_name"/>
+        <result property="quoteCondition" column="quote_condition"/>
+        <result property="parameter" column="parameter"/>
+        <result property="premiumType" column="premium_type"/>
+        <result property="quote" column="quote"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+
+</mapper>

@@ -5,6 +5,7 @@ import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import com.jugu.www.pcbonlinev2.domain.dto.UserDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.UserQueryDTO;
+import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
 import com.jugu.www.pcbonlinev2.domain.vo.UserVO;
 import com.jugu.www.pcbonlinev2.service.UserService;
 import io.swagger.annotations.*;
@@ -80,13 +81,12 @@ public class UserController {
         log.info("query:[{}]",query);
 
         //构造查询条件
-        PageQuery<UserQueryDTO> pageQuery = new PageQuery<>();
+        PageQuery<UserQueryDTO, UserDO> pageQuery = new PageQuery<>(pageNo,pageSize,query);
 
-        pageQuery.setPageNo(pageNo);
-        pageQuery.setPageSize(pageSize);
-        pageQuery.setQuery(query);
-
+        //查询
         PageResult<List<UserDTO>> pageResult = userService.query(pageQuery);
+
+        //转化VO
         List<UserVO> userVOList = Optional
                 .ofNullable(pageResult.getData())
                 .map(List::stream)
@@ -103,9 +103,8 @@ public class UserController {
                 })
                 .collect(Collectors.toList());
 
-        //封装返回结果
+        //最终返回结果
         PageResult<List<UserVO>> result = new PageResult<>();
-
         BeanUtils.copyProperties(pageResult,result);
         result.setData(userVOList);
 
