@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 @RequestMapping("/api/country")
 @Validated
 @Slf4j
-@Api(value = "管理", tags = {"controller"}, protocols = "http, https", hidden = false)
+@Api(value = "国家管理", tags = {"国家controller"}, protocols = "http, https", hidden = false)
 public class CountryController {
 
     @Autowired
