@@ -12,7 +12,6 @@ import com.jugu.www.pcbonlinev2.service.AuthService;
 import com.jugu.www.pcbonlinev2.utils.JwtTokenUtil;
 import com.jugu.www.pcbonlinev2.utils.RedisUtil;
 import com.jugu.www.pcbonlinev2.utils.SHA256Util;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -61,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public int register(String username, String password) {
+    public int register(String username, String password, String invite) {
         UserDO query = new UserDO();
         query.setEmail(username);
         UserDO userDO = userMapper.selectOne(new QueryWrapper<UserDO>(query));

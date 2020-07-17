@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.PayLogMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.PayLogDO" id="payLogMap">
+        <result property="id" column="id"/>
+        <result property="createDate" column="create_date"/>
+        <result property="paymentStatus" column="payment_status"/>
+        <result property="paymentDate" column="payment_date"/>
+        <result property="txnId" column="txn_id"/>
+        <result property="parentTxnId" column="parent_txn_id"/>
+        <result property="receiverEmail" column="receiver_email"/>
+        <result property="payerEmail" column="payer_email"/>
+        <result property="mcGross" column="mc_gross"/>
+        <result property="paymentFee" column="payment_fee"/>
+        <result property="totalNet" column="total_net"/>
+        <result property="firstName" column="first_name"/>
+        <result property="lastName" column="last_name"/>
+        <result property="receiverId" column="receiver_id"/>
+        <result property="payerId" column="payer_id"/>
+        <result property="custom" column="custom"/>
+        <result property="businessName" column="business_name"/>
+        <result property="currency" column="currency"/>
+        <result property="customerMemoScreenshots" column="customer_memo_screenshots"/>
+        <result property="bankPayScreenshots" column="bank_pay_screenshots"/>
+    </resultMap>
+
+
+</mapper>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.UserMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.UserDO" id="userMap">
+        <result property="id" column="id"/>
+        <result property="userName" column="user_name"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+        <result property="skypeId" column="skype_id"/>
+        <result property="googleId" column="google_id"/>
+        <result property="facebookId" column="facebook_id"/>
+        <result property="mobilePhone" column="mobile_phone"/>
+        <result property="address" column="address"/>
+        <result property="country" column="country"/>
+        <result property="city" column="city"/>
+        <result property="businessType" column="business_type"/>
+        <result property="jobrole" column="jobrole"/>
+        <result property="applications" column="applications"/>
+        <result property="invalidMark" column="invalid_mark"/>
+        <result property="favicon" column="favicon"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="uuid" column="uuid"/>
+        <result property="userSystemId" column="user_system_id"/>
+        <result property="businessId" column="business_id"/>
+        <result property="orderNumNo" column="order_num_no"/>
+        <result property="facebookLoginId" column="facebook_login_id"/>
+        <result property="googleLoginId" column="google_login_id"/>
+        <result property="invitationUserId" column="invitation_user_id"/>
+        <result property="integral" column="integral"/>
+        <result property="userIp" column="user_ip"/>
+        <result property="userType" column="user_type"/>
+        <result property="companName" column="compan_name"/>
+        <result property="auditMark" column="audit_mark"/>
+        <result property="postcode" column="postcode"/>
+        <result property="paymentType" column="payment_type"/>
+        <result property="deliveryType" column="delivery_type"/>
+        <result property="contact" column="contact"/>
+        <result property="userCourierName" column="user_courier_name"/>
+        <result property="userCourierAccount" column="user_courier_account"/>
+        <result property="packageRequirements" column="package_requirements"/>
+        <result property="deliveryReport" column="delivery_report"/>
+        <result property="customerStandards" column="customer_standards"/>
+        <result property="productionVerification" column="production_verification"/>
+        <result property="siteUrl" column="site_url"/>
+        <result property="channel" column="channel"/>
+        <result property="commission" column="commission"/>
+        <result property="firstPayTime" column="first_pay_time"/>
+        <result property="businessName" column="business_name"/>
+        <result property="status" column="status"/>
+        <result property="isSourceCompany" column="is_source_company"/>
+    </resultMap>
+
+
+</mapper>

@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "收货地址管理", tags = {"收货地址controller"}, protocols = "http, https", hidden = false)
-public class ReceiverAddersController {
+public class ReceiverAddersController extends BasicController<ReceiverAddersDO,ReceiverAddersDTO>{
 
     @Autowired
     private ReceiverAddersService receiverAddersService;
@@ -62,10 +62,7 @@ public class ReceiverAddersController {
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody ReceiverAddersDTO receiverAddersDTO) {
-        ReceiverAddersDO receiverAddersDO = new ReceiverAddersDO();
-        BeanUtils.copyProperties(receiverAddersDTO, receiverAddersDO);
-
-        if (receiverAddersService.save(receiverAddersDO)){
+        if (receiverAddersService.save(conversionDO(new ReceiverAddersDO(),receiverAddersDTO))){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -100,8 +97,7 @@ public class ReceiverAddersController {
     })
     @PutMapping("/{id}")
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody ReceiverAddersDTO receiverAddersDTO){
-        ReceiverAddersDO receiverAddersDO = new ReceiverAddersDO();
-        BeanUtils.copyProperties(receiverAddersDTO,receiverAddersDO);
+        ReceiverAddersDO receiverAddersDO = conversionDO(new ReceiverAddersDO(), receiverAddersDTO);
         receiverAddersDO.setId(id);
 
         if (receiverAddersService.updateById(receiverAddersDO)){

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.CourierCountryPartitionMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.CourierCountryPartitionDO" id="courierCountryPartitionMap">
+        <result property="id" column="id"/>
+        <result property="courierId" column="courier_id"/>
+        <result property="countryIds" column="country_ids"/>
+        <result property="shippingTime" column="shipping_time"/>
+    </resultMap>
+
+
+</mapper>

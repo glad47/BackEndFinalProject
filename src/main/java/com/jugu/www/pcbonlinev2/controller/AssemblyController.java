@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "切片订单表管理", tags = {"切片订单表controller"}, protocols = "http, https", hidden = false)
-public class AssemblyController {
+public class AssemblyController extends BasicController<AssemblyDO,AssemblyDTO> {
 
     @Autowired
     private AssemblyService assemblyService;
@@ -62,15 +62,14 @@ public class AssemblyController {
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody AssemblyDTO assemblyDTO) {
-        AssemblyDO assemblyDO = new AssemblyDO();
-        BeanUtils.copyProperties(assemblyDTO, assemblyDO);
-
-        if (assemblyService.save(assemblyDO)){
+        if (assemblyService.save(conversionDO(new AssemblyDO(),assemblyDTO))){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
         }
     }
+
+
 
     @ApiOperation(
             value = "修改信息",
@@ -100,8 +99,7 @@ public class AssemblyController {
     })
     @PutMapping("/{id}")
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody AssemblyDTO assemblyDTO){
-        AssemblyDO assemblyDO = new AssemblyDO();
-        BeanUtils.copyProperties(assemblyDTO,assemblyDO);
+        AssemblyDO assemblyDO = conversionDO(new AssemblyDO(),assemblyDTO);
         assemblyDO.setId(id);
 
         if (assemblyService.updateById(assemblyDO)){

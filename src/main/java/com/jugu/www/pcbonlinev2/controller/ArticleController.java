@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "文章表管理", tags = {"文章表controller"}, protocols = "http, https", hidden = false)
-public class ArticleController {
+public class ArticleController extends BasicController<ArticleDO,ArticleDTO>{
 
     @Autowired
     private ArticleService articleService;
@@ -61,10 +61,8 @@ public class ArticleController {
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody ArticleDTO articleDTO) {
-        ArticleDO articleDO = new ArticleDO();
-        BeanUtils.copyProperties(articleDTO, articleDO);
-
-        if (articleService.save(articleDO)){
+        boolean save = articleService.save(conversionDO(new ArticleDO(),articleDTO));
+        if (save){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -99,9 +97,8 @@ public class ArticleController {
     })
     @PutMapping("/{id}")
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody ArticleDTO articleDTO){
-        ArticleDO articleDO = new ArticleDO();
-        BeanUtils.copyProperties(articleDTO,articleDO);
-//        ArticleDO.setId(id);
+        ArticleDO articleDO = conversionDO(new ArticleDO(), articleDTO);
+        articleDO.setId(Long.valueOf(id));
 
         if (articleService.updateById(articleDO)){
             return ResponseResult.success("更新成功");

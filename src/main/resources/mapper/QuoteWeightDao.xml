@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.QuoteWeightMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.QuoteWeightDO" id="quoteWeightMap">
+        <result property="id" column="id"/>
+        <result property="thicknaesName" column="thicknaes_name"/>
+        <result property="fr41" column="fr41"/>
+        <result property="fr42" column="fr42"/>
+        <result property="fr44" column="fr44"/>
+        <result property="fr46" column="fr46"/>
+        <result property="fr48" column="fr48"/>
+        <result property="al1" column="al1"/>
+        <result property="al2" column="al2"/>
+        <result property="fr4al" column="fr4al"/>
+        <result property="fpc" column="fpc"/>
+    </resultMap>
+
+
+</mapper>

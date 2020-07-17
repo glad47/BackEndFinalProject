@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "报价公式表管理", tags = {"报价公式表controller"}, protocols = "http, https", hidden = false)
-public class QuoteConfigController {
+public class QuoteConfigController extends BasicController<QuoteConfigDO,QuoteConfigDTO>{
 
     @Autowired
     private QuoteConfigService quoteConfigService;
@@ -62,10 +62,7 @@ public class QuoteConfigController {
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody QuoteConfigDTO quoteConfigDTO) {
-        QuoteConfigDO quoteConfigDO = new QuoteConfigDO();
-        BeanUtils.copyProperties(quoteConfigDTO, quoteConfigDO);
-
-        if (quoteConfigService.save(quoteConfigDO)){
+        if (quoteConfigService.save(conversionDO(new QuoteConfigDO(),quoteConfigDTO))){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -100,8 +97,7 @@ public class QuoteConfigController {
     })
     @PutMapping("/{id}")
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody QuoteConfigDTO quoteConfigDTO){
-        QuoteConfigDO quoteConfigDO = new QuoteConfigDO();
-        BeanUtils.copyProperties(quoteConfigDTO,quoteConfigDO);
+        QuoteConfigDO quoteConfigDO = conversionDO(new QuoteConfigDO(), quoteConfigDTO);
         quoteConfigDO.setId(id);
 
         if (quoteConfigService.updateById(quoteConfigDO)){

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.WeightConfigMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.WeightConfigDO" id="weightConfigMap">
+        <result property="id" column="id"/>
+        <result property="pcbtype" column="pcbtype"/>
+        <result property="layerNum" column="layer_num"/>
+        <result property="finishThickness" column="finish_thickness"/>
+        <result property="innerLayerCopper" column="Inner_layer_copper"/>
+        <result property="outerLayerCopper" column="outer_layer_copper"/>
+        <result property="weight" column="weight"/>
+    </resultMap>
+
+
+</mapper>

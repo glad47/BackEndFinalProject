@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.CourierQuoteMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.CourierQuoteDO" id="courierQuoteMap">
+        <result property="id" column="id"/>
+        <result property="partitionId" column="partition_id"/>
+        <result property="smallPackage5kg" column="small_package5kg"/>
+        <result property="smallPackage5kgadd" column="small_package5kgadd"/>
+        <result property="smallPackage10kg" column="small_package10kg"/>
+        <result property="smallPackage10kgadd" column="small_package10kgadd"/>
+        <result property="smallPackage20kg" column="small_package20kg"/>
+        <result property="smallPackage20kgadd" column="small_package20kgadd"/>
+        <result property="bigPackage30kg" column="big_package30kg"/>
+        <result property="bigPackage50kg" column="big_package50kg"/>
+        <result property="bigPackage69kg" column="big_package69kg"/>
+        <result property="bigPackage99kg" column="big_package99kg"/>
+        <result property="bigPackage196kg" column="big_package196kg"/>
+        <result property="bigPackage296kg" column="big_package296kg"/>
+        <result property="bigPackage499kg" column="big_package499kg"/>
+        <result property="bigPackage500kg" column="big_package500kg"/>
+        <result property="shippingTime" column="shipping_time"/>
+    </resultMap>
+
+
+</mapper>

@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "国家管理", tags = {"国家controller"}, protocols = "http, https", hidden = false)
-public class CountryController {
+public class CountryController extends BasicController<CountryDO,CountryDTO>{
 
     @Autowired
     private CountryService countryService;
@@ -62,10 +62,7 @@ public class CountryController {
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody CountryDTO countryDTO) {
-        CountryDO countryDO = new CountryDO();
-        BeanUtils.copyProperties(countryDTO, countryDO);
-
-        if (countryService.save(countryDO)){
+        if (countryService.save(conversionDO(new CountryDO(), countryDTO))){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -100,10 +97,8 @@ public class CountryController {
     })
     @PutMapping("/{id}")
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody CountryDTO countryDTO){
-        CountryDO countryDO = new CountryDO();
-        BeanUtils.copyProperties(countryDTO,countryDO);
+        CountryDO countryDO = conversionDO(new CountryDO(), countryDTO);
         countryDO.setId(id);
-
         if (countryService.updateById(countryDO)){
             return ResponseResult.success("更新成功");
         }else{

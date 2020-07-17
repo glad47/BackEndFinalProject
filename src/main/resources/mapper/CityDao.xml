@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.CityMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.CityDO" id="cityMap">
+        <result property="id" column="id"/>
+        <result property="countryId" column="country_id"/>
+        <result property="state" column="state"/>
+        <result property="name" column="name"/>
+        <result property="lowerName" column="lower_name"/>
+        <result property="cnState" column="cn_state"/>
+        <result property="cnName" column="cn_name"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="stateCode" column="state_code"/>
+    </resultMap>
+
+
+</mapper>

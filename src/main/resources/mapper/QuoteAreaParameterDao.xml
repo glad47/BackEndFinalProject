@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.QuoteAreaParameterMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.QuoteAreaParameterDO" id="quoteAreaParameterMap">
+        <result property="id" column="id"/>
+        <result property="areaParameterName" column="area_parameter_name"/>
+        <result property="areaMinParameter" column="area_min_parameter"/>
+        <result property="areaMaxParameter" column="area_max_parameter"/>
+        <result property="isDelete" column="is_delete"/>
+    </resultMap>
+
+
+</mapper>

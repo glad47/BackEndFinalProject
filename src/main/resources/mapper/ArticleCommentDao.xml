@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.ArticleCommentMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.ArticleCommentDO" id="articleCommentMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="articleId" column="article_id"/>
+        <result property="commitId" column="commit_id"/>
+        <result property="commitContent" column="commit_content"/>
+        <result property="commitUserId" column="commit_user_id"/>
+        <result property="commitIp" column="commit_ip"/>
+        <result property="commitTime" column="commit_time"/>
+        <result property="zanNumber" column="zan_number"/>
+    </resultMap>
+
+
+</mapper>

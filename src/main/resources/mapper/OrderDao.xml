@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.OrderMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.OrderDO" id="orderMap">
+        <result property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderno" column="orderno"/>
+        <result property="corderNo" column="corder_no"/>
+        <result property="receiverAddressId" column="receiver_address_id"/>
+        <result property="weight" column="weight"/>
+        <result property="postFee" column="post_fee"/>
+        <result property="totalSubtotal" column="total_subtotal"/>
+        <result property="amountFee" column="amount_fee"/>
+        <result property="paypalFee" column="paypal_fee"/>
+        <result property="disMemberStr" column="dis_member_str"/>
+        <result property="disCouponStr" column="dis_coupon_str"/>
+        <result property="totalFee" column="total_fee"/>
+        <result property="paymentType" column="payment_type"/>
+        <result property="status" column="status"/>
+        <result property="paymentTime" column="payment_time"/>
+        <result property="consignTime" column="consign_time"/>
+        <result property="entTime" column="ent_time"/>
+        <result property="closeTime" column="close_time"/>
+        <result property="destinationCountry" column="destination_country"/>
+        <result property="shippingName" column="shipping_name"/>
+        <result property="shippingCode" column="shipping_code"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="buildTime" column="build_time"/>
+        <result property="businessName" column="business_name"/>
+        <result property="businessId" column="business_id"/>
+    </resultMap>
+
+
+</mapper>

@@ -106,6 +106,13 @@ public class AuthController {
                     required = true,
                     paramType = "query",
                     dataType = "string"
+            ),
+            @ApiImplicitParam(
+                    name = "invite",
+                    value = "邀请码",
+                    paramType = "query",
+                    dataType = "string",
+                    example = "a120"
             )
     })
     @ApiResponses({
@@ -113,12 +120,16 @@ public class AuthController {
             @ApiResponse(code = 2004, message = "google校验失败")
     })
     @PostMapping(value = "/auth/register")
-    public ResponseResult register(@NotNull String username, @NotNull String password, @NotNull String recaptchaResponse){
+    public ResponseResult register(
+            @NotNull String username,
+            @NotNull String password,
+            @NotNull String recaptchaResponse,
+            String invite){
 //        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
 //        if (!verifyResult.getSuccess()){
 //            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
 //        }
-        int save = authService.register(username, password);
+        int save = authService.register(username, password,invite);
         if (save == 1){
             return ResponseResult.success("注册成功");
         }else{

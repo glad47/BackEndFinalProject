@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.QuoteUrgentBuildMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.QuoteUrgentBuildDO" id="quoteUrgentBuildMap">
+        <result property="id" column="id"/>
+        <result property="areaId" column="area_id"/>
+        <result property="urgentTypeId" column="urgent_type_id"/>
+        <result property="layerNumberId" column="layer_number_id"/>
+        <result property="dayNumber" column="day_number"/>
+        <result property="price" column="price"/>
+    </resultMap>
+
+
+</mapper>

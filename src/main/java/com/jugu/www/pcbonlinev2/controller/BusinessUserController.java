@@ -35,7 +35,7 @@ import java.util.stream.Stream;
         protocols = "http, https",
         hidden = false
 )
-public class BusinessUserController {
+public class BusinessUserController extends BasicController<BusinessUserDO, BusinessUserDTO>{
 
     @Autowired
     private BusinessUserService businessUserService;
@@ -59,10 +59,7 @@ public class BusinessUserController {
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody BusinessUserDTO businessUserDTO) {
-        BusinessUserDO businessUserDO = new BusinessUserDO();
-        BeanUtils.copyProperties(businessUserDTO, businessUserDO);
-
-        if (businessUserService.save(businessUserDO)){
+        if (businessUserService.save(conversionDO(new BusinessUserDO(), businessUserDTO))){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -96,14 +93,13 @@ public class BusinessUserController {
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PutMapping("/{id}")
-    public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody BusinessUserDTO businessUserDTO){
-        BusinessUserDO businessUserDO = new BusinessUserDO();
-        BeanUtils.copyProperties(businessUserDTO,businessUserDO);
+    public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody BusinessUserDTO businessUserDTO) {
+        BusinessUserDO businessUserDO = conversionDO(new BusinessUserDO(), businessUserDTO);
         businessUserDO.setId(id);
 
-        if (businessUserService.updateById(businessUserDO)){
+        if (businessUserService.updateById(businessUserDO)) {
             return ResponseResult.success("更新成功");
-        }else{
+        } else {
             return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
         }
     }

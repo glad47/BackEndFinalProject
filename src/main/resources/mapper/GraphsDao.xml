@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.GraphsMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.GraphsDO" id="graphsMap">
+        <result property="id" column="id"/>
+        <result property="bid" column="bid"/>
+        <result property="timeStr" column="time_str"/>
+        <result property="orderNumber" column="order_number"/>
+        <result property="orderSales" column="order_sales"/>
+    </resultMap>
+
+
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.QuotePremiumMetalMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.QuotePremiumMetalDO" id="quotePremiumMetalMap">
+        <result property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="metalPriceValue" column="metal_price_value"/>
+        <result property="unitName" column="unit_name"/>
+        <result property="minHolesValue" column="min_holes_value"/>
+        <result property="maxHolesValue" column="max_holes_value"/>
+    </resultMap>
+
+
+</mapper>

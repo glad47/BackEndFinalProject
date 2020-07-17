@@ -38,7 +38,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "钢网订单表管理", tags = {"钢网订单表controller"}, protocols = "http, https", hidden = false)
-public class SmlStencilController {
+public class SmlStencilController extends BasicController<SmlStencilDO,SmlStencilDTO>{
 
     @Autowired
     private SmlStencilService smlStencilService;
@@ -62,10 +62,7 @@ public class SmlStencilController {
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody SmlStencilDTO smlStencilDTO) {
-        SmlStencilDO smlStencilDO = new SmlStencilDO();
-        BeanUtils.copyProperties(smlStencilDTO, smlStencilDO);
-
-        if (smlStencilService.save(smlStencilDO)){
+        if (smlStencilService.save(conversionDO(new SmlStencilDO(),smlStencilDTO))){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -100,8 +97,7 @@ public class SmlStencilController {
     })
     @PutMapping("/{id}")
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody SmlStencilDTO smlStencilDTO){
-        SmlStencilDO smlStencilDO = new SmlStencilDO();
-        BeanUtils.copyProperties(smlStencilDTO,smlStencilDO);
+        SmlStencilDO smlStencilDO = conversionDO(new SmlStencilDO(), smlStencilDTO);
         smlStencilDO.setId(id);
 
         if (smlStencilService.updateById(smlStencilDO)){
