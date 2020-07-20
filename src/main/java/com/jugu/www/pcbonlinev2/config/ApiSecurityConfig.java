@@ -31,13 +31,12 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
 
     private static final String[] AUTH_WHITELIST = {
-            // -- swagger ui
+            // -- swagger ui druid ui
             "/swagger-resources/**",
             "/swagger-ui.html",
             "/v2/api-docs",
             "/webjars/**",
-            "/csrf",
-            "/",
+            "/druid/**",
     };
 
     @Autowired

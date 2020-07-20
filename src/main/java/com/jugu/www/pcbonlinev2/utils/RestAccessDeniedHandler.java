@@ -13,13 +13,14 @@ import java.io.IOException;
 
 /**
  * 过滤器错误处理
+ * AuthenticationEntryPoint 用来解决匿名用户访问无权限资源时的异常
  */
 @Component
 public class RestAccessDeniedHandler implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
-        HttpContextUtil.resTokenError(httpServletResponse,httpServletRequest,ErrorCodeEnum.PARAM_AUTH_NULL);
+        HttpContextUtil.resTokenError(httpServletResponse,httpServletRequest,ErrorCodeEnum.AUTH_ACCESS_DENIED);
     }
 
 }

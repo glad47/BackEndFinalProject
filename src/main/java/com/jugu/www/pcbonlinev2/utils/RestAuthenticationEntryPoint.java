@@ -11,11 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
+/**
+ * 过滤器错误处理
+ * AccessDeniedHandler 用来解决认证过的用户访问无权限资源时的异常
+ */
 @Component
 public class RestAuthenticationEntryPoint implements AccessDeniedHandler {
     @Override
-    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException, ServletException {
-        HttpContextUtil.resTokenError(httpServletResponse,httpServletRequest, ErrorCodeEnum.PARAM_AUTH_ERROR);
+    public void handle(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AccessDeniedException e) throws IOException {
+        HttpContextUtil.resTokenError(httpServletResponse,httpServletRequest, ErrorCodeEnum.AUTH_UNAUTHORISED);
     }
 
 }

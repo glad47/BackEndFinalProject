@@ -19,12 +19,16 @@ public enum ErrorCodeEnum {
     // 0*** 成功
     SUCCESS("0000", "操作成功"),
 
+    //授权异常
+    AUTH_ACCESS_DENIED("403","Access Denied !!(拒绝访问)"),
+    AUTH_UNAUTHORISED("401","Unauthorised !! (未经授权的)"),
+
     // 1*** 参数异常
     PARAM_ERROR("1001", "参数异常"),
     PARAM_NULL("1002", "参数为空"),
     PARAM_FORMAT_ERROR("1003", "参数格式不正确"),
     PARAM_VALUE_ERROR("1004", "参数值不正确"),
-    PARAM_AUTH_NULL("1005","参数Authorization在Header中为空"),
+    PARAM_AUTH_NULL("1005","参数Authorization在Header中为空或token失效！！"),
     PARAM_AUTH_ERROR("1006","token失效或已过期"),
     PARAM_EMAIL_ERROR("1007","邮箱已存在"),
 

@@ -37,5 +37,5 @@
     <!-- spring web 包下的 logger, 只输出 INFO 级别的 -->
     <logger name="org.springframework.web" level="info"/>
     <logger name="org.springframework.security" level="info" />
-    <logger name="com.jugu.www.pcbonlinev2.mapper" level="debug" />
+    <!--<logger name="com.jugu.www.pcbonlinev2.mapper" level="debug" />-->
 </configuration>

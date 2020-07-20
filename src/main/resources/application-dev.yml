@@ -6,6 +6,7 @@ spring:
     username: root
     password: admin
     druid:
+      filters: stat,wall,stat,slf4j,default
       initial-size: 10
       max-active: 100
       min-idle: 10
@@ -20,18 +21,21 @@ spring:
       stat-view-servlet:
         enabled: true
         url-pattern: /druid/*
-
       filter:
         stat:
+          #慢sql记录
           log-slow-sql: true
           slow-sql-millis: 1000
+          #sql合并设置
           merge-sql: false
-
         wall:
           config:
             multi-statement-allow: true
-      username:
-
-      password:
-
+        slf4j:
+          enabled: true
+          statement-create-after-log-enabled: true
+          statement-log-enabled: true
+          statement-executable-sql-log-enable: true
+          statement-log-error-enabled: true
+          result-set-log-enabled: true
 

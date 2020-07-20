@@ -9,10 +9,11 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
-public class HttpContextUtil {
+class HttpContextUtil {
 
-    public static void resTokenError(HttpServletResponse res, HttpServletRequest req, ErrorCodeEnum errorCodeEnum) throws IOException {
+    static void resTokenError(HttpServletResponse res, HttpServletRequest req, ErrorCodeEnum errorCodeEnum) throws IOException {
         res.setHeader("Access-Control-Allow-Credentials", "true");
         res.setHeader("Access-Control-Allow-Origin", req.getHeader("Origin"));
         res.setHeader("Content-Type","application/json; charset=utf-8");
@@ -21,8 +22,8 @@ public class HttpContextUtil {
         res.getWriter().print(json);
     }
 
-    public static HttpServletRequest getHttpServletRequest() {
-        return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+    static HttpServletRequest getHttpServletRequest() {
+        return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
     }
 
 }
