@@ -37,7 +37,7 @@ import java.util.stream.Stream;
 @RequestMapping("/api/assembly")
 @Validated
 @Slf4j
-@Api(value = "切片订单表管理", tags = {"切片订单表controller"}, protocols = "http, https", hidden = false)
+@Api(value = "切片订单表管理", tags = {"切片订单表controller"}, protocols = "http, https", hidden = true)
 public class AssemblyController extends BasicController<AssemblyDO,AssemblyDTO> {
 
     @Autowired

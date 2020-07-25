@@ -2,6 +2,7 @@ package com.jugu.www.pcbonlinev2.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
+import com.jugu.www.pcbonlinev2.domain.dto.UserDetailsDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.BusinessUserDO;
 import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
 import com.jugu.www.pcbonlinev2.exception.BusinessException;
@@ -20,33 +21,38 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 @Service
 public class AuthServiceImpl implements AuthService {
 
-    @Autowired
-    private AuthenticationManager authenticationManager;
+    private final AuthenticationManager authenticationManager;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
+    private final UserDetailsService userDetailsService;
 
-    @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    private final JwtTokenUtil jwtTokenUtil;
 
-    @Autowired
-    private UserMapper userMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    private BusinessUserMapper businessUserMapper;
+    private final BusinessUserMapper businessUserMapper;
 
-    @Autowired
-    private RedisUtil redisUtil;
+    private final RedisUtil redisUtil;
 
     private static final String PASSWORD_KEY = "password";
 
     private static Integer pos = 0;
+
+    @Autowired
+    public AuthServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil, UserMapper userMapper, BusinessUserMapper businessUserMapper, RedisUtil redisUtil) {
+        this.authenticationManager = authenticationManager;
+        this.userDetailsService = userDetailsService;
+        this.jwtTokenUtil = jwtTokenUtil;
+        this.userMapper = userMapper;
+        this.businessUserMapper = businessUserMapper;
+        this.redisUtil = redisUtil;
+    }
 
     @Override
     public ResponseResult login(String username, String password) {
@@ -55,30 +61,64 @@ public class AuthServiceImpl implements AuthService {
         Authentication authenticate = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authenticate);
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        if(userDetails == null) throw new BusinessException(ErrorCodeEnum.USER_NOT_ERROR);
         String token = jwtTokenUtil.generateToken(userDetails);
         return ResponseResult.success(token);
     }
 
     @Override
     public int register(String username, String password, String invite) {
-        UserDO query = new UserDO();
-        query.setEmail(username);
-        UserDO userDO = userMapper.selectOne(new QueryWrapper<UserDO>(query));
-        if (userDO != null && userDO.getId() != null) throw new BusinessException(ErrorCodeEnum.PARAM_EMAIL_ERROR);
+        Integer existCount = userMapper.selectCount(new QueryWrapper<UserDO>().eq("email",username).last("limit 1"));
+        if (existCount >= 1) throw new BusinessException(ErrorCodeEnum.PARAM_EMAIL_ERROR);
+        
+        UserDO userDO = new UserDO();
+        userDO.setEmail(username);
+        userDO.setPassword(SHA256Util.getSHA256StrJava(password+PASSWORD_KEY));
 
-        query.setPassword(SHA256Util.getSHA256StrJava(password)+PASSWORD_KEY);
-        //绑定跟单员
-        List<BusinessUserDO> businessUserDOList = businessUserMapper.selectList(null);
-
-        BusinessUserDO businessUser =  getBusinessUserByRoundRobin(businessUserDOList);
-
-        if(businessUser != null){
-            query.setBusinessId(businessUser.getBusinessId());
-            query.setBusinessName(businessUser.getName());
-            query.setUserSystemId(getCustomerNo(businessUser));
+        if(!StringUtils.isEmpty(invite)){
+            BusinessUserDO businessUserDO = businessUserMapper.selectOne(new QueryWrapper<BusinessUserDO>().eq("prefix_no", invite.trim()).last("limit 1"));
+            if (businessUserDO != null){
+                userDO.setBusinessId(businessUserDO.getBusinessId());
+                userDO.setBusinessName(businessUserDO.getName());
+                userDO.setUserSystemId(getCustomerNo(businessUserDO));
+            }else{
+                throw new BusinessException(ErrorCodeEnum.PARAM_BUSINESS_CODE_ERROR);
+            }
+        }else{
+            //绑定跟单员
+            List<BusinessUserDO> businessUserDOList = businessUserMapper.selectList(null);
+            BusinessUserDO businessUser =  getBusinessUserByRoundRobin(businessUserDOList);
+            if(businessUser != null){
+                userDO.setBusinessId(businessUser.getBusinessId());
+                userDO.setBusinessName(businessUser.getName());
+                userDO.setUserSystemId(getCustomerNo(businessUser));
+            }
         }
 
-        return userMapper.insert(query);
+        //设置未激活
+        userDO.setInvalidMark(1);
+
+        return userMapper.insert(userDO);
+    }
+
+    /**
+     * 激活用户
+     *
+     * @param token 令牌
+     */
+    @Override
+    public boolean activeUser(String token) {
+        String userEmail = jwtTokenUtil.getUsernameFromToken(token);
+        UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
+        userDetailsDTO.setUsername(userEmail);
+
+        Boolean validateToken = jwtTokenUtil.validateToken(token, userDetailsDTO);
+        if (!validateToken) throw new BusinessException(ErrorCodeEnum.PARAM_AUTH_ERROR);
+
+        UserDO userDO = new UserDO();
+        userDO.setInvalidMark(0);
+
+        return userMapper.update(userDO,new QueryWrapper<UserDO>().eq("email",userEmail)) == 1;
     }
 
     private String getCustomerNo(BusinessUserDO businessUser) {

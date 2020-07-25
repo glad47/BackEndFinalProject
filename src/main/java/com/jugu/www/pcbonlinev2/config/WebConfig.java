@@ -54,7 +54,7 @@ public class WebConfig implements WebMvcConfigurer {
 //                        "04-告别996系列" +
 //                        "/百度网盘/版本管理代码/all-learning/uploads/");
 
-        // Swagger2做的映射
+        // Swagger2 映射
         registry.addResourceHandler("/swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**")

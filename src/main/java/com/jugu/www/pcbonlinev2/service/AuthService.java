@@ -6,4 +6,6 @@ public interface AuthService {
     ResponseResult login(String username, String password);
 
     int register(String username, String password, String invite);
+
+    boolean activeUser(String token);
 }

@@ -1,9 +1,5 @@
 package com.jugu.www.pcbonlinev2.filter;
 
-import com.google.gson.Gson;
-import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
-import com.jugu.www.pcbonlinev2.exception.BusinessException;
-import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,21 +36,21 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         String token = req.getHeader(HEADER_STRING);
-        log.info("获取header的token===>【{}】",token);
+        log.debug("获取header的token===>【{}】", token);
         if (!StringUtils.isEmpty(token)) {
             String username = jwtTokenUtil.getUsernameFromToken(token);
-            log.info("解析出username===>【{}】",username);
+            log.debug("解析出username===>【{}】", username);
             if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                log.info("查询出userDetails===>【{}】",userDetails.toString());
-                if(jwtTokenUtil.validateToken(token,userDetails)){
+                log.debug("查询出userDetails===>【{}】", userDetails.toString());
+                if (jwtTokenUtil.validateToken(token, userDetails)) {
                     UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(req));
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
                 }
             }
         }
-        filterChain.doFilter(req,res);
+        filterChain.doFilter(req, res);
 
     }
 

@@ -30,6 +30,8 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    private static final String PASSWORD_KEY = "password";
+
     private static final String[] AUTH_WHITELIST = {
             // -- swagger ui druid ui
             "/swagger-resources/**",
@@ -39,27 +41,38 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             "/druid/**",
     };
 
+    private static final String[] STATIC_WHITELIST = {
+            "/webjars/**/*.css",
+            "/webjars/**/*.js",
+            "/webjars/**/*.jpg",
+            "/webjars/**/*.png",
+            "/druid/**/*.js",
+            "/druid/**/*.css",
+            "/druid/**/*.jpg",
+            "/druid/**/*.png",
+            "/druid/**/*.ico",
+    };
+
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 
         //校验用户
-        auth.userDetailsService( userDetailsService ).passwordEncoder( new PasswordEncoder() {
+        auth.userDetailsService(userDetailsService).passwordEncoder(new PasswordEncoder() {
             //对密码进行加密
             @Override
             public String encode(CharSequence charSequence) {
                 log.info(charSequence.toString());
-//                return DigestUtils.md5DigestAsHex(charSequence.toString().getBytes());
-                return SHA256Util.getSHA256StrJava(charSequence.toString()+"password");
+                return SHA256Util.getSHA256StrJava(charSequence.toString() + PASSWORD_KEY);
             }
+
             //对密码进行判断匹配
             @Override
             public boolean matches(CharSequence charSequence, String s) {
                 log.info("charSequence:", charSequence.toString());
-                //String encode = DigestUtils.md5DigestAsHex(charSequence.toString().getBytes());
-                String encode = SHA256Util.getSHA256StrJava(charSequence.toString()+"password");
-                return s.equals( encode );
+                String encode = SHA256Util.getSHA256StrJava(charSequence.toString() + PASSWORD_KEY);
+                return s.equals(encode);
             }
-        } );
+        });
 
     }
 
@@ -75,14 +88,17 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 //OPTIONS请求全部放行
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 ////登录接口放行
-                .antMatchers("/api/auth/login","/api/auth/register").permitAll()
+                .antMatchers("/api/auth/login", "/api/auth/register").permitAll()
                 //其他接口全部接受验证
                 .anyRequest().authenticated();
 
         //使用自定义的 Token过滤器 验证请求的Token是否合法
         http.addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
+
         //添加自定义的异常处理
-        http.exceptionHandling().accessDeniedHandler(accessDeniedHandlerBean()).authenticationEntryPoint(unauthorizedHandlerBean());
+        http.exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandlerBean())
+                .authenticationEntryPoint(unauthorizedHandlerBean());
         http.headers().cacheControl();
     }
 
@@ -97,9 +113,8 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    public void configure(WebSecurity web) throws Exception {
-        web.ignoring().antMatchers("/webjars/**/*.css","/webjars/**/*.js","/webjars/**/*.jpg","/webjars/**/*.png");
-//        super.configure(web);
+    public void configure(WebSecurity web) {
+        web.ignoring().antMatchers(STATIC_WHITELIST);
     }
 
     @Bean

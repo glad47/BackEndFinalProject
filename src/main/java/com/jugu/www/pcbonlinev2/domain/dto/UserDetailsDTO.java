@@ -13,6 +13,11 @@ public class UserDetailsDTO implements Serializable, UserDetails {
     private Integer id;
     private String username;
     private String password;
+    private Integer invalidMark;
+
+    public void setInvalidMark(Integer invalidMark) {
+        this.invalidMark = invalidMark;
+    }
 
     public Integer getId() {
         return id;
@@ -78,6 +83,6 @@ public class UserDetailsDTO implements Serializable, UserDetails {
      */
     @Override
     public boolean isEnabled() {
-        return true;
+        return this.invalidMark == 0;
     }
 }

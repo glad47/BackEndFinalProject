@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -37,7 +38,8 @@ import java.util.stream.Stream;
 @RequestMapping("/api/consumeradjustenquote")
 @Validated
 @Slf4j
-@Api(value = "客户调整价格报价表管理", tags = {"客户调整价格报价表controller"}, protocols = "http, https", hidden = false)
+@Api(value = "客户调整价格报价表管理", tags = {"客户调整价格报价表controller"}, protocols = "http, https", hidden = true)
+@ApiIgnore
 public class ConsumerAdjustenQuoteController extends BasicController<ConsumerAdjustenQuoteDO,ConsumerAdjustenQuoteDTO>{
 
     @Autowired

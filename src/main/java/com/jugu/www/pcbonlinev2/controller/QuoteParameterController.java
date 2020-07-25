@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -37,7 +38,8 @@ import java.util.stream.Stream;
 @RequestMapping("/api/quoteparameter")
 @Validated
 @Slf4j
-@Api(value = "报价参数名配置表管理", tags = {"报价参数名配置表controller"}, protocols = "http, https", hidden = false)
+@Api(value = "报价参数名配置表管理", tags = {"报价参数名配置表controller"}, protocols = "http, https", hidden = true)
+@ApiIgnore
 public class QuoteParameterController extends BasicController<QuoteParameterDO,QuoteParameterDTO>{
 
     @Autowired

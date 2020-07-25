@@ -27,6 +27,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         result.setId(userDO.getId());
         result.setPassword(userDO.getPassword());
         result.setUsername(userDO.getEmail());
+        result.setInvalidMark(userDO.getInvalidMark());
         return result;
     }
 }

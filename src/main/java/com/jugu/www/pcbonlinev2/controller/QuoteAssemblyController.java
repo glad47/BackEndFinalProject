@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
 
 /**
  * 
- *
+ * 贴片管理
  * @author turing
  * @email zlturing@gmail.com
  * @date 2020-07-16 20:50:39
@@ -37,7 +38,8 @@ import java.util.stream.Stream;
 @RequestMapping("/api/quoteassembly")
 @Validated
 @Slf4j
-@Api(value = "管理", tags = {"controller"}, protocols = "http, https", hidden = false)
+@Api(value = "贴片管理", tags = {"controller"}, protocols = "http, https", hidden = false)
+@ApiIgnore
 public class QuoteAssemblyController extends BasicController<QuoteAssemblyDO,QuoteAssemblyDTO>{
 
     @Autowired

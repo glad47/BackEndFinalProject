@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -37,7 +38,8 @@ import java.util.stream.Stream;
 @RequestMapping("/api/businesstarget")
 @Validated
 @Slf4j
-@Api(value = "跟单员目标指标管理", tags = {"跟单员目标指标controller"}, protocols = "http, https", hidden = false)
+@Api(value = "跟单员目标指标管理", tags = {"跟单员目标指标controller"}, protocols = "http, https", hidden = true)
+@ApiIgnore
 public class BusinessTargetController extends BasicController<BusinessTargetDO,BusinessTargetDTO>{
 
     @Autowired

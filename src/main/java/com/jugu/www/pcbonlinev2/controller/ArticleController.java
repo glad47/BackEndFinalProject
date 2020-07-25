@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 @RequestMapping("/api/article")
 @Validated
 @Slf4j
-@Api(value = "文章表管理", tags = {"文章表controller"}, protocols = "http, https", hidden = false)
+@Api(value = "文章表管理", tags = {"文章表controller"}, protocols = "http, https", hidden = true)
 public class ArticleController extends BasicController<ArticleDO,ArticleDTO>{
 
     @Autowired

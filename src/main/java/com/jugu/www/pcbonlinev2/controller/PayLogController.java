@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -37,7 +38,8 @@ import java.util.stream.Stream;
 @RequestMapping("/api/paylog")
 @Validated
 @Slf4j
-@Api(value = "支付日志管理", tags = {"支付日志controller"}, protocols = "http, https", hidden = false)
+@Api(value = "支付日志管理", tags = {"支付日志controller"}, protocols = "http, https", hidden = true)
+@ApiIgnore
 public class PayLogController extends BasicController<PayLogDO,PayLogDTO>{
 
     @Autowired

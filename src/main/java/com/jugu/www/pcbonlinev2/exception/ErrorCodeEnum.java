@@ -31,11 +31,13 @@ public enum ErrorCodeEnum {
     PARAM_AUTH_NULL("1005","参数Authorization在Header中为空或token失效！！"),
     PARAM_AUTH_ERROR("1006","token失效或已过期"),
     PARAM_EMAIL_ERROR("1007","邮箱已存在"),
+    PARAM_BUSINESS_CODE_ERROR("1008","无效的邀请码，跟单员前缀无效！！" ),
 
     // 2*** 系统异常
     SYSTEM_ERROR("2001", "服务异常"),
     UNKNOWN_ERROR("2002", "未知异常"),
     USER_PASS_ERROR("2003","用户名或密码错误"),
+    USER_NOT_ERROR("2005","用户存在"),
     RE_CAPTCHA_ERROR("2004","google-RE-CAPTCHA校验失败" ),
 
     // 3*** 业务异常

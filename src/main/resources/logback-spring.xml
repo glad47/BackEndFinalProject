@@ -6,7 +6,7 @@
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <!--<Pattern>[%-5level] %d{HH:mm:ss} %logger{36} %line: %msg %n</Pattern>   &lt;!&ndash; 输出格式 &ndash;&gt;-->
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %boldRed(%level) - traceId:[%X{traceId}] [%logger{36}-%thread:%line]  - %highlight(%msg%n)</Pattern>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %boldRed(%level) - traceId:[%X{traceId}] [%thread] [%logger{36}-%line] : %highlight(%msg%n)</Pattern>
             <charset>UTF-8</charset> <!-- 解决中文乱码问题 -->
         </encoder>
     </appender>
@@ -19,7 +19,7 @@
             <maxHistory>30</maxHistory> <!-- 保留 30 天的日志 -->
         </rollingPolicy>
         <encoder>
-            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{35} : %n %msg %n</Pattern>
+            <Pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} - %boldRed(%level) - traceId:[%X{traceId}] [%thread] %-5level %logger{35} : %n %msg %n</Pattern>
             <charset>UTF-8</charset>  <!--解决中文乱码问题-->
         </encoder>
     </appender>
