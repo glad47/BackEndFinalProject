@@ -37,7 +37,7 @@ public enum ErrorCodeEnum {
     SYSTEM_ERROR("2001", "服务异常"),
     UNKNOWN_ERROR("2002", "未知异常"),
     USER_PASS_ERROR("2003","用户名或密码错误"),
-    USER_NOT_ERROR("2005","用户存在"),
+    USER_NOT_ERROR("2005","用户邮箱不存在"),
     RE_CAPTCHA_ERROR("2004","google-RE-CAPTCHA校验失败" ),
 
     // 3*** 业务异常

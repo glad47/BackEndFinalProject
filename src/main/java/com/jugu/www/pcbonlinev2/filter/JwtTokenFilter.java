@@ -31,8 +31,9 @@ public class JwtTokenFilter extends OncePerRequestFilter {
     /**
      * 存放Token的Header Key
      */
-    public static final String HEADER_STRING = "Authorization";
+    private static final String HEADER_STRING = "Authorization";
 
+    @SuppressWarnings("NullableProblems")
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         String token = req.getHeader(HEADER_STRING);

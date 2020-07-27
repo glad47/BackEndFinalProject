@@ -56,13 +56,14 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public ResponseResult login(String username, String password) {
-        UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username,password);
+        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
+        UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username,password);
         Authentication authenticate = authenticationManager.authenticate(upToken);
         SecurityContextHolder.getContext().setAuthentication(authenticate);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-        if(userDetails == null) throw new BusinessException(ErrorCodeEnum.USER_NOT_ERROR);
+
         String token = jwtTokenUtil.generateToken(userDetails);
+
         return ResponseResult.success(token);
     }
 
@@ -72,8 +73,6 @@ public class AuthServiceImpl implements AuthService {
         if (existCount >= 1) throw new BusinessException(ErrorCodeEnum.PARAM_EMAIL_ERROR);
         
         UserDO userDO = new UserDO();
-        userDO.setEmail(username);
-        userDO.setPassword(SHA256Util.getSHA256StrJava(password+PASSWORD_KEY));
 
         if(!StringUtils.isEmpty(invite)){
             BusinessUserDO businessUserDO = businessUserMapper.selectOne(new QueryWrapper<BusinessUserDO>().eq("prefix_no", invite.trim()).last("limit 1"));
@@ -97,6 +96,8 @@ public class AuthServiceImpl implements AuthService {
 
         //设置未激活
         userDO.setInvalidMark(1);
+        userDO.setEmail(username);
+        userDO.setPassword(SHA256Util.getSHA256StrJava(password+PASSWORD_KEY));
 
         return userMapper.insert(userDO);
     }
@@ -127,6 +128,7 @@ public class AuthServiceImpl implements AuthService {
 
     private BusinessUserDO getBusinessUserByRoundRobin(List<BusinessUserDO> businessUserDOList) {
         BusinessUserDO businessUser;
+        //noinspection SynchronizeOnNonFinalField
         synchronized (pos){
             businessUser = businessUserDOList.get(redisUtil.saveValueAndIncrementByRoundRobinListSize("RoundRobinUserIndex",businessUserDOList.size()));
             pos++;

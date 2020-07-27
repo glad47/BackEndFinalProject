@@ -7,15 +7,15 @@ import com.jugu.www.pcbonlinev2.domain.dto.UserDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.UserQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
 import com.jugu.www.pcbonlinev2.domain.vo.UserVO;
+import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.UserService;
+import com.jugu.www.pcbonlinev2.utils.UpdateValidationGroup;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -33,7 +33,7 @@ import java.util.stream.Stream;
         produces = "http, https",
         hidden = false
 )
-public class UserController {
+public class UserController extends BasicController<UserDO,UserDTO>{
 
     @Autowired
     private UserService userService;
@@ -111,7 +111,37 @@ public class UserController {
         return ResponseResult.success(result);
     }
 
+    @ApiOperation(
+            value = "修改信息",
+            notes = "备注",
+            response = ResponseResult.class,
+            httpMethod = "PUT"
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "userDTO",
+                    value = "实体类",
+                    required = true,
+                    paramType = "body",
+                    dataType = "object",
+                    dataTypeClass = UserDTO.class
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(code = 0, message = "操作成功")
+    })
+    @PutMapping()
+    public ResponseResult update(@Validated(UpdateValidationGroup.class) @RequestBody UserDTO userDTO){
+        log.info("userId:[{}]",getUserId());
+        UserDO userDO = conversionDO(new UserDO(),userDTO);
+        userDO.setId(getUserId());
 
+        if (userService.updateById(userDO)){
+            return ResponseResult.success("更新成功");
+        }else{
+            return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+        }
+    }
 
 
 }
