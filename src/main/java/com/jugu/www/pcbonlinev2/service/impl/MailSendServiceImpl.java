@@ -109,13 +109,26 @@ public class MailSendServiceImpl implements MailSendService {
     @Override
     public void asyncSendRegisterMail(String username) {
         log.info("异步发送邮件，邮箱：【{}】",username);
+        Map<String, Object> data = createTokenEmailSendData(username,"http://localhost:8877/api/auth/active/");
+        sendMail(new String[]{username},"激活PcbOnLine用户","mail-notice-template-registration",data,null);
+
+    }
+
+    private Map<String, Object> createTokenEmailSendData(String username,Object url) {
         UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
         userDetailsDTO.setUsername(username);
 
         Map<String,Object> data = new HashMap<>();
         String token = jwtTokenUtil.generateToken(userDetailsDTO);
-        data.put("url","http://localhost:8877/api/auth/active/"+token);
-        sendMail(new String[]{username},"激活PcbOnLine用户","mail-notice-template-registration",data,null);
+        data.put("url",url+token);
+        return data;
+    }
 
+    @Async("msgSendServerExecutor")
+    @Override
+    public void asyncSendPasswordResetMail(String email) {
+        log.info("异步发送重置密码邮箱,【{}】", email);
+        Map<String, Object> tokenEmailSendData = createTokenEmailSendData(email, "http://localhost:8877/api/requestPasswordReset/");
+        sendMail(new String[]{email},"重置PcbOnLine用户密码","mail-notice-template-registration",tokenEmailSendData,null);
     }
 }

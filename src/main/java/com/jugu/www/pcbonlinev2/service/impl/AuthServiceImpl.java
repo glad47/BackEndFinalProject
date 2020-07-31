@@ -69,8 +69,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public int register(String username, String password, String invite) {
-        Integer existCount = userMapper.selectCount(new QueryWrapper<UserDO>().eq("email",username).last("limit 1"));
-        if (existCount >= 1) throw new BusinessException(ErrorCodeEnum.PARAM_EMAIL_ERROR);
+
+        if (isExistByEmail(username)) throw new BusinessException(ErrorCodeEnum.PARAM_EMAIL_ERROR);
         
         UserDO userDO = new UserDO();
 
@@ -109,21 +109,43 @@ public class AuthServiceImpl implements AuthService {
      */
     @Override
     public boolean activeUser(String token) {
-        String userEmail = jwtTokenUtil.getUsernameFromToken(token);
-        UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
-        userDetailsDTO.setUsername(userEmail);
-
-        Boolean validateToken = jwtTokenUtil.validateToken(token, userDetailsDTO);
-        if (!validateToken) throw new BusinessException(ErrorCodeEnum.PARAM_AUTH_ERROR);
-
         UserDO userDO = new UserDO();
         userDO.setInvalidMark(0);
+        return validateTokenAndUserUpdate(token,userDO);
+    }
 
-        return userMapper.update(userDO,new QueryWrapper<UserDO>().eq("email",userEmail)) == 1;
+    @Override
+    public boolean isExistByEmail(String email) {
+        Integer existCount = userMapper.selectCount(new QueryWrapper<UserDO>().eq("email",email).last("limit 1"));
+        return existCount >= 1;
+    }
+
+    /**
+     * 修改密码
+     *
+     * @param token 令牌
+     * @param nowPwd
+     */
+    @Override
+    public boolean passwordReset(String token, String nowPwd) {
+        UserDO userDO = new UserDO();
+        userDO.setPassword(SHA256Util.getSHA256StrJava(nowPwd+PASSWORD_KEY));
+        return validateTokenAndUserUpdate(token,userDO);
     }
 
     private String getCustomerNo(BusinessUserDO businessUser) {
         return redisUtil.SeqGenerator(businessUser.getPrefixNo(),2,RedisUtil.NOT_EXPIRE);
+    }
+
+    private Boolean validateTokenAndUserUpdate(String token, UserDO userDO) {
+        String userEmail = jwtTokenUtil.getUsernameFromToken(token);
+        UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
+        userDetailsDTO.setUsername(userEmail);
+
+        if (!jwtTokenUtil.validateToken(token, userDetailsDTO)) throw new BusinessException(ErrorCodeEnum.PARAM_AUTH_ERROR);
+
+        return userMapper.update(userDO,new QueryWrapper<UserDO>().eq("email",userEmail)) == 1;
+
     }
 
     private BusinessUserDO getBusinessUserByRoundRobin(List<BusinessUserDO> businessUserDOList) {

@@ -152,7 +152,7 @@ public class AuthController {
             value = "激活",
             notes = "激活接口",
             response = ResponseResult.class,
-            httpMethod = "GET"
+            httpMethod = "PUT"
     )
     @ApiImplicitParam(
             name = "token",
@@ -164,7 +164,7 @@ public class AuthController {
     @ApiResponses({
             @ApiResponse(code = 0, message = "操作成功")
     })
-    @GetMapping("/{token}")
+    @PutMapping("/active/{token}")
     public ResponseResult active(@NotNull @PathVariable("token") String token){
         if(authService.activeUser(token)){
             return ResponseResult.success("激活成功");
@@ -172,4 +172,73 @@ public class AuthController {
             return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
         }
     }
+
+
+    @ApiOperation(
+            value = "发送重置密码邮件",
+            notes = "发送重置密码邮件接口",
+            response = ResponseResult.class,
+            httpMethod = "POST"
+    )
+    @ApiImplicitParam(
+            name = "token",
+            value = "token",
+            required = true,
+            paramType = "path",
+            dataType = "string"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 0, message = "操作成功")
+    })
+    @PostMapping("/requestPasswordResetByEmail")
+    public ResponseResult requestPasswordResetByEmail(@NotNull String email, @NotNull String recaptchaResponse){
+        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
+        if (!verifyResult.getSuccess()){
+            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+        }
+        if (authService.isExistByEmail(email)){
+            mailSendService.asyncSendPasswordResetMail(email);
+            return ResponseResult.success("已发送邮件");
+        }else{
+            return ResponseResult.failure(ErrorCodeEnum.USER_NOT_ERROR);
+        }
+
+    }
+
+
+
+    @ApiOperation(
+            value = "重置密码",
+            notes = "重置密码接口",
+            response = ResponseResult.class,
+            httpMethod = "PUT"
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "token",
+                    value = "token",
+                    required = true,
+                    paramType = "path",
+                    dataType = "string"
+            ),
+            @ApiImplicitParam(
+                    name = "nowPwd",
+                    value = "新密码",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string"
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(code = 0, message = "操作成功")
+    })
+    @PutMapping("/requestPasswordReset/{token}")
+    public ResponseResult requestPasswordReset(@NotNull @PathVariable("token") String token,@NotNull String nowPwd){
+        if (authService.passwordReset(token,nowPwd)){
+            return ResponseResult.success("修改成功");
+        }else {
+            return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+        }
+    }
+
 }

@@ -62,7 +62,10 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody ReceiverAddersDTO receiverAddersDTO) {
-        if (receiverAddersService.save(conversionDO(new ReceiverAddersDO(),receiverAddersDTO))){
+        ReceiverAddersDO receiverAddersDO = conversionDO(new ReceiverAddersDO(), receiverAddersDTO);
+        receiverAddersDO.setUserId(getUserId());
+
+        if (receiverAddersService.save(receiverAddersDO)){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -108,7 +111,7 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
     }
 
     @ApiOperation(
-            value = "新增信息",
+            value = "删除信息",
             notes = "备注",
             response = ResponseResult.class,
             httpMethod = "DELETE"

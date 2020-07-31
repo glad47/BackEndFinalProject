@@ -8,4 +8,8 @@ public interface AuthService {
     int register(String username, String password, String invite);
 
     boolean activeUser(String token);
+
+    boolean isExistByEmail(String email);
+
+    boolean passwordReset(String token, String nowPwd);
 }

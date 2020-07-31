@@ -7,4 +7,6 @@ import java.util.Map;
  */
 public interface MailSendService {
     void asyncSendRegisterMail(String username);
+
+    void asyncSendPasswordResetMail(String email);
 }
