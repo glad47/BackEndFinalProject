@@ -1,6 +1,8 @@
 package com.jugu.www.pcbonlinev2.config;
 
 import com.jugu.www.pcbonlinev2.filter.JwtTokenFilter;
+import com.jugu.www.pcbonlinev2.state.core.Initialization;
+import com.jugu.www.pcbonlinev2.state.core.OrderStateManager;
 import com.jugu.www.pcbonlinev2.utils.RestAccessDeniedHandler;
 import com.jugu.www.pcbonlinev2.utils.RestAuthenticationEntryPoint;
 import com.jugu.www.pcbonlinev2.utils.SHA256Util;
@@ -126,6 +128,16 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
+    }
+
+    @Bean
+    public Initialization initialization() {
+        return new Initialization();
+    }
+
+    @Bean
+    public OrderStateManager orderStateManager() {
+        return new OrderStateManager();
     }
 
 
