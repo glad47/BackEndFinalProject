@@ -6,9 +6,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 订单状态转换 处理标识注解
+ * 状态处理注解类
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface OrderProcessor {
+public @interface StateHandler {
 }

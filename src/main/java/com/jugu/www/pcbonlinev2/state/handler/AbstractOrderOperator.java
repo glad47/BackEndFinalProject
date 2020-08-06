@@ -1,23 +1,24 @@
 package com.jugu.www.pcbonlinev2.state.handler;
 
-import com.jugu.www.pcbonlinev2.state.constant.OrderStatusEnum;
+import com.jugu.www.pcbonlinev2.state.constant.State;
 import lombok.Data;
 
 /**
  * 抽象订单操作类
  */
 @Data
-public abstract class AbstractOrderOperator {
+public abstract class AbstractOrderOperator{
     /**
-     * 当前状态
+     * 状态
      */
     int status;
 
     /**
-     * 操作处理方法
-     * @param orderStatus 订单状态
-     * @param orderStatusEnum 订单操作事件
+     * 根据当前状态和行为得到下个状态
+     * @param orderStatus 订单当前状态
+     * @param state 行为
      * @return 下一个状态
      */
-    public abstract int handleEvent(int orderStatus, OrderStatusEnum orderStatusEnum);
+    public abstract int handleEvent(int orderStatus, State state);
+
 }

@@ -130,15 +130,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public Initialization initialization() {
-        return new Initialization();
-    }
 
-    @Bean
-    public OrderStateManager orderStateManager() {
-        return new OrderStateManager();
-    }
 
 
 }

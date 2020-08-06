@@ -46,6 +46,10 @@ spring:
     properties.mail.smtp.starttls.required: true
     properties.mail.smtp.ssl.enable: true
     default-encoding: utf-8
+
+  #启用bean名称覆盖
+  main:
+    allow-bean-definition-overriding: true
 #    from: 1170737711@qq.com #与上面的username保持一致
 
 #mybatis

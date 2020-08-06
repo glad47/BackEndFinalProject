@@ -16,7 +16,7 @@ public abstract class AbstractOrderProcessor {
      * 具体业务实现分
      * @param orderId 订单id
      * @param params 具体实体类
-     * @return
+     * @return 是否成功
      */
     public abstract boolean process(Integer orderId, Object... params);
 }
