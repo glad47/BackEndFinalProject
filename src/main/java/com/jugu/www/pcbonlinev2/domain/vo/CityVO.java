@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 public class CityVO implements Serializable {
-	// TODO serialVersionUid
+	private static final long serialVersionUID = 1229032847511410898L;
 
 		/**
 	 * 

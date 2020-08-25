@@ -62,10 +62,7 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody ReceiverAddersDTO receiverAddersDTO) {
-        ReceiverAddersDO receiverAddersDO = conversionDO(new ReceiverAddersDO(), receiverAddersDTO);
-        receiverAddersDO.setUserId(getUserId());
-
-        if (receiverAddersService.save(receiverAddersDO)){
+        if (receiverAddersService.save(conversionDO(new ReceiverAddersDO(), receiverAddersDTO))){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -169,7 +166,8 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping
-    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated ReceiverAddersQueryDTO query){
+    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated ReceiverAddersQueryDTO query) {
+        query.setUserId(getUserId());
         //构造查询条件
         PageQuery<ReceiverAddersQueryDTO, ReceiverAddersDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
 

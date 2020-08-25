@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 public class BusinessTargetVO implements Serializable {
-	// TODO serialVersionUid
+	private static final long serialVersionUID = 3474459590474670711L;
 
 		/**
 	 * id

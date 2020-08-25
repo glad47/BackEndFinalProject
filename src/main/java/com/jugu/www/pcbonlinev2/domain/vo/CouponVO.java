@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 public class CouponVO implements Serializable {
-	// TODO serialVersionUid
+	private static final long serialVersionUID = 8036592252313249405L;
 
 		/**
 	 * id

@@ -6,6 +6,7 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.UUID;
 
 /**
@@ -20,11 +21,12 @@ public class CommonMetaObjectHandler implements MetaObjectHandler {
     @Override
     public void insertFill(MetaObject metaObject) {
         log.info("insert data , 填充数据");
-        this.strictInsertFill(metaObject,"gmtCreate", LocalDateTime.class,LocalDateTime.now());
-        this.strictInsertFill(metaObject,"gmtModified", LocalDateTime.class,LocalDateTime.now());
+        this.strictInsertFill(metaObject,"gmtCreate", Date.class,new Date());
+        this.strictInsertFill(metaObject,"gmtModified", Date.class,new Date());
         this.strictInsertFill(metaObject,"favicon",String.class,DEFAULT_FAVICON);
         this.strictInsertFill(metaObject, "uuid", String.class, UUID.randomUUID().toString());
         this.strictInsertFill(metaObject,"userIp",String.class,IPUtils.getIpAddr(HttpContextUtil.getHttpServletRequest()));
+        this.strictInsertFill(metaObject,"userId",Integer.class,ThreadSessionLocal.getUserInfo().getId());
     }
 
     @Override

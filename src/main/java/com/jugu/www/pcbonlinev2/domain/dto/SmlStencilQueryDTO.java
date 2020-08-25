@@ -22,9 +22,9 @@ public class SmlStencilQueryDTO implements Serializable {
 
     @ApiModelProperty(value = "id")
     private Integer id;
-    @ApiModelProperty(value = "用户id")
+    @ApiModelProperty(value = "用户id", hidden = true)
     private Integer userId;
-    @ApiModelProperty(value = "报价id")
+    @ApiModelProperty(value = "报价id", hidden = true)
     private Integer quoteId;
     @ApiModelProperty(value = "钢网类型")
     private String stencilType;

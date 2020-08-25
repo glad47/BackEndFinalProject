@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 public class UserDTO implements Serializable {
     private static final long serialVersionUID = 8040135336637200184L;
 
-    @ApiModelProperty(value = "用户id")
+    @ApiModelProperty(value = "用户id", hidden = true)
     private Integer id;
     @ApiModelProperty(value = "用户名")
     private String userName;

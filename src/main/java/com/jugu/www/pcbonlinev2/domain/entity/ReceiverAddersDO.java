@@ -30,6 +30,7 @@ public class ReceiverAddersDO implements Serializable {
     /**
      * 用户id
      */
+    @TableField(fill = FieldFill.INSERT)
     private Integer userId;
     /**
      * 收货公司全名
@@ -71,12 +72,12 @@ public class ReceiverAddersDO implements Serializable {
      * 修改时间
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime gmtModified;
+    private Date gmtModified;
     /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
-    private LocalDateTime gmtCreate;
+    private Date gmtCreate;
     /**
      * 是否默认(0否 1是，默认为否)
      */

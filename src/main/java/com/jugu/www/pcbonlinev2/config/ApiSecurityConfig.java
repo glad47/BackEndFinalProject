@@ -90,7 +90,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 //OPTIONS请求全部放行
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 ////登录接口放行
-                .antMatchers("/api/auth/login", "/api/auth/register").permitAll()
+                .antMatchers("/api/auth/login", "/api/auth/register","/api/active/*").permitAll()
                 //其他接口全部接受验证
                 .anyRequest().authenticated();
 

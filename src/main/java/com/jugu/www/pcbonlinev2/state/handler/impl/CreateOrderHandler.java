@@ -24,4 +24,16 @@ public class CreateOrderHandler extends AbstractStateHandler {
     public Event event() {
         return Event.CREATE_EVENT;
     }
+
+    @Override
+    protected void after(Object o) {
+        log.info("状态修改之后执行");
+        super.after(o);
+    }
+
+    @Override
+    protected void before(Object o) {
+        log.info("修改状态之前执行");
+        super.before(o);
+    }
 }

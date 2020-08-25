@@ -35,7 +35,7 @@ public class ExecutorConfig {
         // 队列大小
         executor.setQueueCapacity(Integer.MAX_VALUE);
 
-        // 线程池中的线程名前缀x
+        // 线程池中的线程名前缀x2
         executor.setThreadNamePrefix("msgSend-");
 
         // 拒绝策略：直接拒绝

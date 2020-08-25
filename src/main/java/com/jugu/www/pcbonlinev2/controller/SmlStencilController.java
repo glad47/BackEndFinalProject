@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -166,7 +167,8 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping
-    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated SmlStencilQueryDTO query){
+    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated SmlStencilQueryDTO query) {
+        query.setUserId(getUserId());
         //构造查询条件
         PageQuery<SmlStencilQueryDTO, SmlStencilDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
 

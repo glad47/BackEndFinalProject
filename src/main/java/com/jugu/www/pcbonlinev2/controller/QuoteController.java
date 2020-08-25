@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -37,7 +38,7 @@ import java.util.stream.Stream;
 @RequestMapping("/api/quote")
 @Validated
 @Slf4j
-@Api(value = "报价表管理", tags = {"报价表controller"}, protocols = "http, https", hidden = false)
+@Api(value = "报价表管理", tags = {"报价表controller"}, protocols = "http, https")
 public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
 
     @Autowired
@@ -110,7 +111,7 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
     }
 
     @ApiOperation(
-            value = "新增信息",
+            value = "删除信息",
             notes = "备注",
             response = ResponseResult.class,
             httpMethod = "DELETE"
@@ -168,7 +169,8 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping
-    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated QuoteQueryDTO query){
+    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated QuoteQueryDTO query) {
+        query.setUserId(getUserId());
         //构造查询条件
         PageQuery<QuoteQueryDTO, QuoteDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
 

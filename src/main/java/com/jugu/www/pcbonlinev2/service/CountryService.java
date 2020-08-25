@@ -21,5 +21,6 @@ public interface CountryService extends IService<CountryDO> {
 
     PageResult<List<CountryDTO>> queryPage(PageQuery<CountryQueryDTO, CountryDO> params);
 
+    List<CountryDTO> all();
 }
 

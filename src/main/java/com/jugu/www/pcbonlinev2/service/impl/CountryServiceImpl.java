@@ -1,6 +1,7 @@
 package com.jugu.www.pcbonlinev2.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
@@ -48,6 +49,21 @@ public class CountryServiceImpl extends ServiceImpl<CountryMapper, CountryDO> im
                 .collect(Collectors.toList());
 
         return new PageResult<>(countryDOPage,countryDTOList);
+    }
+
+    @Override
+    public List<CountryDTO> all() {
+        List<CountryDO> countryDOList = countryMapper.selectList(Wrappers.emptyWrapper());
+
+        return Optional.ofNullable(countryDOList)
+                .map(List::stream)
+                .orElseGet(Stream::empty)
+                .map(CountryDO -> {
+                    CountryDTO countryDTO = new CountryDTO();
+                    BeanUtils.copyProperties(CountryDO, countryDTO);
+                    return countryDTO;
+                })
+                .collect(Collectors.toList());
     }
 
 }

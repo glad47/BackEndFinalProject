@@ -19,4 +19,8 @@ public class BusinessUserDTO implements Serializable {
     private String telephone;
     @ApiModelProperty(value = "跟单员标识")
     private String prefixNo;
+    @ApiModelProperty(value = "跟单员id")
+    private Integer businessId;//跟单员id 即erp系统中user角色为跟单员的userId
+    @ApiModelProperty(value = "跟单员头像")
+    private String avatar;
 }

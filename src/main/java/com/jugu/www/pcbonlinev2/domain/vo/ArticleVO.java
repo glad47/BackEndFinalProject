@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 public class ArticleVO implements Serializable {
-	// TODO serialVersionUid
+	private static final long serialVersionUID = -1254542396014569198L;
 
 		/**
 	 * id

@@ -7,8 +7,10 @@ import com.jugu.www.pcbonlinev2.domain.dto.UserDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.UserQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
 import com.jugu.www.pcbonlinev2.domain.vo.UserVO;
+import com.jugu.www.pcbonlinev2.exception.BusinessException;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.UserService;
+import com.jugu.www.pcbonlinev2.utils.SHA256Util;
 import com.jugu.www.pcbonlinev2.utils.UpdateValidationGroup;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
@@ -143,5 +145,49 @@ public class UserController extends BasicController<UserDO,UserDTO>{
         }
     }
 
+
+    @ApiOperation(
+            value = "查询当前登录用户信息",
+            notes = "备注",
+            response = ResponseResult.class,
+            httpMethod = "GET"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 0000, message = "操作成功")
+    })
+    @GetMapping("/info")
+    public ResponseResult info() {
+        UserDO userDO = userService.getById(getUserId());
+        UserVO userVO = Optional.ofNullable(userDO)
+                .map(u -> {
+                    UserVO vo = new UserVO();
+                    BeanUtils.copyProperties(u, vo);
+                    return vo;
+                }).orElseThrow(() -> new BusinessException(ErrorCodeEnum.USER_LOGIN_INFO_NULL));
+        return ResponseResult.success(userVO);
+    }
+
+
+    @ApiOperation(
+            value = "校验当前密码",
+            notes = "备注",
+            response = ResponseResult.class,
+            httpMethod = "POST"
+    )
+    @ApiImplicitParam(
+            name = "currPwd",
+            value = "当前密码",
+            required = true,
+            paramType = "query",
+            dataType = "string"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 0000, message = "操作成功")
+    })
+    @PostMapping("/verifyCurrPwd")
+    public ResponseResult verifyCurrPwd(@NotNull(message = "当前密码不能为null！") String currPwd) {
+        UserDO userDO = userService.getById(getUserId());
+        return ResponseResult.success(userDO.getPassword().equals(SHA256Util.getSHA256StrJava(currPwd.trim() + "password")));
+    }
 
 }

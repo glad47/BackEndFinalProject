@@ -1,5 +1,6 @@
 package com.jugu.www.pcbonlinev2.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
@@ -7,9 +8,11 @@ import com.jugu.www.pcbonlinev2.domain.dto.BusinessUserDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.BusinessUserQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.UserQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.BusinessUserDO;
+import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
 import com.jugu.www.pcbonlinev2.domain.vo.BusinessUserVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.BusinessUserService;
+import com.jugu.www.pcbonlinev2.service.UserService;
 import com.jugu.www.pcbonlinev2.utils.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.utils.UpdateValidationGroup;
 import io.swagger.annotations.*;
@@ -36,11 +39,13 @@ import java.util.stream.Stream;
         protocols = "http, https",
         hidden = true
 )
-@ApiIgnore
 public class BusinessUserController extends BasicController<BusinessUserDO, BusinessUserDTO>{
 
     @Autowired
     private BusinessUserService businessUserService;
+
+    @Autowired
+    private UserService userService;
 
     @ApiOperation(
             value = "新增信息",
@@ -191,6 +196,26 @@ public class BusinessUserController extends BasicController<BusinessUserDO, Busi
         result.setData(businessUserVOS);
 
         return ResponseResult.success(result);
+    }
+
+    @ApiOperation(
+            value = "查询当前登录用户对应跟单员信息",
+            notes = "备注",
+            response = ResponseResult.class,
+            httpMethod = "GET"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 0000, message = "操作成功")
+    })
+    @GetMapping("/info")
+    public ResponseResult info() {
+        UserDO userDO = userService.getById(getUserId());
+        BusinessUserDO businessUserDO = businessUserService.getOne(new QueryWrapper<BusinessUserDO>().eq("business_id", userDO.getBusinessId()));
+
+        BusinessUserVO vo = new BusinessUserVO();
+        BeanUtils.copyProperties(businessUserDO,vo);
+
+        return ResponseResult.success(vo);
     }
 
 

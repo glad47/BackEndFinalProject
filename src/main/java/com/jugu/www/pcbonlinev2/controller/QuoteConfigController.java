@@ -110,7 +110,7 @@ public class QuoteConfigController extends BasicController<QuoteConfigDO,QuoteCo
     }
 
     @ApiOperation(
-            value = "新增信息",
+            value = "删除信息",
             notes = "备注",
             response = ResponseResult.class,
             httpMethod = "DELETE"

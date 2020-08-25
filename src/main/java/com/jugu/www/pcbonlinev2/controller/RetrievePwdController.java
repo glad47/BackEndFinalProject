@@ -17,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -38,6 +39,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "取回密码管理", tags = {"取回密码controller"}, protocols = "http, https", hidden = true)
+@ApiIgnore
 public class RetrievePwdController extends BasicController<RetrievePwdDO,RetrievePwdDTO>{
 
     @Autowired

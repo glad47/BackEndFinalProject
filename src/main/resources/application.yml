@@ -15,9 +15,9 @@ spring:
     active: dev
   servlet:
     multipart:
-      max-file-size: 100MB
+      max-file-size: 100MB #限制文件的上传为100m
       max-request-size: 100MB
-      enabled: true
+      enabled: true #开启文件上传
   #redis
   redis:
     host: localhost
@@ -71,3 +71,11 @@ logging:
 #    druid:
 #      sql:
 #        Statement: debug
+
+#MinIO对象存储相关配置
+# MinIO对象存储相关配置
+minio:
+  endpoint: http://120.79.77.169:9090 #MinIO服务所在地址
+  bucketName: pcbonline #存储桶名称
+  accessKey: minioadmin #访问的key
+  secretKey: minioadmin #访问的秘钥

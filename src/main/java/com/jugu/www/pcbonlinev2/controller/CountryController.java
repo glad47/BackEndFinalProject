@@ -6,6 +6,7 @@ import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import com.jugu.www.pcbonlinev2.domain.dto.CountryDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.CountryQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.CountryDO;
+import com.jugu.www.pcbonlinev2.domain.vo.CountryAllVO;
 import com.jugu.www.pcbonlinev2.domain.vo.CountryVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.CountryService;
@@ -190,6 +191,33 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
         BeanUtils.copyProperties(listPageResult, result);
         result.setData(countryVOS);
 
+        return ResponseResult.success(result);
+    }
+
+
+
+    @ApiOperation(
+            value = "查询所有国家",
+            notes = "备注",
+            response = ResponseResult.class,
+            httpMethod = "GET"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 0, message = "操作成功")
+    })
+    @GetMapping("/all")
+    public ResponseResult all(){
+        List<CountryDTO> list = countryService.all();
+        List<CountryAllVO> result = Optional.ofNullable(list)
+                .map(List::stream)
+                .orElseGet(Stream::empty)
+                .map(CountryDTO -> {
+                    CountryAllVO vo = new CountryAllVO();
+                    BeanUtils.copyProperties(CountryDTO, vo);
+
+                    return vo;
+                })
+                .collect(Collectors.toList());
         return ResponseResult.success(result);
     }
 
