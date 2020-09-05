@@ -1,12 +1,11 @@
 package com.jugu.www.pcbonlinev2.domain.dto;
 
-import java.math.BigDecimal;
-import java.io.Serializable;
-import java.util.Date;
-
-import com.jugu.www.pcbonlinev2.statemachine.State;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+
+import java.io.Serializable;
+import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * 订单表
@@ -75,7 +74,5 @@ public class OrderDTO implements Serializable {
     private String businessName;
     @ApiModelProperty(value = "跟单员id")
     private Integer businessId;
-
-    private State state;
 
 }

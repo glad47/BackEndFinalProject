@@ -10,7 +10,7 @@ import com.jugu.www.pcbonlinev2.domain.dto.MaterialQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.MaterialDO;
 import com.jugu.www.pcbonlinev2.mapper.MaterialMapper;
 import com.jugu.www.pcbonlinev2.service.MaterialService;
-import com.jugu.www.pcbonlinev2.utils.ValidatorUtil;
+import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

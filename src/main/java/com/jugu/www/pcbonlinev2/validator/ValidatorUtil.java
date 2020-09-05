@@ -1,4 +1,4 @@
-package com.jugu.www.pcbonlinev2.utils;
+package com.jugu.www.pcbonlinev2.validator;
 
 import org.springframework.util.CollectionUtils;
 

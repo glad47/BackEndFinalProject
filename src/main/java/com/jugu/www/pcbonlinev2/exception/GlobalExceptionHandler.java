@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = BindException.class)
     public ResponseResult bindExceptionHandle(BindException bindException){
-        log.error("捕捉到参数异常: 【{}】", bindException);
+        log.error("捕捉到参数异常", bindException);
         StringBuilder errMsg = new StringBuilder();
         bindException.getAllErrors().forEach(x -> errMsg.append(x.getDefaultMessage()).append(" "));
         return  ResponseResult.failure(ErrorCodeEnum.PARAM_ERROR.getCode(),errMsg.toString().trim());
@@ -47,7 +47,7 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ExceptionHandler(value = BadCredentialsException.class)
     public ResponseResult badCredentialsExceptionHandle(BadCredentialsException b){
-        log.error("捕捉的异常: 【{}】",b);
+        log.error("捕捉的异常",b);
         return ResponseResult.failure(ErrorCodeEnum.USER_PASS_ERROR);
     }
 

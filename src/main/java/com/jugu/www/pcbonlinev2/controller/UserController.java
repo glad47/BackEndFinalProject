@@ -11,7 +11,7 @@ import com.jugu.www.pcbonlinev2.exception.BusinessException;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.UserService;
 import com.jugu.www.pcbonlinev2.utils.SHA256Util;
-import com.jugu.www.pcbonlinev2.utils.UpdateValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;

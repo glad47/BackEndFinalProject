@@ -9,14 +9,15 @@ import com.jugu.www.pcbonlinev2.domain.entity.AssemblyDO;
 import com.jugu.www.pcbonlinev2.domain.vo.AssemblyVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.AssemblyService;
-import com.jugu.www.pcbonlinev2.utils.InsertValidationGroup;
-import com.jugu.www.pcbonlinev2.utils.UpdateValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -37,6 +38,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "切片订单表管理", tags = {"切片订单表controller"}, protocols = "http, https", hidden = true)
+@ApiIgnore
 public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO> {
 
     @Autowired

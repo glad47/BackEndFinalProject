@@ -5,12 +5,16 @@ import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import com.jugu.www.pcbonlinev2.domain.dto.OrderDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.OrderQueryDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.OrderSaveDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
 import com.jugu.www.pcbonlinev2.domain.vo.OrderVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.OrderService;
-import com.jugu.www.pcbonlinev2.utils.InsertValidationGroup;
-import com.jugu.www.pcbonlinev2.utils.UpdateValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
+import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.group.PanelValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.group.SingleValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -37,14 +41,14 @@ import java.util.stream.Stream;
 @RequestMapping("/api/order")
 @Validated
 @Slf4j
-@Api(value = "订单表管理", tags = {"订单表controller"}, protocols = "http, https", hidden = false)
+@Api(value = "订单管理相关接口", tags = {"订单表controller"}, protocols = "http, https", hidden = false)
 public class OrderController extends BasicController<OrderDO,OrderDTO>{
 
     @Autowired
     private OrderService orderService;
 
     @ApiOperation(
-            value = "新增信息",
+            value = "下单接口",
             notes = "备注",
             response = ResponseResult.class,
             httpMethod = "POST"
@@ -61,13 +65,16 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
-    public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody OrderDTO orderDTO) {
+    public ResponseResult save(@Validated(SingleValidationGroup.class) @RequestBody OrderSaveDTO orderSaveDTO) {
 
-        if (orderService.save(conversionDO(new OrderDO(),orderDTO))){
-            return ResponseResult.success("新增成功");
-        }else{
-            return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
-        }
+
+
+//        if (orderService.save(conversionDO(new OrderDO(),orderDTO))){
+//            return ResponseResult.success("新增成功");
+//        }else{
+//            return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
+//        }
+        return null;
     }
 
     @ApiOperation(

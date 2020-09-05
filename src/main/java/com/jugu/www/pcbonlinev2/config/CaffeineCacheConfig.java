@@ -40,7 +40,6 @@ public class CaffeineCacheConfig {
         // 对缓存key属性做设置
         caches.add(new CaffeineCache("users-cache",
                 Caffeine.newBuilder()
-
                         // 指定Key下的最大缓存数据量
                         .maximumSize(1000)
 

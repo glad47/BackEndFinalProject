@@ -3,10 +3,9 @@ package com.jugu.www.pcbonlinev2.domain.dto;
 import java.io.Serializable;
 import java.util.Date;
 
-import com.jugu.www.pcbonlinev2.utils.InsertValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 

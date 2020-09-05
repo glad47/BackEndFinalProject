@@ -2,6 +2,7 @@ package com.jugu.www.pcbonlinev2.utils;
 
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.utils.HttpContextUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -20,7 +21,7 @@ public class RestAccessDeniedHandler implements AuthenticationEntryPoint {
 
     @Override
     public void commence(HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse, AuthenticationException e) throws IOException, ServletException {
-        HttpContextUtil.resTokenError(httpServletResponse,httpServletRequest,ErrorCodeEnum.AUTH_ACCESS_DENIED);
+        HttpContextUtil.resTokenError(httpServletResponse, httpServletRequest, ErrorCodeEnum.AUTH_ACCESS_DENIED);
     }
 
 }

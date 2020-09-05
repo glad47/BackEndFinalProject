@@ -41,6 +41,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             "/v2/api-docs",
             "/webjars/**",
             "/druid/**",
+            "/api/order/**"
     };
 
     private static final String[] STATIC_WHITELIST = {

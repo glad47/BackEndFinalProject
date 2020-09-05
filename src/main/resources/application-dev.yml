@@ -51,5 +51,24 @@ spring:
           statement-executable-sql-log-enable: true
           statement-log-error-enabled: true
           result-set-log-enabled: true
+  #redis
+  redis:
+    host: localhost
+    port: 6379
+    database: 0
+    password:
+    timeout: 6000ms
+    jedis:
+      pool:
+        max-active: 1000
+        max-wait: -1ms
+        max-idle: 10
+        min-idle: 5
 
-
+#MinIO对象存储相关配置
+# MinIO对象存储相关配置
+minio:
+  endpoint: http://120.79.77.169:9090 #MinIO服务所在地址
+  bucketName: pcbonline #存储桶名称
+  accessKey: minioadmin #访问的key
+  secretKey: minioadmin #访问的秘钥

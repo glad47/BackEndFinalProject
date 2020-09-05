@@ -20,7 +20,7 @@ public enum ErrorCodeEnum {
     SUCCESS("0000", "操作成功"),
 
     //授权异常
-    AUTH_ACCESS_DENIED("403", "Access Denied !!(拒绝访问)"),
+    AUTH_ACCESS_DENIED("403", "token已失效,Access Denied !!(拒绝访问)"),
     AUTH_UNAUTHORISED("401", "Unauthorised !! (未经授权的)"),
 
     // 1*** 参数异常

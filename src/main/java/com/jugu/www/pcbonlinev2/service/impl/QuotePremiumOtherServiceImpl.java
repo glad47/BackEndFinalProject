@@ -10,7 +10,7 @@ import com.jugu.www.pcbonlinev2.domain.dto.QuotePremiumOtherQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.QuotePremiumOtherDO;
 import com.jugu.www.pcbonlinev2.mapper.QuotePremiumOtherMapper;
 import com.jugu.www.pcbonlinev2.service.QuotePremiumOtherService;
-import com.jugu.www.pcbonlinev2.utils.ValidatorUtil;
+import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

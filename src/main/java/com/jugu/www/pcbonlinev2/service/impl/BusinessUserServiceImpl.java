@@ -10,7 +10,7 @@ import com.jugu.www.pcbonlinev2.domain.dto.BusinessUserQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.BusinessUserDO;
 import com.jugu.www.pcbonlinev2.mapper.BusinessUserMapper;
 import com.jugu.www.pcbonlinev2.service.BusinessUserService;
-import com.jugu.www.pcbonlinev2.utils.ValidatorUtil;
+import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

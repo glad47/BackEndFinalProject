@@ -10,7 +10,7 @@ import com.jugu.www.pcbonlinev2.domain.dto.CourierCountryPartitionQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.CourierCountryPartitionDO;
 import com.jugu.www.pcbonlinev2.mapper.CourierCountryPartitionMapper;
 import com.jugu.www.pcbonlinev2.service.CourierCountryPartitionService;
-import com.jugu.www.pcbonlinev2.utils.ValidatorUtil;
+import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

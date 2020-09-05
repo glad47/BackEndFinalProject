@@ -13,15 +13,14 @@ import com.jugu.www.pcbonlinev2.domain.vo.BusinessUserVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.BusinessUserService;
 import com.jugu.www.pcbonlinev2.service.UserService;
-import com.jugu.www.pcbonlinev2.utils.InsertValidationGroup;
-import com.jugu.www.pcbonlinev2.utils.UpdateValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
+import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;

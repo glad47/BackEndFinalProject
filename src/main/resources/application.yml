@@ -18,20 +18,6 @@ spring:
       max-file-size: 100MB #限制文件的上传为100m
       max-request-size: 100MB
       enabled: true #开启文件上传
-  #redis
-  redis:
-    host: localhost
-    port: 6379
-    database: 0
-    password:
-    timeout: 6000ms
-    jedis:
-      pool:
-        max-active: 1000
-        max-wait: -1ms
-        max-idle: 10
-        min-idle: 5
-
   #email
   mail:
     host: smtp.qq.com #发送邮件服务器
@@ -66,16 +52,10 @@ mybatis-plus:
 #looger
 logging:
   pattern:
-    console: '%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr([%X{traceId}]) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %n %m %n'
+    console: '%clr(%d{${LOG_DATEFORMAT_PATTERN:yyyy-MM-dd HH:mm:ss.SSS}}){faint}|%clr(${LOG_LEVEL_PATTERN:%5p})|%clr(%X{traceId})|%clr(${PID}){magenta}|%clr(%15.15t){faint}|%clr(%-40.40logger{39}){cyan}%clr(:){faint} %m %n'
 #  level:
 #    druid:
 #      sql:
 #        Statement: debug
 
-#MinIO对象存储相关配置
-# MinIO对象存储相关配置
-minio:
-  endpoint: http://120.79.77.169:9090 #MinIO服务所在地址
-  bucketName: pcbonline #存储桶名称
-  accessKey: minioadmin #访问的key
-  secretKey: minioadmin #访问的秘钥
+
