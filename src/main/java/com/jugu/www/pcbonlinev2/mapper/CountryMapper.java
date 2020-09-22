@@ -4,6 +4,8 @@ import com.jugu.www.pcbonlinev2.domain.entity.CountryDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 /**
  * 
  * 
@@ -13,5 +15,6 @@ import org.apache.ibatis.annotations.Mapper;
  */
 @Mapper
 public interface CountryMapper extends BaseMapper<CountryDO> {
-	
+
+    List<CountryDO> queryAllConfigCountry();
 }

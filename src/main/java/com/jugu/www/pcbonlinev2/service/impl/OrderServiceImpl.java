@@ -5,16 +5,31 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
-import com.jugu.www.pcbonlinev2.domain.dto.OrderDTO;
-import com.jugu.www.pcbonlinev2.domain.dto.OrderQueryDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.*;
+import com.jugu.www.pcbonlinev2.domain.dto.order.*;
+import com.jugu.www.pcbonlinev2.domain.entity.AssemblyDO;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
+import com.jugu.www.pcbonlinev2.domain.entity.QuoteDO;
+import com.jugu.www.pcbonlinev2.domain.entity.SmlStencilDO;
 import com.jugu.www.pcbonlinev2.mapper.OrderMapper;
+import com.jugu.www.pcbonlinev2.service.AssemblyService;
 import com.jugu.www.pcbonlinev2.service.OrderService;
+import com.jugu.www.pcbonlinev2.service.QuoteService;
+import com.jugu.www.pcbonlinev2.service.SmlStencilService;
+import com.jugu.www.pcbonlinev2.state.constant.State;
+import com.jugu.www.pcbonlinev2.utils.RedisUtil;
+import com.jugu.www.pcbonlinev2.utils.ThreadSessionLocal;
 import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -22,10 +37,27 @@ import java.util.stream.Stream;
 
 
 @Service("orderService")
+@Slf4j
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implements OrderService {
 
+    private final OrderMapper orderMapper;
+
+    private final QuoteService quoteService;
+
+    private final SmlStencilService smlStencilService;
+
+    private final AssemblyService assemblyService;
+
+    private final RedisUtil redisUtil;
+
     @Autowired
-    private OrderMapper orderMapper;
+    public OrderServiceImpl(OrderMapper orderMapper, QuoteService quoteService, SmlStencilService smlStencilService, AssemblyService assemblyService, RedisUtil redisUtil) {
+        this.orderMapper = orderMapper;
+        this.quoteService = quoteService;
+        this.smlStencilService = smlStencilService;
+        this.assemblyService = assemblyService;
+        this.redisUtil = redisUtil;
+    }
 
     @Override
     public  PageResult<List<OrderDTO>> queryPage(PageQuery<OrderQueryDTO, OrderDO> params) {
@@ -48,6 +80,325 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
                 .collect(Collectors.toList());
 
         return new PageResult<>(orderDOPage,orderDTOList);
+    }
+
+    @Override
+    public boolean saveOrder(OrderSaveDTO orderSaveDTO) {
+        QuoteSubtotal subtotal = orderSaveDTO.getSubtotal();
+        boolean r = false;
+        //pcb报价
+        if(subtotal.getBoardFee() != null && subtotal.getBoardFee().compareTo(new BigDecimal("0")) >= 1){
+            QuoteDO quoteDO = conversionToQuoteDO(orderSaveDTO);
+            quoteDO.setGerberName(orderSaveDTO.getFileName());
+            quoteDO.setGerberPath(orderSaveDTO.getFileUploadPtah());
+            quoteDO.setWeight(subtotal.getTotalWeight());
+            quoteDO.setBoardFee(subtotal.getBoardFee());
+            quoteDO.setOverworkFee(subtotal.getUrgentFee());
+            quoteDO.setEngineeringFee(subtotal.getEngineeringFee());
+            quoteDO.setTestCostFee(subtotal.getTestFee());
+            quoteDO.setSubtotal(
+                    subtotal.getBoardFee()
+                            .add(subtotal.getEngineeringFee())
+                            .add(subtotal.getTestFee())
+                            .add(subtotal.getUrgentFee())
+            );
+            quoteDO.setBuildTime(subtotal.getBuildTime());
+            log.info("插入pcb报价：【{}】",quoteDO.toString());
+            boolean saveQuote = quoteService.save(quoteDO);
+            log.info("插入pcb结果【{}】,返回id：[{}]", saveQuote, quoteDO.getId());
+            orderSaveDTO.setIsExistPcb(true);
+            orderSaveDTO.setPcbId(quoteDO.getId());
+            orderSaveDTO.setPno(quoteDO.getProductNo());
+            r = saveQuote;
+        }
+        if (subtotal.getStencilFee() != null && subtotal.getStencilFee().compareTo(new BigDecimal("0")) >= 1) {
+            SmlStencilDO smlStencilDO = conversionToStencilDO(orderSaveDTO);
+            log.info("插入钢网报价：【{}】", smlStencilDO.toString());
+            boolean saveStencil = smlStencilService.save(smlStencilDO);
+            log.info("插入钢网结果【{}】",saveStencil);
+            r = saveStencil;
+        }
+        if (subtotal.getAssemblyFee() != null && subtotal.getAssemblyFee().compareTo(new BigDecimal("0")) >= 1) {
+            AssemblyDO assemblyDO = conversionToAssemblyDO(orderSaveDTO);
+            log.info("插入贴片信息:[{}]", assemblyDO.toString());
+            boolean saveAssembly = assemblyService.save(assemblyDO);
+            log.info("插入贴片结果:[{}]", saveAssembly);
+            r = saveAssembly;
+        }
+        return r;
+    }
+
+    /**
+     * 支付后的下单处理业务方法
+     * @param paymentParameterDTO 支付业务对象
+     */
+    @Override
+    public boolean createOrder(PaymentParameterDTO paymentParameterDTO) {
+        //转化为do对象
+        OrderDO orderDO = conversionToOrderDO(paymentParameterDTO);
+
+        int insertOrderResult = orderMapper.insert(orderDO);
+
+        if (insertOrderResult == 1){
+            List<OrderDetails> orderDetailsList = paymentParameterDTO.getOrderDetailsList();
+            for (OrderDetails o:orderDetailsList) {
+                if (o.getOType() == 1){
+                    QuoteDO quoteDO = conversionToPayAfterPcb(o.getId(),orderDO.getId(),orderDO.getOrderno(),orderDO.getCorderNo(),orderDO.getPaymentTime());
+                    boolean b = quoteService.updateById(quoteDO);
+                    log.info("支付PCB订单后修改状态结果：[{}]", b);
+                }else if (o.getOType() == 2){
+                    SmlStencilDO stencilDO = conversionToPayAgterSmt(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
+                    boolean b = smlStencilService.updateById(stencilDO);
+                    log.info("支付SMT订单后修改状态结果：[{}]", b);
+                }else if(o.getOType() == 3){
+                    AssemblyDO assemblyDO = conversionToPayAfterAss(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
+                    boolean b = assemblyService.updateById(assemblyDO);
+                    log.info("支付贴片订单后修改状态结果：[{}]", b);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private AssemblyDO conversionToPayAfterAss(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime) {
+        AssemblyDO assemblyDO = new AssemblyDO();
+        assemblyDO.setId(id);
+        assemblyDO.setOrderId(oid);
+        assemblyDO.setInvoiceNo(orderno);
+        assemblyDO.setOrderNo(corderNo);
+        assemblyDO.setOrderTime(paymentTime);
+        assemblyDO.setStatus(3);
+        return assemblyDO;
+    }
+
+    private SmlStencilDO conversionToPayAgterSmt(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime) {
+        SmlStencilDO stencilDO = new SmlStencilDO();
+        stencilDO.setId(id);
+        stencilDO.setOrderId(oid);
+        stencilDO.setOrderNo(corderNo);
+        stencilDO.setInvoiceNo(orderno);
+        stencilDO.setOrderTime(paymentTime);
+        stencilDO.setStatus(3);
+        return stencilDO;
+    }
+
+    private QuoteDO conversionToPayAfterPcb(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime) {
+        QuoteDO quoteDO = new QuoteDO();
+        quoteDO.setId(id);
+        quoteDO.setOrderId(oid);
+        quoteDO.setOrderNo(corderNo);
+        quoteDO.setInvoiceNo(orderno);
+        quoteDO.setOrderTime(paymentTime);
+        quoteDO.setStatus(3);
+        return quoteDO;
+    }
+
+    private OrderDO conversionToOrderDO(PaymentParameterDTO paymentParameterDTO) {
+        UserDetailsDTO userInfo = ThreadSessionLocal.getUserInfo();
+        OrderDO orderDO = new OrderDO();
+        orderDO.setOrderId(paymentParameterDTO.getPayPayOrderId());
+        orderDO.setUserId(userInfo.getId());
+        orderDO.setBusinessId(userInfo.getBusinessId());
+        orderDO.setBusinessName(userInfo.getBusinessName());
+        orderDO.setReceiverAddressId(paymentParameterDTO.getReceiverAddressId());
+        orderDO.setWeight(paymentParameterDTO.getTotalWeight());
+        orderDO.setPostFee(paymentParameterDTO.getPaypalFee());
+        orderDO.setTotalFee(paymentParameterDTO.getPaymentTotal());
+        orderDO.setPaypalFee(paymentParameterDTO.getPaypalFee());
+        orderDO.setTotalSubtotal(paymentParameterDTO.getSubtotal());
+        orderDO.setAmountFee(paymentParameterDTO.getAmount());
+        orderDO.setDestinationCountry(paymentParameterDTO.getCountryName());
+        orderDO.setShippingName(paymentParameterDTO.getCourierCompanyName());
+        orderDO.setOrderno(paymentParameterDTO.getOrderNoBySys());
+        orderDO.setCorderNo(paymentParameterDTO.getOrderNo());
+        orderDO.setDisCouponStr(paymentParameterDTO.getDisCouponStr());
+        orderDO.setDisMemberStr(paymentParameterDTO.getDisMemberStr());
+        orderDO.setPaymentTime(new Date());
+        orderDO.setPaymentType(1);
+        orderDO.setStatus(1);
+        return orderDO;
+    }
+
+    @Override
+    public String createOrderNo() {
+        String datetime = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        return redisUtil.SeqGenerator(datetime, 5, RedisUtil.DEFAULT_EXPIRE);
+    }
+
+    private AssemblyDO conversionToAssemblyDO(OrderSaveDTO orderSaveDTO) {
+        AssemblyDO assemblyDO = new AssemblyDO();
+        AssemblyFieldDTO assemblyField = orderSaveDTO.getAssemblyField();
+
+        BeanUtils.copyProperties(assemblyField,assemblyDO);
+
+        //登录后的信息
+        UserDetailsDTO userDetailsDTO = ThreadSessionLocal.getUserInfo();
+
+        if (orderSaveDTO.getIsExistPcb()){
+            assemblyDO.setProductNo(orderSaveDTO.getPno() + "a");
+            assemblyDO.setQuoteId(orderSaveDTO.getPcbId());
+        }else {
+            assemblyDO.setProductNo(redisUtil.SeqGenerator(userDetailsDTO.getUserSystemId(), 5, RedisUtil.NOT_EXPIRE) + "aa");
+            if(StringUtils.isEmpty(orderSaveDTO.getPno())) orderSaveDTO.setPno(assemblyDO.getProductNo());
+        }
+
+        assemblyDO.setUserId(userDetailsDTO.getId());
+        assemblyDO.setGerberName(orderSaveDTO.getFileName());
+        assemblyDO.setGerberPath(orderSaveDTO.getFileUploadPtah());
+        assemblyDO.setBusinessId(userDetailsDTO.getBusinessId());
+        assemblyDO.setBusinessName(userDetailsDTO.getBusinessName());
+
+        if(userDetailsDTO.getAuditMark() == 1){
+            assemblyDO.setStatus(State.FORMAL_ORDER.status);
+        }else{
+            assemblyDO.setStatus(State.TEMPORARY_ORDER.status);
+        }
+
+        return assemblyDO;
+    }
+
+    private SmlStencilDO conversionToStencilDO(OrderSaveDTO orderSaveDTO) {
+        SmlStencilDO stencilDO = new SmlStencilDO();
+        StencilField stencilField = orderSaveDTO.getStencilField();
+        QuoteStencil quoteStencil = stencilField.getDetailed();
+
+        stencilDO.setQuantity(stencilField.getQuantity());
+        stencilDO.setThickness(stencilField.getThickness());
+        stencilDO.setExistingFiducials(stencilField.getExistingFiducials());
+
+        stencilDO.setStencilType(quoteStencil.getMaterialName());
+        stencilDO.setSize(quoteStencil.getId());
+        stencilDO.setStencilSizeX(quoteStencil.getStencilSizex().toString());
+        stencilDO.setStencilSizeY(quoteStencil.getStencilSizey().toString());
+        stencilDO.setStencilAreaX(quoteStencil.getStencilAreax().toString());
+        stencilDO.setStencilAreaY(quoteStencil.getStencilAreay().toString());
+        stencilDO.setWeight(quoteStencil.getWeight());
+
+        stencilDO.setTotalStencilFee(quoteStencil.getPrice().multiply(new BigDecimal(stencilField.getQuantity())));
+
+        //登录后的信息
+        UserDetailsDTO userDetailsDTO = ThreadSessionLocal.getUserInfo();
+
+        if(orderSaveDTO.getIsExistPcb()){
+            stencilDO.setProductNo(orderSaveDTO.getPno() + "s");
+            stencilDO.setQuoteId(orderSaveDTO.getPcbId());
+        } else{
+            stencilDO.setProductNo(redisUtil.SeqGenerator(userDetailsDTO.getUserSystemId(),5,RedisUtil.NOT_EXPIRE)+"s");
+            orderSaveDTO.setPno(stencilDO.getProductNo());
+        }
+
+        stencilDO.setUserId(userDetailsDTO.getId());
+        stencilDO.setBusinessId(userDetailsDTO.getBusinessId());
+        stencilDO.setBusinessName(userDetailsDTO.getBusinessName());
+        stencilDO.setGerberName(orderSaveDTO.getFileName());
+        stencilDO.setGerberPath(orderSaveDTO.getFileUploadPtah());
+
+        if(userDetailsDTO.getAuditMark() == 1){
+            stencilDO.setStatus(State.FORMAL_ORDER.status);
+        }else{
+            stencilDO.setStatus(State.TEMPORARY_ORDER.status);
+        }
+
+        return stencilDO;
+    }
+
+
+
+    private QuoteDO conversionToQuoteDO(OrderSaveDTO orderSaveDTO) {
+        QuoteDO quote = new QuoteDO();
+        PcbSizeField pcbSizeField = orderSaveDTO.getPcbSizeField();
+        int boardType = pcbSizeField.getBoardType().equals("Single") ? 1 : 2;
+        quote.setBoardType(boardType);
+        // TODO: 2020-08-27 需要计算
+        if(boardType == 2){ //拼板需要计算p
+            quote.setQuantityPanel(pcbSizeField.getQuantity());
+            quote.setQuantityPcs(Integer.valueOf(pcbSizeField.getPanelSize().getSizeY()) * Integer.valueOf(pcbSizeField.getPanelSize().getSizeX()) * Integer.valueOf(pcbSizeField.getQuantity()));
+        }else{
+            quote.setQuantityPcs(pcbSizeField.getQuantity());
+        }
+        quote.setAreaSq(computeAreaSq(new BigDecimal(pcbSizeField.getSingleSize().getSizeX()),new BigDecimal(pcbSizeField.getSingleSize().getSizeY()),quote.getQuantityPcs()));
+        if(boardType== 1){
+            quote.setDimensionsX(new BigDecimal(pcbSizeField.getSingleSize().getSizeX()));
+            quote.setDimensionsY(new BigDecimal(pcbSizeField.getSingleSize().getSizeY()));
+        }else {
+            quote.setPanelSizeX(new BigDecimal(pcbSizeField.getSingleSize().getSizeX()));
+            quote.setPanelSizeY(new BigDecimal(pcbSizeField.getSingleSize().getSizeY()));
+            quote.setPanelWayX(Integer.valueOf(pcbSizeField.getPanelSize().getSizeX()));
+            quote.setPanelWayY(Integer.valueOf(pcbSizeField.getPanelSize().getSizeY()));
+        }
+
+        //常规处理字段
+        PcbStandardField pcbStandardField = orderSaveDTO.getPcbStandardField();
+//        BeanUtils.copyProperties(pcbStandardField,quote);
+        quote.setBgaSize(pcbStandardField.getBgaSize());
+        quote.setCti(pcbStandardField.getCti());
+        quote.setHeatConductivity(pcbStandardField.getHeatConductivity());
+        quote.setPthCopper(pcbStandardField.getHoleCopper());
+        quote.setInnerLayerCopper(pcbStandardField.getInnerCopper());
+        quote.setLayerNum(Integer.valueOf(pcbStandardField.getLayer().substring(0,1)));
+        quote.setMinHoleSize(new BigDecimal(pcbStandardField.getMinHoleSize()));
+        quote.setOuterMinTrack(pcbStandardField.getMinTrack());
+        quote.setOuterLayerCopper(pcbStandardField.getOuterCopper());
+        quote.setSilkScreenBotColor(pcbStandardField.getSilkscreen());
+        quote.setSilkScreenTopColor(pcbStandardField.getSilkscreen());
+        quote.setSolderMaskBotColor(pcbStandardField.getSolderMask());
+        quote.setSolderMaskTopColor(pcbStandardField.getSolderMask());
+        quote.setSurfaceFinish(pcbStandardField.getSurfaceFinish());
+        // TODO: 2020-05-19 surfaceThickness
+        if(pcbStandardField.getSurfaceFinish().equals("Immersion Gold")){
+            String th = pcbStandardField.getSurfaceThickness().split(" ")[1].split(":")[1];
+            quote.setThickness(th.substring(0,th.length() -1));
+        }else{
+            quote.setThickness(pcbStandardField.getThickness());
+        }
+        quote.setTg(pcbStandardField.getTg());
+
+        quote.setPcbType(pcbStandardField.getMaterial());
+        quote.setFinishThickness(pcbStandardField.getThickness());
+
+
+        // TODO: 2020-05-22 特殊处理字段
+        PcbSpecialField pcbSpecialField = orderSaveDTO.getPcbSpecialField();
+        quote.setBlindHoles(pcbSpecialField.getHdi());
+        quote.setEdgePlated(pcbSpecialField.getEdgePlating());
+        quote.setHalfHoleLated(pcbSpecialField.getHalfHolePlated());
+        quote.setContrlImpeance(pcbSpecialField.getImpedanceControl());
+
+        quote.setPeelMark(pcbSpecialField.getPeelableSolderMask());
+        quote.setCarbon(pcbSpecialField.getCarbonMask());
+
+        quote.setBevellingCamfer(pcbSpecialField.getBevellingCamfer());
+        quote.setDeepMillRouting(pcbSpecialField.getControlConcaveRouting());
+
+        quote.setBackDrill(pcbSpecialField.getBackDrill());
+        quote.setViaInPad(pcbSpecialField.getViaInPad());
+        quote.setNegativePostitiveCopper(pcbSpecialField.getNegativePostitiveCopper());
+        quote.setCountersinks(pcbSpecialField.getCountersinks());
+        quote.setPressHoles(pcbSpecialField.getPressHoles());
+        quote.setAcceptableQualityLevels(pcbSpecialField.getAcceptableQualityLevels());
+
+        //登录后的信息
+        UserDetailsDTO userDetailsDTO = ThreadSessionLocal.getUserInfo();
+        if (userDetailsDTO != null){
+            quote.setUserId(userDetailsDTO.getId());
+            quote.setBusinessId(userDetailsDTO.getBusinessId());
+            quote.setBusinessName(userDetailsDTO.getBusinessName());
+            quote.setProductNo(redisUtil.SeqGenerator(userDetailsDTO.getUserSystemId(),5,RedisUtil.NOT_EXPIRE)+"a");
+
+            if (userDetailsDTO.getAuditMark() == 1){
+                quote.setStatus(State.FORMAL_ORDER.status);
+            }else {
+                quote.setStatus(State.TEMPORARY_ORDER.status);
+            }
+        }
+
+
+        return quote;
+    }
+
+    private BigDecimal computeAreaSq(BigDecimal dimensionsX, BigDecimal dimensionsY, Integer quantityPcs) {
+        return dimensionsX.multiply(dimensionsY).multiply(new BigDecimal(quantityPcs)).divide(new BigDecimal("1000000"),2, RoundingMode.HALF_UP);
     }
 
 }

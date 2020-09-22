@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.Data;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 
 @Data
@@ -27,8 +27,8 @@ public class OrderSaveDTO implements Serializable {
     private Integer pcbId;
     private String pno;
 
-    @NotNull(message = "文件名不能为null")
+    @NotBlank(message = "文件名不能为null")
     private String fileName;
-    @NotNull(message = "文件上传路径不能为null")
+    @NotBlank(message = "文件上传路径不能为null")
     private String fileUploadPtah;
 }

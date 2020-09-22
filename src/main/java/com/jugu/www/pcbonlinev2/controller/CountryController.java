@@ -9,6 +9,7 @@ import com.jugu.www.pcbonlinev2.domain.entity.CountryDO;
 import com.jugu.www.pcbonlinev2.domain.vo.CountryAllVO;
 import com.jugu.www.pcbonlinev2.domain.vo.CountryVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
+import com.jugu.www.pcbonlinev2.redis.CountryRedis;
 import com.jugu.www.pcbonlinev2.service.CountryService;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
@@ -16,6 +17,7 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,8 +43,15 @@ import java.util.stream.Stream;
 @Api(value = "国家管理", tags = {"国家controller"}, protocols = "http, https", hidden = true)
 public class CountryController extends BasicController<CountryDO,CountryDTO>{
 
+    private final CountryService countryService;
+
+    private final CountryRedis countryRedis;
+
     @Autowired
-    private CountryService countryService;
+    public CountryController(CountryService countryService, CountryRedis countryRedis) {
+        this.countryService = countryService;
+        this.countryRedis = countryRedis;
+    }
 
     @ApiOperation(
             value = "新增信息",
@@ -195,7 +204,6 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
     }
 
 
-
     @ApiOperation(
             value = "查询所有国家",
             notes = "备注",
@@ -207,19 +215,36 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
     })
     @GetMapping("/all")
     public ResponseResult all(){
-        List<CountryDTO> list = countryService.all();
-        List<CountryAllVO> result = Optional.ofNullable(list)
+        List list = countryRedis.get();
+        if (list == null || list.size() == 0){
+            list = countryService.all();
+            countryRedis.save(list);
+        }
+        List<CountryDTO> data = list;
+        /**
+         * ()->{
+         *                     //从数据库里获取
+         *                     List all = countryService.all();
+         *                     countryRedis.save(all);
+         * //                    return Stream::collect(all);
+         * //                    return all.stream();
+         *                     return (Stream<Object>) all;
+         *                 }
+         */
+        List<CountryAllVO> result = Optional.ofNullable(data)
                 .map(List::stream)
                 .orElseGet(Stream::empty)
-                .map(CountryDTO -> {
+                .map(countryDTO -> {
                     CountryAllVO vo = new CountryAllVO();
-                    BeanUtils.copyProperties(CountryDTO, vo);
-
+//                    CountryDTO countryDTO = (CountryDTO) data;
+                    BeanUtils.copyProperties(countryDTO, vo);
                     return vo;
                 })
                 .collect(Collectors.toList());
+
         return ResponseResult.success(result);
     }
+
 
 
 }

@@ -3,13 +3,12 @@ package com.jugu.www.pcbonlinev2.controller;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
-import com.jugu.www.pcbonlinev2.domain.dto.OrderDTO;
-import com.jugu.www.pcbonlinev2.domain.dto.OrderQueryDTO;
-import com.jugu.www.pcbonlinev2.domain.dto.OrderSaveDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.*;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
 import com.jugu.www.pcbonlinev2.domain.vo.OrderVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.OrderService;
+import com.jugu.www.pcbonlinev2.utils.RedisUtil;
 import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.PanelValidationGroup;
@@ -23,6 +22,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -44,8 +45,12 @@ import java.util.stream.Stream;
 @Api(value = "订单管理相关接口", tags = {"订单表controller"}, protocols = "http, https", hidden = false)
 public class OrderController extends BasicController<OrderDO,OrderDTO>{
 
+    private final OrderService orderService;
+
     @Autowired
-    private OrderService orderService;
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
 
     @ApiOperation(
             value = "下单接口",
@@ -59,22 +64,20 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
             required = true,
             paramType = "body",
             dataType = "object",
-            dataTypeClass = OrderDTO.class
+            dataTypeClass = OrderSaveDTO.class
     )
     @ApiResponses({
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
-    public ResponseResult save(@Validated(SingleValidationGroup.class) @RequestBody OrderSaveDTO orderSaveDTO) {
+    public ResponseResult save(@Validated @RequestBody OrderSaveDTO orderSaveDTO) {
 
+        if (orderService.saveOrder(orderSaveDTO)){
+            return ResponseResult.success("新增成功");
+        }else {
+            return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
+        }
 
-
-//        if (orderService.save(conversionDO(new OrderDO(),orderDTO))){
-//            return ResponseResult.success("新增成功");
-//        }else{
-//            return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
-//        }
-        return null;
     }
 
     @ApiOperation(
@@ -204,6 +207,45 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
     }
 
 
+    public ResponseResult<PageResult> queryPageAll(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated OrderQueryAllDTO query){
+        return null;
+    }
 
+    @ApiOperation(
+            value = "创建系统订单编号",
+            notes = "paypal支付后,回调的订单保存接口",
+            response = ResponseResult.class,
+            httpMethod = "GET"
+    )
+    @GetMapping("/createOrderNo")
+    public ResponseResult createOrderNo(){
+        return ResponseResult.success(orderService.createOrderNo());
+    }
+
+
+    @ApiOperation(
+            value = "支付后回调接口",
+            notes = "备注",
+            response = ResponseResult.class,
+            httpMethod = "POST"
+    )
+    @ApiImplicitParam(
+            name = "orderDTO",
+            value = "实体类",
+            required = true,
+            paramType = "body",
+            dataType = "object",
+            dataTypeClass = PaymentParameterDTO.class
+    )
+    @ApiResponses({
+            @ApiResponse(code = 0, message = "操作成功")
+    })
+    @PostMapping("/save")
+    public ResponseResult createOrder(@Validated @RequestBody PaymentParameterDTO paymentParameterDTO) {
+        if (orderService.createOrder(paymentParameterDTO)){
+            return ResponseResult.success("支付创建订单成功");
+        }
+        return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+    }
 
 }

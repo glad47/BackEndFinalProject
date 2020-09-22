@@ -15,6 +15,45 @@ public class UserDetailsDTO implements Serializable, UserDetails {
     private String password;
     private Integer invalidMark;
 
+
+
+    private Integer businessId;
+    private String businessName;
+    private String userSystemId;
+    private Integer auditMark; //是否需要审核标识(0默认需要 1不需要)
+
+    public Integer getBusinessId() {
+        return businessId;
+    }
+
+    public void setBusinessId(Integer businessId) {
+        this.businessId = businessId;
+    }
+    public String getBusinessName() {
+        return businessName;
+    }
+
+    public void setBusinessName(String businessName) {
+        this.businessName = businessName;
+    }
+
+    public String getUserSystemId() {
+        return userSystemId;
+    }
+
+    public void setUserSystemId(String userSystemId) {
+        this.userSystemId = userSystemId;
+    }
+
+    public Integer getAuditMark() {
+        return auditMark;
+    }
+
+    public void setAuditMark(Integer auditMark) {
+        this.auditMark = auditMark;
+    }
+
+
     public void setInvalidMark(Integer invalidMark) {
         this.invalidMark = invalidMark;
     }

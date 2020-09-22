@@ -21,11 +21,11 @@ public class OrderQueryDTO implements Serializable {
     private static final long serialVersionUID = -6841446487276748114L;
     // TODO serialVersionUid
 
-    @ApiModelProperty(value = "主键(不参与业务)")
+    @ApiModelProperty(value = "主键(不参与业务)",hidden = true)
     private Integer id;
-    @ApiModelProperty(value = "订单id(使用paypay返回的orderid)")
+    @ApiModelProperty(value = "订单id(使用paypay返回的orderid)",hidden = true)
     private String orderId;
-    @ApiModelProperty(value = "用户id")
+    @ApiModelProperty(value = "用户id", hidden = true)
     private Integer userId;
     @ApiModelProperty(value = "订单合同编号（日期+日接单数）")
     private String orderno;

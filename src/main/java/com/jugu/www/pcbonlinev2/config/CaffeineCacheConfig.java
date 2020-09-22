@@ -25,7 +25,7 @@ import java.util.concurrent.TimeUnit;
 @EnableCaching
 @Slf4j
 public class CaffeineCacheConfig {
-
+    private static final long EXPIRY_DAY = 60 * 60 * 24;
     /**
      * CacheManager实现类
      * @return
@@ -38,18 +38,15 @@ public class CaffeineCacheConfig {
         ArrayList<CaffeineCache> caches = new ArrayList<>();
 
         // 对缓存key属性做设置
-        caches.add(new CaffeineCache("users-cache",
+        caches.add(new CaffeineCache("country-cache",
                 Caffeine.newBuilder()
                         // 指定Key下的最大缓存数据量
                         .maximumSize(1000)
+                        // 最后一次访问之后一天过期
+                        .expireAfterAccess(EXPIRY_DAY,TimeUnit.SECONDS).build()));
 
-                        // 最后一次访问之后 120秒 过期
-                        .expireAfterAccess(120, TimeUnit.SECONDS)
-
-                        .build()));
 
         cacheManager.setCaches(caches);
-
         return cacheManager;
     }
 

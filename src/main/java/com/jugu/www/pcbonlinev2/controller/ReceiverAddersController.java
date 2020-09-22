@@ -1,5 +1,6 @@
 package com.jugu.www.pcbonlinev2.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
@@ -34,7 +35,7 @@ import java.util.stream.Stream;
  * @date 2020-07-16 16:44:13
  */
 @RestController
-@RequestMapping("/api/receiveradders")
+@RequestMapping("/api/receiveraddress")
 @Validated
 @Slf4j
 @Api(value = "收货地址管理", tags = {"收货地址controller"}, protocols = "http, https", hidden = false)
@@ -195,5 +196,23 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
         return ResponseResult.success(result);
     }
 
+
+    @ApiOperation(
+            value = "查询当前用户默认地址信息",
+            notes = "备注",
+            response = ResponseResult.class,
+            httpMethod = "GET"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 200, message = "操作成功")
+    })
+    @GetMapping("/curr")
+    public ResponseResult currAdders() {
+        ReceiverAddersDO addersDO = receiverAddersService.getOne(new QueryWrapper<ReceiverAddersDO>().eq("user_id", getUserId()).eq("is_default", 1));
+
+        ReceiverAddersVO vo = new ReceiverAddersVO();
+        BeanUtils.copyProperties(addersDO,vo);
+        return ResponseResult.success(vo);
+    }
 
 }

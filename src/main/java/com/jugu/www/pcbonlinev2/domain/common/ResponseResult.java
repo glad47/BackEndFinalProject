@@ -65,6 +65,7 @@ public class ResponseResult<T> implements Serializable {
 
         responseResult.setSuccess(Boolean.TRUE);
         responseResult.setResult(result);
+        responseResult.setCode("0");
 
         return responseResult;
     }

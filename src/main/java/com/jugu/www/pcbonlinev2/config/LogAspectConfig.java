@@ -11,6 +11,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -19,9 +20,13 @@ import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
+/**
+ * 日志切面记录
+ */
 @Aspect
 @Component
 @Slf4j
+@Order(1)
 public class LogAspectConfig {
 
     @Pointcut("execution(public * com.jugu.www.pcbonlinev2.controller..*.*(..))")

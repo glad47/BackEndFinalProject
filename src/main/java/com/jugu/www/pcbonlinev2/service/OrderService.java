@@ -5,6 +5,8 @@ import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.dto.OrderDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.OrderQueryDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.OrderSaveDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.PaymentParameterDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
 
 
@@ -21,5 +23,10 @@ public interface OrderService extends IService<OrderDO> {
 
     PageResult<List<OrderDTO>> queryPage(PageQuery<OrderQueryDTO, OrderDO> params);
 
+    boolean saveOrder(OrderSaveDTO orderSaveDTO);
+
+    boolean createOrder(PaymentParameterDTO paymentParameterDTO);
+
+    String createOrderNo();
 }
 

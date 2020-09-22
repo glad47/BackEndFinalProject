@@ -18,5 +18,12 @@
         <result property="lang" column="lang"/>
     </resultMap>
 
-
+    <select id="queryAllConfigCountry" resultType="com.jugu.www.pcbonlinev2.domain.entity.CountryDO">
+      SELECT
+      id,`name`,fb_country_code
+      FROM
+      country,
+      (SELECT GROUP_CONCAT(country_ids) ids FROM courier_country_partition) temp
+      WHERE FIND_IN_SET(id,ids) ORDER BY `name` ASC
+    </select>
 </mapper>

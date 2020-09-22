@@ -22,7 +22,7 @@ public class ReceiverAddersVO implements Serializable {
 		/**
 	 * 用户id
 	 */
-	private Integer userId;
+//	private Integer userId;
 		/**
 	 * 收货公司全名
 	 */

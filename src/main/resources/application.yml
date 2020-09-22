@@ -18,6 +18,9 @@ spring:
       max-file-size: 100MB #限制文件的上传为100m
       max-request-size: 100MB
       enabled: true #开启文件上传
+  #启用bean名称覆盖
+  main:
+    allow-bean-definition-overriding: true
   #email
   mail:
     host: smtp.qq.com #发送邮件服务器
@@ -33,9 +36,7 @@ spring:
     properties.mail.smtp.ssl.enable: true
     default-encoding: utf-8
 
-  #启用bean名称覆盖
-  main:
-    allow-bean-definition-overriding: true
+
 #    from: 1170737711@qq.com #与上面的username保持一致
 
 #mybatis

@@ -38,7 +38,6 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "切片订单表管理", tags = {"切片订单表controller"}, protocols = "http, https", hidden = true)
-@ApiIgnore
 public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO> {
 
     @Autowired
@@ -184,7 +183,7 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
                     AssemblyVO vo = new AssemblyVO();
                     BeanUtils.copyProperties(AssemblyDTO, vo);
                     // TODO: 特殊字段处理
-
+                    vo.setOType(3);
                     return vo;
                 })
                 .collect(Collectors.toList());

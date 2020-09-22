@@ -39,7 +39,6 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "报价表管理", tags = {"报价表controller"}, protocols = "http, https")
-@ApiIgnore
 public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
 
     @Autowired
@@ -186,7 +185,7 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
                     QuoteVO vo = new QuoteVO();
                     BeanUtils.copyProperties(QuoteDTO, vo);
                     // TODO: 特殊字段处理
-
+                    vo.setOType(1);
                     return vo;
                 })
                 .collect(Collectors.toList());

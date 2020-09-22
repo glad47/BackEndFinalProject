@@ -39,7 +39,6 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "钢网订单表管理", tags = {"钢网订单表controller"}, protocols = "http, https", hidden = false)
-@ApiIgnore
 public class SmlStencilController extends BasicController<SmlStencilDO,SmlStencilDTO>{
 
     @Autowired
@@ -184,7 +183,7 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
                     SmlStencilVO vo = new SmlStencilVO();
                     BeanUtils.copyProperties(SmlStencilDTO, vo);
                     // TODO: 特殊字段处理
-
+                    vo.setOType(2);
                     return vo;
                 })
                 .collect(Collectors.toList());

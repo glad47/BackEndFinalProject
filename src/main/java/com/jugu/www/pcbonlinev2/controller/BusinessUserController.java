@@ -204,7 +204,7 @@ public class BusinessUserController extends BasicController<BusinessUserDO, Busi
             httpMethod = "GET"
     )
     @ApiResponses({
-            @ApiResponse(code = 0000, message = "操作成功")
+            @ApiResponse(code = 200, message = "操作成功")
     })
     @GetMapping("/info")
     public ResponseResult info() {

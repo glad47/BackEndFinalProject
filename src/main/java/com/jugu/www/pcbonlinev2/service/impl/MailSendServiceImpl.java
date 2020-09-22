@@ -109,7 +109,7 @@ public class MailSendServiceImpl implements MailSendService {
     @Override
     public void asyncSendRegisterMail(String username) {
         log.info("异步发送邮件，邮箱：【{}】",username);
-        Map<String, Object> data = createTokenEmailSendData(username,"http://localhost:8877/api/auth/active/");
+        Map<String, Object> data = createTokenEmailSendData(username,"http://localhost:3000/user/activeAccount");
         sendMail(new String[]{username},"激活PcbOnLine用户","mail-notice-template-registration",data,null);
 
     }
@@ -120,7 +120,7 @@ public class MailSendServiceImpl implements MailSendService {
 
         Map<String,Object> data = new HashMap<>();
         String token = jwtTokenUtil.generateToken(userDetailsDTO);
-        data.put("url",url+token);
+        data.put("url",url+"?token="+token);
         return data;
     }
 

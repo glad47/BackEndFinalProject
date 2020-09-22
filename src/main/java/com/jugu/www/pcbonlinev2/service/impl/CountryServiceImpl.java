@@ -53,7 +53,9 @@ public class CountryServiceImpl extends ServiceImpl<CountryMapper, CountryDO> im
 
     @Override
     public List<CountryDTO> all() {
-        List<CountryDO> countryDOList = countryMapper.selectList(Wrappers.emptyWrapper());
+        // 查询配置了的国家
+        List<CountryDO> countryDOList = countryMapper.queryAllConfigCountry();
+//        List<CountryDO> countryDOList = countryMapper.selectList(Wrappers.emptyWrapper());
 
         return Optional.ofNullable(countryDOList)
                 .map(List::stream)

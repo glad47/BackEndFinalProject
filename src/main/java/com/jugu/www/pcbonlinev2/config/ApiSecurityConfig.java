@@ -34,6 +34,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private static final String PASSWORD_KEY = "password";
 
+    //登录接口放行
     private static final String[] AUTH_WHITELIST = {
             // -- swagger ui druid ui
             "/swagger-resources/**",
@@ -41,7 +42,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             "/v2/api-docs",
             "/webjars/**",
             "/druid/**",
-            "/api/order/**"
+            "/api/articlehelp"
     };
 
     private static final String[] STATIC_WHITELIST = {
@@ -54,6 +55,9 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             "/druid/**/*.jpg",
             "/druid/**/*.png",
             "/druid/**/*.ico",
+            "/api/auth/login",
+            "/api/auth/register",
+            "/api/active/*",
     };
 
     @Autowired
@@ -90,8 +94,6 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(AUTH_WHITELIST).permitAll()
                 //OPTIONS请求全部放行
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                ////登录接口放行
-                .antMatchers("/api/auth/login", "/api/auth/register","/api/active/*").permitAll()
                 //其他接口全部接受验证
                 .anyRequest().authenticated();
 

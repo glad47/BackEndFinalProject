@@ -39,7 +39,6 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "报价公式表管理", tags = {"报价公式表controller"}, protocols = "http, https", hidden = true)
-@ApiIgnore
 public class QuoteConfigController extends BasicController<QuoteConfigDO,QuoteConfigDTO>{
 
     @Autowired

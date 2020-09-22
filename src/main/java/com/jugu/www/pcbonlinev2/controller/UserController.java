@@ -30,10 +30,9 @@ import java.util.stream.Stream;
 @Slf4j
 @Validated
 @Api(
-        value = "用户管理",
-        tags = {"用户管理Controller"},
-        produces = "http, https",
-        hidden = false
+    value = "用户管理",
+    tags = {"用户管理Controller"},
+    produces = "http, https"
 )
 public class UserController extends BasicController<UserDO,UserDTO>{
 
@@ -168,6 +167,8 @@ public class UserController extends BasicController<UserDO,UserDTO>{
     }
 
 
+
+
     @ApiOperation(
             value = "校验当前密码",
             notes = "备注",
@@ -188,6 +189,34 @@ public class UserController extends BasicController<UserDO,UserDTO>{
     public ResponseResult verifyCurrPwd(@NotNull(message = "当前密码不能为null！") String currPwd) {
         UserDO userDO = userService.getById(getUserId());
         return ResponseResult.success(userDO.getPassword().equals(SHA256Util.getSHA256StrJava(currPwd.trim() + "password")));
+    }
+
+    @ApiOperation(
+            value = "修改密码",
+            notes = "备注",
+            response = ResponseResult.class,
+            httpMethod = "POST"
+    )
+    @ApiImplicitParam(
+            name = "newPwd",
+            value = "新密码",
+            required = true,
+            paramType = "query",
+            dataType = "string"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 0000, message = "操作成功")
+    })
+    @PostMapping("/changePwd")
+    public ResponseResult changePwd(@NotNull(message = "新密码不能为null！") String newPwd) {
+        UserDO userDO = new UserDO();
+        userDO.setId(getUserId());
+        userDO.setPassword(SHA256Util.getSHA256StrJava(newPwd + "password"));
+        if (userService.updateById(userDO)){
+            return ResponseResult.success("修改成功");
+        }else{
+            return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+        }
     }
 
 }

@@ -39,6 +39,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                     result.setPassword(u.getPassword());
                     result.setUsername(u.getEmail());
                     result.setInvalidMark(u.getInvalidMark());
+                    result.setBusinessId(u.getBusinessId());
+                    result.setBusinessName(u.getBusinessName());
+                    result.setAuditMark(u.getAuditMark());
+                    result.setUserSystemId(u.getUserSystemId());
 
                     //把userDetail塞入线程session
                     ThreadSessionLocal.setUserInfo(result);
