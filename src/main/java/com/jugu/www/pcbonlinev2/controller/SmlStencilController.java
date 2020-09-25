@@ -1,5 +1,6 @@
 package com.jugu.www.pcbonlinev2.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
@@ -15,6 +16,7 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -168,15 +170,18 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
     })
     @GetMapping
     public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated SmlStencilQueryDTO query) {
-        query.setUserId(getUserId());
         //构造查询条件
-        PageQuery<SmlStencilQueryDTO, SmlStencilDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
+//        PageQuery<SmlStencilQueryDTO, SmlStencilDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
+
+        List<SmlStencilDO> data = smlStencilService.list(new QueryWrapper<SmlStencilDO>()
+                .eq(!StringUtils.isEmpty(query.getSize()),"status",query.getStatus())
+                .eq("user_id",getUserId()));
 
         //查询
-        PageResult<List<SmlStencilDTO>> listPageResult = smlStencilService.queryPage(pageQuery);
+//        PageResult<List<SmlStencilDTO>> listPageResult = smlStencilService.queryPage(pageQuery);
 
         //转化VO
-        List<SmlStencilVO> smlStencilVOS = Optional.ofNullable(listPageResult.getData())
+        List<SmlStencilVO> smlStencilVOS = Optional.ofNullable(data)
                 .map(List::stream)
                 .orElseGet(Stream::empty)
                 .map(SmlStencilDTO -> {
@@ -190,8 +195,11 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
 
         //最终返回结果
         PageResult<List<SmlStencilVO>> result = new PageResult<>();
-        BeanUtils.copyProperties(listPageResult, result);
+//        BeanUtils.copyProperties(listPageResult, result);
+//        result.setData(smlStencilVOS);
+
         result.setData(smlStencilVOS);
+        result.setTotal(Integer.valueOf(data.size()).longValue());
 
         return ResponseResult.success(result);
     }

@@ -17,7 +17,6 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -215,6 +214,7 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
     })
     @GetMapping("/all")
     public ResponseResult all(){
+        // TODO: 2020-09-22 可有改进空间？ 
         List list = countryRedis.get();
         if (list == null || list.size() == 0){
             list = countryService.all();

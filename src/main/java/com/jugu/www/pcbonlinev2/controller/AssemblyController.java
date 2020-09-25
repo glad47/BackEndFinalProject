@@ -1,5 +1,6 @@
 package com.jugu.www.pcbonlinev2.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
@@ -15,6 +16,7 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
@@ -170,13 +172,17 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
     public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated AssemblyQueryDTO query) {
         query.setUserId(getUserId());
         //构造查询条件
-        PageQuery<AssemblyQueryDTO, AssemblyDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
+//        PageQuery<AssemblyQueryDTO, AssemblyDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
 
         //查询
-        PageResult<List<AssemblyDTO>> listPageResult = assemblyService.queryPage(pageQuery);
+//        PageResult<List<AssemblyDTO>> listPageResult = assemblyService.queryPage(pageQuery);
+
+        List<AssemblyDO> data = assemblyService.list(new QueryWrapper<AssemblyDO>()
+                .eq(!StringUtils.isEmpty(query.getStatus()),"status",query.getStatus())
+                .eq("user_id",getUserId()));
 
         //转化VO
-        List<AssemblyVO> assemblyVOS = Optional.ofNullable(listPageResult.getData())
+        List<AssemblyVO> assemblyVOS = Optional.ofNullable(data)
                 .map(List::stream)
                 .orElseGet(Stream::empty)
                 .map(AssemblyDTO -> {
@@ -190,8 +196,10 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
 
         //最终返回结果
         PageResult<List<AssemblyVO>> result = new PageResult<>();
-        BeanUtils.copyProperties(listPageResult, result);
+//        BeanUtils.copyProperties(listPageResult, result);
+//        result.setData(assemblyVOS);
         result.setData(assemblyVOS);
+        result.setTotal(Integer.valueOf(assemblyVOS.size()).longValue());
 
         return ResponseResult.success(result);
     }

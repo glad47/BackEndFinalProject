@@ -8,4 +8,5 @@ public class BusinessUserVO {
     private String telephone;
     private String prefixNo;
     private String avatar;
+    private String contactEmail;
 }
