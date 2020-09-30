@@ -136,41 +136,24 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
     }
 
     @ApiOperation(
-            value = "查询信息",
+            value = "查询贴片订单信息",
             notes = "备注",
             response = ResponseResult.class,
-            httpMethod = "GET"
+            httpMethod = "POST"
     )
-    @ApiImplicitParams({
-            @ApiImplicitParam(
-                    name = "pageNo",
-                    value = "页码",
-                    required = true,
-                    paramType = "query",
-                    dataType = "int"
-            ),
-            @ApiImplicitParam(
-                    name = "pageSize",
-                    value = "显示多少条",
-                    required = true,
-                    paramType = "query",
-                    dataType = "int"
-            ),
-            @ApiImplicitParam(
-                    name = "query",
-                    value = "查询封装的对象",
-                    required = false,
-                    paramType = "query",
-                    dataType = "object",
-                    dataTypeClass = AssemblyQueryDTO.class
-            )
-    })
+    @ApiImplicitParam(
+            name = "assemblyQueryDTO",
+            value = "查询封装的对象",
+            required = false,
+            paramType = "body",
+            dataType = "object",
+            dataTypeClass = AssemblyQueryDTO.class
+    )
     @ApiResponses({
             @ApiResponse(code = 0, message = "操作成功")
     })
-    @GetMapping
-    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated AssemblyQueryDTO query) {
-        query.setUserId(getUserId());
+    @PostMapping("/query")
+    public ResponseResult<PageResult> queryPage(@Validated @RequestBody AssemblyQueryDTO assemblyQueryDTO) {
         //构造查询条件
 //        PageQuery<AssemblyQueryDTO, AssemblyDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
 
@@ -178,8 +161,9 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
 //        PageResult<List<AssemblyDTO>> listPageResult = assemblyService.queryPage(pageQuery);
 
         List<AssemblyDO> data = assemblyService.list(new QueryWrapper<AssemblyDO>()
-                .eq(!StringUtils.isEmpty(query.getStatus()),"status",query.getStatus())
-                .eq("user_id",getUserId()));
+                .eq(!StringUtils.isEmpty(assemblyQueryDTO.getStatus()), "status", assemblyQueryDTO.getStatus())
+                .in(assemblyQueryDTO.getStatusList()!=null,"status",assemblyQueryDTO.getStatusList())
+                .eq("user_id", getUserId()));
 
         //转化VO
         List<AssemblyVO> assemblyVOS = Optional.ofNullable(data)

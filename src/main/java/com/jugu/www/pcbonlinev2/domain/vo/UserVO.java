@@ -1,6 +1,7 @@
 package com.jugu.www.pcbonlinev2.domain.vo;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import lombok.Data;
@@ -14,8 +15,7 @@ import lombok.Data;
  */
 @Data
 public class UserVO implements Serializable {
-    // TODO serialVersionUid
-
+    private static final long serialVersionUID = 3258972176462402979L;
     /**
      * 用户id
      */
@@ -204,5 +204,9 @@ public class UserVO implements Serializable {
      * 是否来自公司分配（0默认否 1 是）
      */
     private Integer isSourceCompany;
+    /**
+     * 用户充值的点数
+     */
+    private BigDecimal points;
 
 }

@@ -50,4 +50,9 @@ public class MemberLevelServiceImpl extends ServiceImpl<MemberLevelMapper, Membe
         return new PageResult<>(memberLevelDOPage,memberLevelDTOList);
     }
 
+    @Override
+    public MemberLevelDO getMemberLevelByPoint(Integer points) {
+        return this.baseMapper.queryMemberLevel(points);
+    }
+
 }

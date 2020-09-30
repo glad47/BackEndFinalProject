@@ -48,7 +48,11 @@ public enum ErrorCodeEnum {
     UPDATE_FAILURE("3003", "更新失败"),
     DELETE_FAILURE("3004", "删除失败"),
     RATE_LIMIT_ERROR("3005", "限流异常"),
-    FILE_UPLOAD_FAILURE("3006", "文件上传失败");
+    FILE_UPLOAD_FAILURE("3006", "文件上传失败"),
+    INVALID_PROMO_CODE("3007","无效的优惠码"),
+    COUPON_ALREADY_USED("3008","优惠码已被使用" ),
+    USER_POINTS_INSUFFICIENT("3009", "用户余额不足"),
+    NOT_DEFAULT_ADDRESS("3010","没有默认的地址");
 
 
     /**

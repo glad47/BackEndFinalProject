@@ -8,6 +8,8 @@ import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.dto.UserDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.UserQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
+import com.jugu.www.pcbonlinev2.exception.BusinessException;
+import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.mapper.UserMapper;
 import com.jugu.www.pcbonlinev2.service.UserService;
 import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
@@ -15,6 +17,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -72,5 +75,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper,UserDO> implements U
 //        pageResult.setData(userDTOList);
 
         return new PageResult<>(userDOIPage,userDTOList);
+    }
+
+    @Override
+    public Integer getUserPoint(Integer userId) {
+        return this.userMapper.queryUserPoint(userId);
+    }
+
+    @Override
+    public void updatePoints(BigDecimal paymentTotal, Integer userId) {
+        UserDO userDO = userMapper.selectById(userId);
+        if (userDO.getPoints().compareTo(paymentTotal) < 0){
+            throw new BusinessException(ErrorCodeEnum.USER_POINTS_INSUFFICIENT);
+        }
+        userDO.setPoints(userDO.getPoints().subtract(paymentTotal));
+
+        userMapper.updateById(userDO);
     }
 }

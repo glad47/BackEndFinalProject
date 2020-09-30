@@ -21,5 +21,8 @@ public interface CouponService extends IService<CouponDO> {
 
     PageResult<List<CouponDTO>> queryPage(PageQuery<CouponQueryDTO, CouponDO> params);
 
+    List<CouponDO> getValidCoupon(Integer userId);
+
+    boolean verifyCoupon(String code, Integer userId);
 }
 

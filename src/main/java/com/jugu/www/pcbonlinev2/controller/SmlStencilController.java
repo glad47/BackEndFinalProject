@@ -136,46 +136,31 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
     }
 
     @ApiOperation(
-            value = "查询信息",
+            value = "查询钢网订单信息",
             notes = "备注",
             response = ResponseResult.class,
-            httpMethod = "GET"
+            httpMethod = "POST"
     )
-    @ApiImplicitParams({
-            @ApiImplicitParam(
-                    name = "pageNo",
-                    value = "页码",
-                    required = true,
-                    paramType = "query",
-                    dataType = "int"
-            ),
-            @ApiImplicitParam(
-                    name = "pageSize",
-                    value = "显示多少条",
-                    required = true,
-                    paramType = "query",
-                    dataType = "int"
-            ),
-            @ApiImplicitParam(
-                    name = "query",
-                    value = "查询封装的对象",
-                    required = false,
-                    paramType = "query",
-                    dataType = "object",
-                    dataTypeClass = SmlStencilQueryDTO.class
-            )
-    })
+    @ApiImplicitParam(
+            name = "smlStencilQueryDTO",
+            value = "查询封装的对象",
+            required = false,
+            paramType = "body",
+            dataType = "object",
+            dataTypeClass = SmlStencilQueryDTO.class
+    )
     @ApiResponses({
             @ApiResponse(code = 0, message = "操作成功")
     })
-    @GetMapping
-    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated SmlStencilQueryDTO query) {
+    @PostMapping("/query")
+    public ResponseResult<PageResult> queryPage(@Validated SmlStencilQueryDTO smlStencilQueryDTO) {
         //构造查询条件
-//        PageQuery<SmlStencilQueryDTO, SmlStencilDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
+//        PageQuery<SmlStencilQueryDTO, SmlStencilDO> pageQuery = new PageQuery<>(pageNo, pageSize, smlStencilQueryDTO);
 
         List<SmlStencilDO> data = smlStencilService.list(new QueryWrapper<SmlStencilDO>()
-                .eq(!StringUtils.isEmpty(query.getSize()),"status",query.getStatus())
-                .eq("user_id",getUserId()));
+                .eq(!StringUtils.isEmpty(smlStencilQueryDTO.getStatus()), "status", smlStencilQueryDTO.getStatus())
+                .in(smlStencilQueryDTO.getStatusList() != null,"status",smlStencilQueryDTO.getStatusList())
+                .eq("user_id", getUserId()));
 
         //查询
 //        PageResult<List<SmlStencilDTO>> listPageResult = smlStencilService.queryPage(pageQuery);

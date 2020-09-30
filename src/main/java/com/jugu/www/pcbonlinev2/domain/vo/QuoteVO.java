@@ -15,7 +15,7 @@ import lombok.Data;
  */
 @Data
 public class QuoteVO implements Serializable {
-    // TODO serialVersionUid
+    private static final long serialVersionUID = -4400545156111961870L;
 
     /**
      * 报价id
@@ -405,5 +405,9 @@ public class QuoteVO implements Serializable {
      * 产品类型
      */
     private Integer oType;
+    /**
+     * 生产流程名
+     */
+    private String production;
 
 }

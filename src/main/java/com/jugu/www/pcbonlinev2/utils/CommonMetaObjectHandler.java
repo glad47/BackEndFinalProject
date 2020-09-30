@@ -33,6 +33,6 @@ public class CommonMetaObjectHandler implements MetaObjectHandler {
     public void updateFill(MetaObject metaObject) {
         log.info("update data, 更新数据");
 
-        this.strictUpdateFill(metaObject,"gmtModified", LocalDateTime.class,LocalDateTime.now());
+        this.strictUpdateFill(metaObject,"gmtModified", Date.class,new Date());
     }
 }

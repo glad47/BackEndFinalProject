@@ -7,7 +7,9 @@ import com.jugu.www.pcbonlinev2.domain.dto.OrderDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.OrderQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.OrderSaveDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.PaymentParameterDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.order.ToPaymentParameterDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
+import com.jugu.www.pcbonlinev2.domain.vo.InvoiceInfoVO;
 
 
 import java.util.List;
@@ -28,5 +30,13 @@ public interface OrderService extends IService<OrderDO> {
     boolean createOrder(PaymentParameterDTO paymentParameterDTO);
 
     String createOrderNo();
+
+    /**
+     * 获取到支付页面的信息
+     * @param toPaymentParameterDTO 到支付页面回传参数
+     */
+    PaymentParameterDTO getToPaymentInfo(ToPaymentParameterDTO toPaymentParameterDTO);
+
+    InvoiceInfoVO getInvoiceInfo(Integer orderId);
 }
 

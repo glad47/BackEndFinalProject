@@ -45,7 +45,7 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
     private ReceiverAddersService receiverAddersService;
 
     @ApiOperation(
-            value = "新增信息",
+            value = "新增收货地址信息",
             notes = "备注",
             response = ResponseResult.class,
             httpMethod = "POST"
@@ -63,15 +63,21 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
     })
     @PostMapping
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody ReceiverAddersDTO receiverAddersDTO) {
-        if (receiverAddersService.save(conversionDO(new ReceiverAddersDO(), receiverAddersDTO))){
+        if (receiverAddersDTO.getIsDefault() == 1){
+            //把当前用户的所有其他地址设置为0
+            ReceiverAddersDO update = new ReceiverAddersDO();
+            update.setIsDefault(0);
+            receiverAddersService.update(update,new QueryWrapper<ReceiverAddersDO>().eq("user_id",getUserId()));
+        }
+        if (receiverAddersService.save(conversionDO(new ReceiverAddersDO(), receiverAddersDTO))) {
             return ResponseResult.success("新增成功");
-        }else{
+        } else {
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
         }
     }
 
     @ApiOperation(
-            value = "修改信息",
+            value = "修改收货地址信息",
             notes = "备注",
             response = ResponseResult.class,
             httpMethod = "PUT"
@@ -100,7 +106,12 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody ReceiverAddersDTO receiverAddersDTO){
         ReceiverAddersDO receiverAddersDO = conversionDO(new ReceiverAddersDO(), receiverAddersDTO);
         receiverAddersDO.setId(id);
-
+        if (receiverAddersDO.getIsDefault() == 1){
+            //把当前用户的所有其他地址设置为0
+            ReceiverAddersDO update = new ReceiverAddersDO();
+            update.setIsDefault(0);
+            receiverAddersService.update(update,new QueryWrapper<ReceiverAddersDO>().eq("user_id",getUserId()));
+        }
         if (receiverAddersService.updateById(receiverAddersDO)){
             return ResponseResult.success("更新成功");
         }else{
@@ -183,7 +194,6 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
                     ReceiverAddersVO vo = new ReceiverAddersVO();
                     BeanUtils.copyProperties(ReceiverAddersDTO, vo);
                     // TODO: 特殊字段处理
-
                     return vo;
                 })
                 .collect(Collectors.toList());
@@ -209,10 +219,14 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
     @GetMapping("/curr")
     public ResponseResult currAdders() {
         ReceiverAddersDO addersDO = receiverAddersService.getOne(new QueryWrapper<ReceiverAddersDO>().eq("user_id", getUserId()).eq("is_default", 1));
+        if (addersDO == null) {
+            return ResponseResult.failure(ErrorCodeEnum.NOT_DEFAULT_ADDRESS);
+        }else {
+            ReceiverAddersVO vo = new ReceiverAddersVO();
+            BeanUtils.copyProperties(addersDO,vo);
+            return ResponseResult.success(vo);
+        }
 
-        ReceiverAddersVO vo = new ReceiverAddersVO();
-        BeanUtils.copyProperties(addersDO,vo);
-        return ResponseResult.success(vo);
     }
 
 }

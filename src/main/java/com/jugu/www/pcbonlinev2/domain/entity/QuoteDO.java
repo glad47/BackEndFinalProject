@@ -412,4 +412,9 @@ public class QuoteDO implements Serializable {
      */
     private String businessName;
 
+    /**
+     * 生产流程名
+     */
+    private String production;
+
 }

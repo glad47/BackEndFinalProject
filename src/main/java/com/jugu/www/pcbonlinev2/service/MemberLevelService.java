@@ -21,5 +21,6 @@ public interface MemberLevelService extends IService<MemberLevelDO> {
 
     PageResult<List<MemberLevelDTO>> queryPage(PageQuery<MemberLevelQueryDTO, MemberLevelDO> params);
 
+    MemberLevelDO getMemberLevelByPoint(Integer points);
 }
 

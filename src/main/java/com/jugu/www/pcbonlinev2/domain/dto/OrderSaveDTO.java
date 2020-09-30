@@ -15,7 +15,7 @@ public class OrderSaveDTO implements Serializable {
 
 
     private static final long serialVersionUID = 970107995242103321L;
-    @Valid
+//    @Valid
     private PcbSizeField pcbSizeField;
     private PcbSpecialField pcbSpecialField;
     private PcbStandardField pcbStandardField;

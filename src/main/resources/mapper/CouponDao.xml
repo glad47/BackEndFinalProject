@@ -17,5 +17,14 @@
         <result property="couponStatus" column="coupon_status"/>
     </resultMap>
 
+    <select id="queryValidCouponByUserId" resultType="com.jugu.www.pcbonlinev2.domain.entity.CouponDO">
+        select
+        *
+        from
+        coupon
+        where user_id = #{userId}
+        and coupon_status = #{state} and TO_DAYS(start_time) &lt;= TO_DAYS(NOW()) AND TO_DAYS(end_time) &gt;= TO_DAYS(NOW())
+    </select>
+
 
 </mapper>

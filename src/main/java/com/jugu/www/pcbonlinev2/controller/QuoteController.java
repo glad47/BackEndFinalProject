@@ -40,7 +40,7 @@ import java.util.stream.Stream;
 @RequestMapping("/api/quote")
 @Validated
 @Slf4j
-@Api(value = "报价表管理", tags = {"报价表controller"}, protocols = "http, https")
+@Api(value = "PCB订单管理", tags = {"pcb订单表controller"}, protocols = "http, https")
 public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
 
     @Autowired
@@ -138,47 +138,32 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
     }
 
     @ApiOperation(
-            value = "查询信息",
+            value = "查询pcb订单信息",
             notes = "备注",
             response = ResponseResult.class,
-            httpMethod = "GET"
+            httpMethod = "POST"
     )
-    @ApiImplicitParams({
-            @ApiImplicitParam(
-                    name = "pageNo",
-                    value = "页码",
-                    required = true,
-                    paramType = "query",
-                    dataType = "int"
-            ),
-            @ApiImplicitParam(
-                    name = "pageSize",
-                    value = "显示多少条",
-                    required = true,
-                    paramType = "query",
-                    dataType = "int"
-            ),
-            @ApiImplicitParam(
-                    name = "query",
-                    value = "查询封装的对象",
-                    required = false,
-                    paramType = "query",
-                    dataType = "object",
-                    dataTypeClass = QuoteQueryDTO.class
-            )
-    })
+    @ApiImplicitParam(
+            name = "quoteQueryDTO",
+            value = "查询封装的对象",
+            required = false,
+            paramType = "body",
+            dataType = "object",
+            dataTypeClass = QuoteQueryDTO.class
+    )
     @ApiResponses({
             @ApiResponse(code = 0, message = "操作成功")
     })
-    @GetMapping
-    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated QuoteQueryDTO query) {
+    @PostMapping("/query")
+    public ResponseResult<PageResult> queryPage(@Validated @RequestBody QuoteQueryDTO quoteQueryDTO) {
         //构造查询条件
-//        PageQuery<QuoteQueryDTO, QuoteDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
+//        PageQuery<QuoteQueryDTO, QuoteDO> pageQuery = new PageQuery<>(pageNo, pageSize, quoteQueryDTO);
 
         //查询
 //        PageResult<List<QuoteDTO>> listPageResult = quoteService.queryPage(pageQuery);
         List<QuoteDO> data =  quoteService.list(new QueryWrapper<QuoteDO>()
-                .eq(!StringUtils.isEmpty(query.getStatus()),"status",query.getStatus())
+                .eq(!StringUtils.isEmpty(quoteQueryDTO.getStatus()),"status",quoteQueryDTO.getStatus())
+                .in(quoteQueryDTO.getStatusList() != null,"status",quoteQueryDTO.getStatusList())
                 .eq("user_id",getUserId()));
 
         //转化VO
@@ -196,8 +181,6 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
 
         //最终返回结果
         PageResult<List<QuoteVO>> result = new PageResult<>();
-//        BeanUtils.copyProperties(listPageResult, result);
-//        result.setData(quoteVOS);
         result.setData(quoteVOS);
         result.setTotal(Integer.valueOf(quoteVOS.size()).longValue());
 

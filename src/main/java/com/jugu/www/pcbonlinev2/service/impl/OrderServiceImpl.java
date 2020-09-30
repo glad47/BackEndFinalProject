@@ -7,15 +7,10 @@ import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.dto.*;
 import com.jugu.www.pcbonlinev2.domain.dto.order.*;
-import com.jugu.www.pcbonlinev2.domain.entity.AssemblyDO;
-import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
-import com.jugu.www.pcbonlinev2.domain.entity.QuoteDO;
-import com.jugu.www.pcbonlinev2.domain.entity.SmlStencilDO;
+import com.jugu.www.pcbonlinev2.domain.entity.*;
+import com.jugu.www.pcbonlinev2.domain.vo.*;
 import com.jugu.www.pcbonlinev2.mapper.OrderMapper;
-import com.jugu.www.pcbonlinev2.service.AssemblyService;
-import com.jugu.www.pcbonlinev2.service.OrderService;
-import com.jugu.www.pcbonlinev2.service.QuoteService;
-import com.jugu.www.pcbonlinev2.service.SmlStencilService;
+import com.jugu.www.pcbonlinev2.service.*;
 import com.jugu.www.pcbonlinev2.state.constant.State;
 import com.jugu.www.pcbonlinev2.utils.RedisUtil;
 import com.jugu.www.pcbonlinev2.utils.ThreadSessionLocal;
@@ -50,13 +45,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
     private final RedisUtil redisUtil;
 
+    private final UserService userService;
+
+    private final MemberLevelService memberLevelService;
+
+    private final CouponService couponService;
+
+    private final ReceiverAddersService receiverAddersService;
+
     @Autowired
-    public OrderServiceImpl(OrderMapper orderMapper, QuoteService quoteService, SmlStencilService smlStencilService, AssemblyService assemblyService, RedisUtil redisUtil) {
+    public OrderServiceImpl(OrderMapper orderMapper, QuoteService quoteService, SmlStencilService smlStencilService, AssemblyService assemblyService, RedisUtil redisUtil, UserService userService, MemberLevelService memberLevelService, CouponService couponService, ReceiverAddersService receiverAddersService) {
         this.orderMapper = orderMapper;
         this.quoteService = quoteService;
         this.smlStencilService = smlStencilService;
         this.assemblyService = assemblyService;
         this.redisUtil = redisUtil;
+        this.userService = userService;
+        this.memberLevelService = memberLevelService;
+        this.couponService = couponService;
+        this.receiverAddersService = receiverAddersService;
     }
 
     @Override
@@ -137,6 +144,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         //转化为do对象
         OrderDO orderDO = conversionToOrderDO(paymentParameterDTO);
 
+        //用户余额支付，更新点数
+        if (paymentParameterDTO.getPaymentType() == 4){
+            userService.updatePoints(paymentParameterDTO.getPaymentTotal(),orderDO.getUserId());
+        }
+
         int insertOrderResult = orderMapper.insert(orderDO);
 
         if (insertOrderResult == 1){
@@ -196,6 +208,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
     private OrderDO conversionToOrderDO(PaymentParameterDTO paymentParameterDTO) {
         UserDetailsDTO userInfo = ThreadSessionLocal.getUserInfo();
+
         OrderDO orderDO = new OrderDO();
         orderDO.setOrderId(paymentParameterDTO.getPayPayOrderId());
         orderDO.setUserId(userInfo.getId());
@@ -203,11 +216,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         orderDO.setBusinessName(userInfo.getBusinessName());
         orderDO.setReceiverAddressId(paymentParameterDTO.getReceiverAddressId());
         orderDO.setWeight(paymentParameterDTO.getTotalWeight());
-        orderDO.setPostFee(paymentParameterDTO.getPaypalFee());
-        orderDO.setTotalFee(paymentParameterDTO.getPaymentTotal());
-        orderDO.setPaypalFee(paymentParameterDTO.getPaypalFee());
-        orderDO.setTotalSubtotal(paymentParameterDTO.getSubtotal());
-        orderDO.setAmountFee(paymentParameterDTO.getAmount());
         orderDO.setDestinationCountry(paymentParameterDTO.getCountryName());
         orderDO.setShippingName(paymentParameterDTO.getCourierCompanyName());
         orderDO.setOrderno(paymentParameterDTO.getOrderNoBySys());
@@ -217,6 +225,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         orderDO.setPaymentTime(new Date());
         orderDO.setPaymentType(1);
         orderDO.setStatus(1);
+
+
+        orderDO.setPostFee(paymentParameterDTO.getShipping());
+        orderDO.setTotalFee(paymentParameterDTO.getPaymentTotal());
+        orderDO.setTotalSubtotal(paymentParameterDTO.getSubtotal());
+        orderDO.setAmountFee(paymentParameterDTO.getAmount());
+
+        orderDO.setPaypalFee(paymentParameterDTO.getPaypalFee());
+
         return orderDO;
     }
 
@@ -224,6 +241,101 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
     public String createOrderNo() {
         String datetime = new SimpleDateFormat("yyyyMMdd").format(new Date());
         return redisUtil.SeqGenerator(datetime, 5, RedisUtil.DEFAULT_EXPIRE);
+    }
+
+    @Override
+    public PaymentParameterDTO getToPaymentInfo(ToPaymentParameterDTO toPaymentParameterDTO) {
+        PaymentParameterDTO result = new PaymentParameterDTO();
+        //查询用户积分
+        Integer points = userService.getUserPoint(toPaymentParameterDTO.getUserId());
+        MemberLevelDO memberLevelDO = memberLevelService.getMemberLevelByPoint(points);
+        MemberLevelVO memberLevelVO = new MemberLevelVO().conversionToVo(memberLevelDO);
+
+        //会员优惠
+        BigDecimal memberPreferential = new BigDecimal(memberLevelDO.getPreferentialDetail()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
+        BigDecimal member =  memberPreferential.multiply(toPaymentParameterDTO.getSubtotal()).setScale(2,RoundingMode.HALF_UP);
+
+        BigDecimal totalPrice = toPaymentParameterDTO.getSubtotal().add(toPaymentParameterDTO.getShipping());
+        //计算小计
+        BigDecimal amount = totalPrice.subtract(member);
+
+        //payPal手续费
+        BigDecimal payPalFee = amount.multiply(new BigDecimal("0.044")).add(new BigDecimal("0.3")).setScale(2, RoundingMode.HALF_UP);
+
+        //总计
+        BigDecimal paymentTotal = amount.add(payPalFee);
+
+        //查找当前可用优惠券
+        List<CouponDO> couponDOList = couponService.getValidCoupon(toPaymentParameterDTO.getUserId());
+        //数据转换
+        List<CouponVO> couponVOList  = Optional.ofNullable(couponDOList)
+                .map(List::stream)
+                .orElseGet(Stream::empty)
+                .map(data -> {
+                    CouponVO couponVO = new CouponVO();
+                    BeanUtils.copyProperties(data, couponVO);
+                    return couponVO;
+                })
+                .collect(Collectors.toList());
+        result.setSubtotal(toPaymentParameterDTO.getSubtotal());
+        result.setShipping(toPaymentParameterDTO.getShipping());
+        result.setDisMemberStr(member.toString());
+        result.setTotalPrice(totalPrice);
+        result.setMemberLevelVO(memberLevelVO);
+        result.setAmount(amount);
+        result.setPaypalFee(payPalFee);
+        result.setPaymentTotal(paymentTotal);
+        result.setOrderNoBySys(createOrderNo());
+        result.setCouponVOList(couponVOList);
+        result.setTotalWeight(toPaymentParameterDTO.getTotalWeight());
+        result.setReceiverAddressId(toPaymentParameterDTO.getReceiverAddressId());
+        return result;
+    }
+
+    @Override
+    public InvoiceInfoVO getInvoiceInfo(Integer orderId) {
+        OrderDO orderDO = this.getById(orderId);
+        List<QuoteDO> quoteDOList = quoteService.list(new QueryWrapper<QuoteDO>().eq("order_id", orderId));
+        List<SmlStencilDO> smlStencilDOList = smlStencilService.list(new QueryWrapper<SmlStencilDO>().eq("order_id", orderId));
+        List<AssemblyDO> assemblyDOList = assemblyService.list(new QueryWrapper<AssemblyDO>().eq("order_id", orderId));
+        ReceiverAddersDO receiverAddersDO = receiverAddersService.getById(orderDO.getReceiverAddressId());
+
+        //转换为vo
+        List<QuoteVO> quoteVOList = Optional.ofNullable(quoteDOList)
+                .map(List::stream)
+                .orElseGet(Stream::empty)
+                .map(data -> {
+                    QuoteVO quoteVO = new QuoteVO();
+                    BeanUtils.copyProperties(data, quoteVO);
+                    return quoteVO;
+                }).collect(Collectors.toList());
+        List<SmlStencilVO> smlStencilVOList = Optional.ofNullable(smlStencilDOList)
+                .map(List::stream)
+                .orElseGet(Stream::empty)
+                .map(data -> {
+                    SmlStencilVO smlStencilVO = new SmlStencilVO();
+                    BeanUtils.copyProperties(data, smlStencilVO);
+                    return smlStencilVO;
+                }).collect(Collectors.toList());
+        List<AssemblyVO> assemblyVOList = Optional.ofNullable(assemblyDOList)
+                .map(List::stream)
+                .orElseGet(Stream::empty)
+                .map(data -> {
+                    AssemblyVO assemblyVO = new AssemblyVO();
+                    BeanUtils.copyProperties(data, assemblyVO);
+                    return assemblyVO;
+                }).collect(Collectors.toList());
+        OrderVO orderVO = new OrderVO();
+        BeanUtils.copyProperties(orderDO,orderVO);
+        ReceiverAddersVO receiverAddersVO = new ReceiverAddersVO();
+        BeanUtils.copyProperties(receiverAddersDO,receiverAddersVO);
+
+        return InvoiceInfoVO.builder()
+                .quoteVOList(quoteVOList)
+                .smlStencilVOS(smlStencilVOList)
+                .assemblyVOList(assemblyVOList)
+                .orderVO(orderVO)
+                .receiverAddersVO(receiverAddersVO).build();
     }
 
     private AssemblyDO conversionToAssemblyDO(OrderSaveDTO orderSaveDTO) {

@@ -1,6 +1,8 @@
 package com.jugu.www.pcbonlinev2.domain.dto;
 
 import com.jugu.www.pcbonlinev2.domain.dto.order.OrderDetails;
+import com.jugu.www.pcbonlinev2.domain.vo.CouponVO;
+import com.jugu.www.pcbonlinev2.domain.vo.MemberLevelVO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -49,7 +51,7 @@ public class PaymentParameterDTO implements Serializable {
     @ApiModelProperty(value = "是否使用优惠劵 默认0没有 1使用")
     private Integer isUseCoupon = 0;
 
-    @ApiModelProperty(value = "优惠金额（字符串类型：-10")
+    @ApiModelProperty(value = "优惠金额(字符串类型：-10)")
     private String disCouponStr;
 
     @ApiModelProperty(value = "会员优惠金额")
@@ -59,7 +61,7 @@ public class PaymentParameterDTO implements Serializable {
     private Integer couponId;
 
     @NotNull(message = "paymentTotal不能为空")
-    @ApiModelProperty(value = "实际支付金额")
+    @ApiModelProperty(value = "实际支付金额=(paypalFee + amount)")
     private BigDecimal paymentTotal;
 
     @NotNull(message = "paypalFee不能为空")
@@ -83,6 +85,13 @@ public class PaymentParameterDTO implements Serializable {
     private Integer receiverAddressId;
 
     @NotNull(message = "paymentType不能为空")
-    @ApiModelProperty(value = "支付类型 1->payPal 2->Bank Transfer 3->Western Union 4->Pay With Account Balance")
+    @ApiModelProperty(value = "支付类型1->payPal、2->BankTransfer、3->WesternUnion、4->PayWithAccountBalance")
     private Integer paymentType;
+
+    @ApiModelProperty(value = "当前用户的可用优惠卷")
+    private List<CouponVO> couponVOList;
+
+    @ApiModelProperty(value = "会员等级信息")
+    private MemberLevelVO memberLevelVO;
+
 }

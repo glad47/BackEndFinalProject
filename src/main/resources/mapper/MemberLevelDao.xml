@@ -13,5 +13,9 @@
         <result property="membersStr" column="members_str"/>
     </resultMap>
 
+    <select id="queryMemberLevel" resultType="com.jugu.www.pcbonlinev2.domain.entity.MemberLevelDO">
+      select id,level_member,members_str,preferential_detail from member_level where #{points} BETWEEN min_point AND max_point
+    </select>
+
 
 </mapper>

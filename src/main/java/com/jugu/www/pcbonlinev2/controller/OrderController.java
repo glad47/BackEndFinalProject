@@ -4,7 +4,9 @@ import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import com.jugu.www.pcbonlinev2.domain.dto.*;
+import com.jugu.www.pcbonlinev2.domain.dto.order.ToPaymentParameterDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
+import com.jugu.www.pcbonlinev2.domain.vo.InvoiceInfoVO;
 import com.jugu.www.pcbonlinev2.domain.vo.OrderVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.OrderService;
@@ -207,19 +209,26 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
     }
 
 
-    public ResponseResult<PageResult> queryPageAll(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated OrderQueryAllDTO query){
-        return null;
-    }
-
     @ApiOperation(
-            value = "创建系统订单编号",
+            value = "创建系统订单编号及计算基本价格信息和优惠券信息",
             notes = "paypal支付后,回调的订单保存接口",
             response = ResponseResult.class,
-            httpMethod = "GET"
+            httpMethod = "POST"
     )
-    @GetMapping("/createOrderNo")
-    public ResponseResult createOrderNo(){
-        return ResponseResult.success(orderService.createOrderNo());
+    @ApiImplicitParam(
+            name = "body",
+            value = "去支付页面的封装参数对象",
+            required = true,
+            paramType = "body",
+            dataType = "object",
+            dataTypeClass = ToPaymentParameterDTO.class
+    )
+
+    @PostMapping("/createOrderNo")
+    public ResponseResult getOrderNoInfo(@Validated @RequestBody ToPaymentParameterDTO toPaymentParameterDTO) {
+        toPaymentParameterDTO.setUserId(getUserId());
+        PaymentParameterDTO result = orderService.getToPaymentInfo(toPaymentParameterDTO);
+        return ResponseResult.success(result);
     }
 
 
@@ -246,6 +255,28 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
             return ResponseResult.success("支付创建订单成功");
         }
         return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+    }
+
+    @ApiOperation(
+            value = "发票信息接口查询",
+            notes = "备注",
+            response = ResponseResult.class,
+            httpMethod = "GET"
+    )
+    @ApiImplicitParam(
+            name = "orderId",
+            value = "订单id",
+            required = true,
+            paramType = "query",
+            dataType = "int"
+    )
+    @ApiResponses({
+            @ApiResponse(code = 0, message = "操作成功")
+    })
+    @GetMapping("/invoice")
+    public ResponseResult invoiceInfo(@NotNull(message = "orderId不能为null") Integer orderId) {
+        InvoiceInfoVO invoiceInfoVO = orderService.getInvoiceInfo(orderId);
+        return ResponseResult.success(invoiceInfoVO);
     }
 
 }
