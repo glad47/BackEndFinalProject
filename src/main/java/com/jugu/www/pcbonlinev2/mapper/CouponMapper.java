@@ -1,5 +1,7 @@
 package com.jugu.www.pcbonlinev2.mapper;
 
+import com.jugu.www.pcbonlinev2.domain.dto.CouponQueryDTO;
+import com.jugu.www.pcbonlinev2.domain.entity.CountryDO;
 import com.jugu.www.pcbonlinev2.domain.entity.CouponDO;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,4 +20,6 @@ import java.util.List;
 public interface CouponMapper extends BaseMapper<CouponDO> {
 
     List<CouponDO> queryValidCouponByUserId(@Param("userId") Integer userId, @Param("state") Integer state);
+
+    List<CouponDO> queryCouponByQuery(CouponQueryDTO query);
 }

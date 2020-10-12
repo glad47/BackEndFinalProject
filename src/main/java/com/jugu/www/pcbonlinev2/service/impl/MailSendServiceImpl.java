@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -34,6 +35,9 @@ public class MailSendServiceImpl implements MailSendService {
 
     @Value("${spring.mail.username}")
     private String from;
+
+    @Value("${pcbonline.send-notice-base-url}")
+    private String sendNoticeBaseUrl;
 
     @Autowired
     public MailSendServiceImpl(MessageContentBuilder contentBuilder, JavaMailSender mailSender, JwtTokenUtil jwtTokenUtil) {
@@ -109,7 +113,7 @@ public class MailSendServiceImpl implements MailSendService {
     @Override
     public void asyncSendRegisterMail(String username) {
         log.info("异步发送邮件，邮箱：【{}】",username);
-        Map<String, Object> data = createTokenEmailSendData(username,"http://localhost:3000/user/activeAccount");
+        Map<String, Object> data = createTokenEmailSendData(username,sendNoticeBaseUrl+"/user/activeAccount");
         sendMail(new String[]{username},"激活PcbOnLine用户","mail-notice-template-registration",data,null);
 
     }
@@ -128,7 +132,7 @@ public class MailSendServiceImpl implements MailSendService {
     @Override
     public void asyncSendPasswordResetMail(String email) {
         log.info("异步发送重置密码邮箱,【{}】", email);
-        Map<String, Object> tokenEmailSendData = createTokenEmailSendData(email, "http://localhost:8877/api/requestPasswordReset/");
-        sendMail(new String[]{email},"重置PcbOnLine用户密码","mail-notice-template-registration",tokenEmailSendData,null);
+        Map<String, Object> tokenEmailSendData = createTokenEmailSendData(email, sendNoticeBaseUrl+"/user/resetPassword");
+        sendMail(new String[]{email},"重置PcbOnLine用户密码","mail-template-updatepwd",tokenEmailSendData,null);
     }
 }

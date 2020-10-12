@@ -24,5 +24,6 @@ public interface CouponService extends IService<CouponDO> {
     List<CouponDO> getValidCoupon(Integer userId);
 
     boolean verifyCoupon(String code, Integer userId);
+
 }
 

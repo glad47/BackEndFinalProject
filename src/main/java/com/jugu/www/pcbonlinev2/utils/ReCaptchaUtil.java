@@ -16,8 +16,8 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 @Component
 public class ReCaptchaUtil {
-    //    private static final String SECRET = "6LdM76QZAAAAADtXY3RdANu4AyRd5hWFIheaIXey";
-    private static final String SECRET = "6Lfm3LAZAAAAACkO3ZXYehB5nGqlY_9cVrWXwVFX";
+    private static final String SECRET = "6LdM76QZAAAAADtXY3RdANu4AyRd5hWFIheaIXey";
+//    private static final String SECRET = "6Lfm3LAZAAAAACkO3ZXYehB5nGqlY_9cVrWXwVFX";
     private static final String GOOGLE_API = "https://www.google.com/recaptcha/api/siteverify";
 
 

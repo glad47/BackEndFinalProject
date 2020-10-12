@@ -59,4 +59,5 @@ logging:
 #      sql:
 #        Statement: debug
 
-
+pcbonline:
+  send-notice-base-url: http://localhost:3000

@@ -1,5 +1,6 @@
 package com.jugu.www.pcbonlinev2.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
@@ -27,7 +28,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
-
 /**
  * 优惠券表
  *
@@ -40,7 +40,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "优惠券表管理", tags = {"优惠券表controller"}, protocols = "http, https", hidden = true)
-public class CouponController extends BasicController<CouponDO,CouponDTO>{
+public class CouponController extends BasicController<CouponDO, CouponDTO> {
 
     @Autowired
     private CouponService couponService;
@@ -142,44 +142,30 @@ public class CouponController extends BasicController<CouponDO,CouponDTO>{
             response = ResponseResult.class,
             httpMethod = "GET"
     )
-    @ApiImplicitParams({
-            @ApiImplicitParam(
-                    name = "pageNo",
-                    value = "页码",
-                    required = true,
-                    paramType = "query",
-                    dataType = "int"
-            ),
-            @ApiImplicitParam(
-                    name = "pageSize",
-                    value = "显示多少条",
-                    required = true,
-                    paramType = "query",
-                    dataType = "int"
-            ),
-            @ApiImplicitParam(
-                    name = "query",
-                    value = "查询封装的对象",
-                    required = false,
-                    paramType = "query",
-                    dataType = "object",
-                    dataTypeClass = CouponQueryDTO.class
-            )
-    })
+    @ApiImplicitParam(
+            name = "query",
+            value = "查询封装的对象",
+            required = false,
+            paramType = "query",
+            dataType = "object",
+            dataTypeClass = CouponQueryDTO.class
+    )
     @ApiResponses({
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping
-    public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated CouponQueryDTO query) {
+    public ResponseResult queryPage(@Validated CouponQueryDTO query) {
         query.setUserId(getUserId());
-        //构造查询条件
-        PageQuery<CouponQueryDTO, CouponDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
 
         //查询
-        PageResult<List<CouponDTO>> listPageResult = couponService.queryPage(pageQuery);
+        List<CouponDO> couponDOList = couponService.list(new QueryWrapper<CouponDO>()
+                .eq(query.getCouponStatus() != null && query.getCouponStatus() != 3,"coupon_status",query.getCouponStatus())
+                .apply(query.getCouponStatus() != null && query.getCouponStatus() == 3,"TO_DAYS(start_time) >= TO_DAYS(NOW()) OR TO_DAYS(end_time) <= TO_DAYS(NOW())")
+                .eq(query.getUserId() != null,"user_id",query.getUserId()));
+
 
         //转化VO
-        List<CouponVO> couponVOS = Optional.ofNullable(listPageResult.getData())
+        List<CouponVO> couponVOS = Optional.ofNullable(couponDOList)
                 .map(List::stream)
                 .orElseGet(Stream::empty)
                 .map(CouponDTO -> {
@@ -191,12 +177,7 @@ public class CouponController extends BasicController<CouponDO,CouponDTO>{
                 })
                 .collect(Collectors.toList());
 
-        //最终返回结果
-        PageResult<List<CouponVO>> result = new PageResult<>();
-        BeanUtils.copyProperties(listPageResult, result);
-        result.setData(couponVOS);
-
-        return ResponseResult.success(result);
+        return ResponseResult.success(couponVOS);
     }
 
 
@@ -217,7 +198,7 @@ public class CouponController extends BasicController<CouponDO,CouponDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping("/generate")
-    public ResponseResult generateFiveCode(@NotNull int flag){
+    public ResponseResult generateFiveCode(@NotNull int flag) {
         return ResponseResult.success(GenSerialUtil.generateCode(flag));
     }
 
@@ -238,10 +219,10 @@ public class CouponController extends BasicController<CouponDO,CouponDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping("/verify")
-    public ResponseResult verifyCode(@NotNull String code){
-        if (couponService.verifyCoupon(code,getUserId())){
+    public ResponseResult verifyCode(@NotNull String code) {
+        if (couponService.verifyCoupon(code, getUserId())) {
             return ResponseResult.success("兑换成功");
-        }else{
+        } else {
             return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
         }
 

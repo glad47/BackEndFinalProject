@@ -26,5 +26,23 @@
         and coupon_status = #{state} and TO_DAYS(start_time) &lt;= TO_DAYS(NOW()) AND TO_DAYS(end_time) &gt;= TO_DAYS(NOW())
     </select>
 
+    <select id="queryCouponByQuery" resultType="com.jugu.www.pcbonlinev2.domain.entity.CouponDO">
+        select
+        *
+        from
+        coupon
+        <where>
+            <if test="query.couponStatus != null and query.couponStatus != 3">
+                and coupon_status = #{query.couponStatus}
+            </if>
+            <if test="query.couponStatus == 3">
+                and
+            </if>
+            <if test="true">
+                and user_id = #{query.userId}
+            </if>
+        </where>
+    </select>
+
 
 </mapper>

@@ -7,6 +7,7 @@ import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.dto.CouponDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.CouponQueryDTO;
+import com.jugu.www.pcbonlinev2.domain.entity.CountryDO;
 import com.jugu.www.pcbonlinev2.domain.entity.CouponDO;
 import com.jugu.www.pcbonlinev2.domain.entity.CouponRuleDO;
 import com.jugu.www.pcbonlinev2.exception.BusinessException;
@@ -49,10 +50,10 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, CouponDO> imple
         CouponDO query = new CouponDO();
         BeanUtils.copyProperties(params.getQuery(), query);
 
-        Page<CouponDO> couponDOPage = couponMapper.selectPage(params.getPage(), new QueryWrapper<>(query));
-
+//        Page<CouponDO> couponDOPage = couponMapper.selectPage(params.getPage(), new QueryWrapper<>(query));
+        List<CouponDO> couponDOList = couponMapper.queryValidCouponByUserId(query.getUserId(),1);
         //数据转换
-        List<CouponDTO> couponDTOList  = Optional.ofNullable(couponDOPage.getRecords())
+        List<CouponDTO> couponDTOList  = Optional.ofNullable(couponDOList)
                 .map(List::stream)
                 .orElseGet(Stream::empty)
                 .map(CouponDO -> {
@@ -62,7 +63,7 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, CouponDO> imple
                 })
                 .collect(Collectors.toList());
 
-        return new PageResult<>(couponDOPage,couponDTOList);
+        return null;
     }
 
     @Override

@@ -42,7 +42,13 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             "/v2/api-docs",
             "/webjars/**",
             "/druid/**",
-            "/api/articlehelp"
+            "/api/articlehelp",
+            "/api/coupon/generate",
+            "/api/requestPasswordResetByEmail",
+            "/api/requestPasswordReset",
+            "/api/active",
+            "/api/auth/login",
+            "/api/auth/register",
     };
 
     private static final String[] STATIC_WHITELIST = {
@@ -55,9 +61,7 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             "/druid/**/*.jpg",
             "/druid/**/*.png",
             "/druid/**/*.ico",
-            "/api/auth/login",
-            "/api/auth/register",
-            "/api/active/*",
+
     };
 
     @Autowired
