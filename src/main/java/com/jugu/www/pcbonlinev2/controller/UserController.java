@@ -72,7 +72,7 @@ public class UserController extends BasicController<UserDO,UserDTO>{
             )
     })
     @ApiResponses({
-            @ApiResponse(code = 0000, message = "操作成功")
+            @ApiResponse(code = 0, message = "操作成功")
     })
     public ResponseResult<PageResult> query(
             @NotNull Integer pageNo,
@@ -152,7 +152,7 @@ public class UserController extends BasicController<UserDO,UserDTO>{
             httpMethod = "GET"
     )
     @ApiResponses({
-            @ApiResponse(code = 0000, message = "操作成功")
+            @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping("/info")
     public ResponseResult info() {
@@ -183,7 +183,7 @@ public class UserController extends BasicController<UserDO,UserDTO>{
             dataType = "string"
     )
     @ApiResponses({
-            @ApiResponse(code = 0000, message = "操作成功")
+            @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping("/verifyCurrPwd")
     public ResponseResult verifyCurrPwd(@NotNull(message = "当前密码不能为null！") String currPwd) {
@@ -205,7 +205,7 @@ public class UserController extends BasicController<UserDO,UserDTO>{
             dataType = "string"
     )
     @ApiResponses({
-            @ApiResponse(code = 0000, message = "操作成功")
+            @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping("/changePwd")
     public ResponseResult changePwd(@NotNull(message = "新密码不能为null！") String newPwd) {

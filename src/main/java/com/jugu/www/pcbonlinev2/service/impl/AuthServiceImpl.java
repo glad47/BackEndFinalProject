@@ -2,6 +2,7 @@ package com.jugu.www.pcbonlinev2.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
+import com.jugu.www.pcbonlinev2.domain.common.Result;
 import com.jugu.www.pcbonlinev2.domain.dto.UserDetailsDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.BusinessUserDO;
 import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
@@ -10,6 +11,7 @@ import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.mapper.BusinessUserMapper;
 import com.jugu.www.pcbonlinev2.mapper.UserMapper;
 import com.jugu.www.pcbonlinev2.service.AuthService;
+import com.jugu.www.pcbonlinev2.service.UserService;
 import com.jugu.www.pcbonlinev2.utils.JwtTokenUtil;
 import com.jugu.www.pcbonlinev2.utils.RedisUtil;
 import com.jugu.www.pcbonlinev2.utils.SHA256Util;
@@ -36,6 +38,8 @@ public class AuthServiceImpl implements AuthService {
 
     private final UserMapper userMapper;
 
+    private final UserService userService;
+
     private final BusinessUserMapper businessUserMapper;
 
     private final RedisUtil redisUtil;
@@ -45,11 +49,12 @@ public class AuthServiceImpl implements AuthService {
     private static Integer pos = 0;
 
     @Autowired
-    public AuthServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil, UserMapper userMapper, BusinessUserMapper businessUserMapper, RedisUtil redisUtil) {
+    public AuthServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil, UserMapper userMapper, UserService userService, BusinessUserMapper businessUserMapper, RedisUtil redisUtil) {
         this.authenticationManager = authenticationManager;
         this.userDetailsService = userDetailsService;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userMapper = userMapper;
+        this.userService = userService;
         this.businessUserMapper = businessUserMapper;
         this.redisUtil = redisUtil;
     }
@@ -68,7 +73,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public int register(String username, String password, String invite) {
+    public Result register(String username, String password, String invite) {
 
         if (isExistByEmail(username)) throw new BusinessException(ErrorCodeEnum.PARAM_EMAIL_ERROR);
         
@@ -85,21 +90,26 @@ public class AuthServiceImpl implements AuthService {
             }
         }else{
             //绑定跟单员
-            List<BusinessUserDO> businessUserDOList = businessUserMapper.selectList(null);
-            BusinessUserDO businessUser =  getBusinessUserByRoundRobin(businessUserDOList);
-            if(businessUser != null){
-                userDO.setBusinessId(businessUser.getBusinessId());
-                userDO.setBusinessName(businessUser.getName());
-                userDO.setUserSystemId(getCustomerNo(businessUser));
-            }
+            fullBusinessUserInfo(userDO);
         }
 
         //设置未激活
         userDO.setInvalidMark(1);
         userDO.setEmail(username);
         userDO.setPassword(SHA256Util.getSHA256StrJava(password+PASSWORD_KEY));
+        boolean b = userService.save(userDO);
 
-        return userMapper.insert(userDO);
+        return Result.builder().id(userDO.getId()).isSuccess(b).build();
+    }
+
+    protected void fullBusinessUserInfo(UserDO userDO) {
+        List<BusinessUserDO> businessUserDOList = businessUserMapper.selectList(null);
+        BusinessUserDO businessUser = getBusinessUserByRoundRobin(businessUserDOList);
+        if (businessUser != null) {
+            userDO.setBusinessId(businessUser.getBusinessId());
+            userDO.setBusinessName(businessUser.getName());
+            userDO.setUserSystemId(getCustomerNo(businessUser));
+        }
     }
 
     /**
@@ -131,6 +141,44 @@ public class AuthServiceImpl implements AuthService {
         UserDO userDO = new UserDO();
         userDO.setPassword(SHA256Util.getSHA256StrJava(nowPwd+PASSWORD_KEY));
         return validateTokenAndUserUpdate(token,userDO);
+    }
+
+    /**
+     * google 登录
+     *
+     * @param gid
+     * @param username
+     * @param email
+     * @param favicon
+     * @return
+     */
+    @Override
+    public String loginByGoogle(String gid, String username, String email, String favicon) {
+        //判断是否存在gid
+        Integer existCount = userMapper.selectCount(new QueryWrapper<UserDO>().eq("google_id", gid).last("limit 1"));
+        if (existCount >= 1){
+            //存在
+            UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+            return jwtTokenUtil.generateToken(userDetails);
+        }else{
+            //不存在创建一个用户在返回
+            UserDO userDOByGoogle = new UserDO();
+            userDOByGoogle.setGoogleId(gid);
+            userDOByGoogle.setUserName(username);
+            userDOByGoogle.setEmail(email);
+            userDOByGoogle.setFavicon(favicon);
+            userDOByGoogle.setInvalidMark(0);
+
+            fullBusinessUserInfo(userDOByGoogle);
+
+            boolean save = userService.save(userDOByGoogle);
+            if (save){
+                UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+                return jwtTokenUtil.generateToken(userDetails);
+            }
+            return null;
+
+        }
     }
 
     private String getCustomerNo(BusinessUserDO businessUser) {

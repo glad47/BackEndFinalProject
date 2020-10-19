@@ -1,6 +1,7 @@
 package com.jugu.www.pcbonlinev2.controller;
 
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
+import com.jugu.www.pcbonlinev2.domain.common.Result;
 import com.jugu.www.pcbonlinev2.domain.vo.ReCaptchaVerifyVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.AuthService;
@@ -12,7 +13,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api")
@@ -76,11 +76,58 @@ public class AuthController {
     })
     @PostMapping(value = "/auth/login")
     public ResponseResult login(@NotNull String username, @NotNull String password, @NotNull String recaptchaResponse){
-//        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
-//        if (!verifyResult.getSuccess()){
-//            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
-//        }
+        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
+        if (!verifyResult.getSuccess()){
+            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+        }
         return authService.login(username,password);
+    }
+
+    @ApiOperation(
+            value = "google登录",
+            notes = "google登录接口",
+            response = ResponseResult.class,
+            httpMethod = "POST"
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "gid",
+                    value = "google授权后的id",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string",
+                    example = "111111"
+            ),
+            @ApiImplicitParam(
+                    name = "username",
+                    value = "用户名",
+                    required = false,
+                    paramType = "query",
+                    dataType = "string",
+                    example = "123456"
+            ),
+            @ApiImplicitParam(
+                    name = "email",
+                    value = "用户邮箱",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string",
+                    example = "123456"
+            ),
+            @ApiImplicitParam(
+                    name = "favicon",
+                    value = "用户头像",
+                    required = false,
+                    paramType = "query",
+                    dataType = "string"
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(code = 0, message = "操作成功"),
+    })
+    @PostMapping(value = "/auth/googlelogin")
+    public ResponseResult loginInGoogle(@NotNull String gid, String username, @NotNull String email, String favicon) {
+        return ResponseResult.success(authService.loginByGoogle(gid,username,email,favicon));
     }
 
 
@@ -132,16 +179,15 @@ public class AuthController {
             @NotNull String password,
             @NotNull String recaptchaResponse,
             String invite){
-//        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
-//        if (!verifyResult.getSuccess()){
-//            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
-//        }
+        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
+        if (!verifyResult.getSuccess()){
+            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+        }
 
         //获取激活码token
-
         mailSendService.asyncSendRegisterMail(username);
-        int save = authService.register(username, password,invite);
-        if (save == 1){
+        Result save = authService.register(username, password,invite);
+        if (save.isSuccess()){
             return ResponseResult.success("注册成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -192,10 +238,10 @@ public class AuthController {
     })
     @PostMapping("/requestPasswordResetByEmail")
     public ResponseResult requestPasswordResetByEmail(@NotNull String email, @NotNull String recaptchaResponse){
-//        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
-//        if (!verifyResult.getSuccess()){
-//            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
-//        }
+        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
+        if (!verifyResult.getSuccess()){
+            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+        }
         if (authService.isExistByEmail(email)){
             mailSendService.asyncSendPasswordResetMail(email);
             return ResponseResult.success("已发送邮件");

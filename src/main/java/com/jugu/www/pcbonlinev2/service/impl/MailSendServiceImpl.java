@@ -114,7 +114,7 @@ public class MailSendServiceImpl implements MailSendService {
     public void asyncSendRegisterMail(String username) {
         log.info("异步发送邮件，邮箱：【{}】",username);
         Map<String, Object> data = createTokenEmailSendData(username,sendNoticeBaseUrl+"/user/activeAccount");
-        sendMail(new String[]{username},"激活PcbOnLine用户","mail-notice-template-registration",data,null);
+        sendMail(new String[]{username},"PCBONLINE Account Verification","mail-notice-template-registration",data,null);
 
     }
 
@@ -133,6 +133,6 @@ public class MailSendServiceImpl implements MailSendService {
     public void asyncSendPasswordResetMail(String email) {
         log.info("异步发送重置密码邮箱,【{}】", email);
         Map<String, Object> tokenEmailSendData = createTokenEmailSendData(email, sendNoticeBaseUrl+"/user/resetPassword");
-        sendMail(new String[]{email},"重置PcbOnLine用户密码","mail-template-updatepwd",tokenEmailSendData,null);
+        sendMail(new String[]{email},"PCBONLINE Account Change Password","mail-template-updatepwd",tokenEmailSendData,null);
     }
 }
