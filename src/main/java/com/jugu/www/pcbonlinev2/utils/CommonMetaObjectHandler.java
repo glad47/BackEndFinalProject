@@ -26,7 +26,7 @@ public class CommonMetaObjectHandler implements MetaObjectHandler {
         this.strictInsertFill(metaObject,"favicon",String.class,DEFAULT_FAVICON);
         this.strictInsertFill(metaObject, "uuid", String.class, UUID.randomUUID().toString());
         this.strictInsertFill(metaObject,"userIp",String.class,IPUtils.getIpAddr(HttpContextUtil.getHttpServletRequest()));
-        this.strictInsertFill(metaObject,"userId",Integer.class,ThreadSessionLocal.getUserInfo().getId());
+        if (ThreadSessionLocal.getUserInfo() != null) this.strictInsertFill(metaObject,"userId",Integer.class,ThreadSessionLocal.getUserInfo().getId());
     }
 
     @Override

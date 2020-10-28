@@ -3,8 +3,10 @@ package com.jugu.www.pcbonlinev2.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.jugu.www.pcbonlinev2.aspect.EmailSmsSend;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
+import com.jugu.www.pcbonlinev2.domain.common.Result;
 import com.jugu.www.pcbonlinev2.domain.dto.*;
 import com.jugu.www.pcbonlinev2.domain.dto.order.*;
 import com.jugu.www.pcbonlinev2.domain.entity.*;
@@ -89,10 +91,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         return new PageResult<>(orderDOPage,orderDTOList);
     }
 
+    /**
+     * 下单业务处理
+     * @param orderSaveDTO
+     * @return
+     */
+    @EmailSmsSend
     @Override
-    public boolean saveOrder(OrderSaveDTO orderSaveDTO) {
+    public Result saveOrder(OrderSaveDTO orderSaveDTO) {
         QuoteSubtotal subtotal = orderSaveDTO.getSubtotal();
         boolean r = false;
+        StringBuilder pns = new StringBuilder();
         //pcb报价
         if(subtotal.getBoardFee() != null && subtotal.getBoardFee().compareTo(new BigDecimal("0")) >= 1){
             QuoteDO quoteDO = conversionToQuoteDO(orderSaveDTO);
@@ -117,6 +126,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             orderSaveDTO.setPcbId(quoteDO.getId());
             orderSaveDTO.setPno(quoteDO.getProductNo());
             r = saveQuote;
+            pns.append(quoteDO.getProductNo()).append(" ");
         }
         if (subtotal.getStencilFee() != null && subtotal.getStencilFee().compareTo(new BigDecimal("0")) >= 1) {
             SmlStencilDO smlStencilDO = conversionToStencilDO(orderSaveDTO);
@@ -124,6 +134,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             boolean saveStencil = smlStencilService.save(smlStencilDO);
             log.info("插入钢网结果【{}】",saveStencil);
             r = saveStencil;
+            pns.append(smlStencilDO.getProductNo()).append(" ");
         }
         if (subtotal.getAssemblyFee() != null && subtotal.getAssemblyFee().compareTo(new BigDecimal("0")) >= 1) {
             AssemblyDO assemblyDO = conversionToAssemblyDO(orderSaveDTO);
@@ -131,16 +142,18 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             boolean saveAssembly = assemblyService.save(assemblyDO);
             log.info("插入贴片结果:[{}]", saveAssembly);
             r = saveAssembly;
+            pns.append(assemblyDO.getProductNo()).append(" ");
         }
-        return r;
+        return Result.builder().isSuccess(r).pns(pns.toString().trim()).msgType(1).build();
     }
 
     /**
      * 支付后的下单处理业务方法
      * @param paymentParameterDTO 支付业务对象
      */
+    @EmailSmsSend
     @Override
-    public boolean createOrder(PaymentParameterDTO paymentParameterDTO) {
+    public Result createOrder(PaymentParameterDTO paymentParameterDTO) {
         //转化为do对象
         OrderDO orderDO = conversionToOrderDO(paymentParameterDTO);
 
@@ -148,29 +161,30 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         if (paymentParameterDTO.getPaymentType() == 4){
             userService.updatePoints(paymentParameterDTO.getPaymentTotal(),orderDO.getUserId());
         }
-
-        int insertOrderResult = orderMapper.insert(orderDO);
-
-        if (insertOrderResult == 1){
+//        int insertOrderResult = orderMapper.insert(orderDO);
+        boolean insertOrderResult = this.saveOrUpdate(orderDO);
+        StringBuilder pns = new StringBuilder();
+        if (insertOrderResult){
             List<OrderDetails> orderDetailsList = paymentParameterDTO.getOrderDetailsList();
-            for (OrderDetails o:orderDetailsList) {
-                if (o.getOType() == 1){
-                    QuoteDO quoteDO = conversionToPayAfterPcb(o.getId(),orderDO.getId(),orderDO.getOrderno(),orderDO.getCorderNo(),orderDO.getPaymentTime());
-                    boolean b = quoteService.updateById(quoteDO);
-                    log.info("支付PCB订单后修改状态结果：[{}]", b);
-                }else if (o.getOType() == 2){
+            for (OrderDetails o : orderDetailsList) {
+                pns.append(o.getProductNo()).append(" ");
+                if (o.getOType() == 1) {
+                    QuoteDO quoteDO = conversionToPayAfterPcb(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
+                    insertOrderResult = quoteService.updateById(quoteDO);
+                    log.info("支付PCB订单后修改状态结果：[{}]", insertOrderResult);
+                } else if (o.getOType() == 2) {
                     SmlStencilDO stencilDO = conversionToPayAgterSmt(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
-                    boolean b = smlStencilService.updateById(stencilDO);
-                    log.info("支付SMT订单后修改状态结果：[{}]", b);
-                }else if(o.getOType() == 3){
+                    insertOrderResult = smlStencilService.updateById(stencilDO);
+                    log.info("支付SMT订单后修改状态结果：[{}]", insertOrderResult);
+                } else if (o.getOType() == 3) {
                     AssemblyDO assemblyDO = conversionToPayAfterAss(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
-                    boolean b = assemblyService.updateById(assemblyDO);
-                    log.info("支付贴片订单后修改状态结果：[{}]", b);
+                    insertOrderResult = assemblyService.updateById(assemblyDO);
+                    log.info("支付贴片订单后修改状态结果：[{}]", insertOrderResult);
                 }
             }
-            return true;
         }
-        return false;
+
+        return Result.builder().isSuccess(insertOrderResult).pns(pns.toString().trim()).msgType(2).total(orderDO.getTotalFee()).build();
     }
 
     private AssemblyDO conversionToPayAfterAss(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime) {
@@ -223,7 +237,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         orderDO.setDisCouponStr(paymentParameterDTO.getDisCouponStr());
         orderDO.setDisMemberStr(paymentParameterDTO.getDisMemberStr());
         orderDO.setPaymentTime(new Date());
-        orderDO.setPaymentType(1);
+        orderDO.setPaymentType(paymentParameterDTO.getPaymentType());
         orderDO.setStatus(1);
 
 

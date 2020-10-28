@@ -15,7 +15,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import javax.validation.Valid;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -38,6 +37,11 @@ public class MailSendServiceImpl implements MailSendService {
 
     @Value("${pcbonline.send-notice-base-url}")
     private String sendNoticeBaseUrl;
+
+    /**
+     * 默认询盘接收邮箱
+     */
+    private final String DEFAULT_CONTACT_EMAIL = "info@pcbonline.com";
 
     @Autowired
     public MailSendServiceImpl(MessageContentBuilder contentBuilder, JavaMailSender mailSender, JwtTokenUtil jwtTokenUtil) {
@@ -112,7 +116,7 @@ public class MailSendServiceImpl implements MailSendService {
     @Async("msgSendServerExecutor")
     @Override
     public void asyncSendRegisterMail(String username) {
-        log.info("异步发送邮件，邮箱：【{}】",username);
+        log.info("异步发送注册邮件，邮箱：【{}】",username);
         Map<String, Object> data = createTokenEmailSendData(username,sendNoticeBaseUrl+"/user/activeAccount");
         sendMail(new String[]{username},"PCBONLINE Account Verification","mail-notice-template-registration",data,null);
 
@@ -134,5 +138,23 @@ public class MailSendServiceImpl implements MailSendService {
         log.info("异步发送重置密码邮箱,【{}】", email);
         Map<String, Object> tokenEmailSendData = createTokenEmailSendData(email, sendNoticeBaseUrl+"/user/resetPassword");
         sendMail(new String[]{email},"PCBONLINE Account Change Password","mail-template-updatepwd",tokenEmailSendData,null);
+    }
+
+    @Async("msgSendServerExecutor")
+    @Override
+    public void asyncSendContactEmail(String email, String name, String msg) {
+        log.info("发送询盘邮件");
+        Map<String,Object> data = new HashMap<>();
+        data.put("data","收到新的联系信息，Name: " + name + ",Email: " + email+", msg:"+ msg);
+        sendMail(new String[]{DEFAULT_CONTACT_EMAIL},"pcbonline首页询盘通知","mail-template-contact",data,null);
+    }
+
+    @Async("msgSendServerExecutor")
+    @Override
+    public void asyncSendReviewEmail(String email, String name, String msg) {
+        log.info("发送反馈邮件");
+        Map<String,Object> data = new HashMap<>();
+        data.put("data","收到新的联系信息，Name: " + name + ",Email: " + email+", msg:"+ msg);
+        sendMail(new String[]{DEFAULT_CONTACT_EMAIL},"pcbonlineFeedback页面反馈通知","mail-template-feedback-review",data,null);
     }
 }

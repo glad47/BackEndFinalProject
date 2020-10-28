@@ -74,7 +74,7 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
     @PostMapping
     public ResponseResult save(@Validated @RequestBody OrderSaveDTO orderSaveDTO) {
 
-        if (orderService.saveOrder(orderSaveDTO)){
+        if (orderService.saveOrder(orderSaveDTO).isSuccess()){
             return ResponseResult.success("新增成功");
         }else {
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -251,7 +251,7 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
     })
     @PostMapping("/save")
     public ResponseResult createOrder(@Validated @RequestBody PaymentParameterDTO paymentParameterDTO) {
-        if (orderService.createOrder(paymentParameterDTO)){
+        if (orderService.createOrder(paymentParameterDTO).isSuccess()){
             return ResponseResult.success("支付创建订单成功");
         }
         return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);

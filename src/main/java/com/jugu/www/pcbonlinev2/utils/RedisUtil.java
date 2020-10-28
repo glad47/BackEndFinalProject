@@ -1,6 +1,7 @@
 package com.jugu.www.pcbonlinev2.utils;
 
 import com.google.gson.Gson;
+import com.jugu.www.pcbonlinev2.aspect.RedisCacheException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -62,6 +63,7 @@ public class RedisUtil {
      * @param listSize 数组长度
      * @return 角标
      */
+    @RedisCacheException
     public Integer  saveValueAndIncrementByRoundRobinListSize(String prefix,int listSize){
         //如果前缀存在则不设置，前缀不存在就设置
         valueOperations.setIfAbsent(prefix,0);

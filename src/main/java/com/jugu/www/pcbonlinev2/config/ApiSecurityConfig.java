@@ -50,6 +50,8 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/auth/login",
             "/api/auth/register",
             "/api/auth/googlelogin",
+            "/api/sendContactEmail",
+            "/api/sendFeedbackReviewEmail"
     };
 
     private static final String[] STATIC_WHITELIST = {

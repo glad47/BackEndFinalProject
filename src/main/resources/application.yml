@@ -61,3 +61,4 @@ logging:
 
 pcbonline:
   send-notice-base-url: http://localhost:3000
+  registered-coupon-grant: true

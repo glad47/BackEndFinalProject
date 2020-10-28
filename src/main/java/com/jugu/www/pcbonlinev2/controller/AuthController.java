@@ -185,9 +185,9 @@ public class AuthController {
         }
 
         //获取激活码token
-        mailSendService.asyncSendRegisterMail(username);
         Result save = authService.register(username, password,invite);
         if (save.isSuccess()){
+            mailSendService.asyncSendRegisterMail(username);
             return ResponseResult.success("注册成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -285,6 +285,93 @@ public class AuthController {
         }else {
             return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
         }
+    }
+
+    @ApiOperation(
+            value = "首页发送联系邮件",
+            notes = "发送联系邮件",
+            response = ResponseResult.class,
+            httpMethod = "POST"
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "email",
+                    value = "email",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string"
+            ),
+            @ApiImplicitParam(
+                    name = "name",
+                    value = "名字",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string"
+            ),
+            @ApiImplicitParam(
+                    name = "msg",
+                    value = "信息",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string"
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(code = 0, message = "操作成功")
+    })
+    @PostMapping("/sendContactEmail")
+    public ResponseResult sendContactEmail(@NotNull String email, @NotNull String name, @NotNull String msg){
+        mailSendService.asyncSendContactEmail(email,name,msg);
+        return ResponseResult.success("发送成功");
+    }
+
+    @ApiOperation(
+            value = "feedback发送反馈邮件",
+            notes = "发送反馈邮件",
+            response = ResponseResult.class,
+            httpMethod = "POST"
+    )
+    @ApiImplicitParams({
+            @ApiImplicitParam(
+                    name = "email",
+                    value = "email",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string"
+            ),
+            @ApiImplicitParam(
+                    name = "name",
+                    value = "名字",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string"
+            ),
+            @ApiImplicitParam(
+                    name = "msg",
+                    value = "信息",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string"
+            ),
+            @ApiImplicitParam(
+                    name = "recaptchaResponse",
+                    value = "reCaptcha,返回的g-recaptcha-response",
+                    required = true,
+                    paramType = "query",
+                    dataType = "string"
+            )
+    })
+    @ApiResponses({
+            @ApiResponse(code = 0, message = "操作成功")
+    })
+    @PostMapping("/sendFeedbackReviewEmail")
+    public ResponseResult sendFeedBackReviewEmail(@NotNull String email, @NotNull String name, @NotNull String msg, @NotNull String recaptchaResponse) {
+        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
+        if (!verifyResult.getSuccess()){
+            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+        }
+        mailSendService.asyncSendReviewEmail(email, name, msg);
+        return ResponseResult.success("发送成功");
     }
 
 }

@@ -1,6 +1,8 @@
 package com.jugu.www.pcbonlinev2.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.jugu.www.pcbonlinev2.aspect.CouponGrant;
+import com.jugu.www.pcbonlinev2.aspect.RedisCacheException;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import com.jugu.www.pcbonlinev2.domain.common.Result;
 import com.jugu.www.pcbonlinev2.domain.dto.UserDetailsDTO;
@@ -72,11 +74,13 @@ public class AuthServiceImpl implements AuthService {
         return ResponseResult.success(token);
     }
 
+
     @Override
+    @CouponGrant
     public Result register(String username, String password, String invite) {
 
         if (isExistByEmail(username)) throw new BusinessException(ErrorCodeEnum.PARAM_EMAIL_ERROR);
-        
+
         UserDO userDO = new UserDO();
 
         if(!StringUtils.isEmpty(invite)){
@@ -103,7 +107,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     protected void fullBusinessUserInfo(UserDO userDO) {
-        List<BusinessUserDO> businessUserDOList = businessUserMapper.selectList(null);
+        //获取有效的跟单员过滤下
+        List<BusinessUserDO> businessUserDOList = businessUserMapper.selectList(new QueryWrapper<BusinessUserDO>().eq("role_id",10).eq(" `status`",1));
         BusinessUserDO businessUser = getBusinessUserByRoundRobin(businessUserDOList);
         if (businessUser != null) {
             userDO.setBusinessId(businessUser.getBusinessId());
@@ -196,6 +201,7 @@ public class AuthServiceImpl implements AuthService {
 
     }
 
+    @RedisCacheException
     private BusinessUserDO getBusinessUserByRoundRobin(List<BusinessUserDO> businessUserDOList) {
         BusinessUserDO businessUser;
         //noinspection SynchronizeOnNonFinalField
