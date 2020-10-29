@@ -95,6 +95,12 @@ public class FileServiceImpl implements FileService {
         }
     }
 
+    @Override
+    public InputStream minIoDownload(String fileName) throws Exception {
+        MinioClient minioClient = minIoClientFactory();
+        return minioClient.getObject(BUCKET_NAME,fileName);
+    }
+
     private String objectNameFactory(String originalFilename,String mark) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
         // 设置存储对象名称

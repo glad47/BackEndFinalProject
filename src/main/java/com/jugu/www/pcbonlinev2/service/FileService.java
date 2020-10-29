@@ -29,4 +29,11 @@ public interface FileService {
      * @return 访问路径
      */
     String minIoUpload(InputStream inputStream, String originalFilename, String contentType, String mark);
+
+    /**
+     * 下载文件
+     * @param fileName
+     * @return
+     */
+    InputStream minIoDownload(String fileName) throws Exception;
 }
