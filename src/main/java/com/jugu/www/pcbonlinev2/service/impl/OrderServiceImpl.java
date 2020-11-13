@@ -401,7 +401,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         stencilDO.setStencilAreaY(quoteStencil.getStencilAreay().toString());
         stencilDO.setWeight(quoteStencil.getWeight());
 
-        stencilDO.setTotalStencilFee(quoteStencil.getPrice().multiply(new BigDecimal(stencilField.getQuantity())));
+        stencilDO.setTotalStencilFee(quoteStencil.getPriceToUSD().multiply(new BigDecimal(stencilField.getQuantity())));
 
         //登录后的信息
         UserDetailsDTO userDetailsDTO = ThreadSessionLocal.getUserInfo();

@@ -1,7 +1,13 @@
 package com.jugu.www.pcbonlinev2.service;
 
+import io.minio.errors.*;
+import org.xmlpull.v1.XmlPullParserException;
+
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * 文件上传服务接口
@@ -35,5 +41,5 @@ public interface FileService {
      * @param fileName
      * @return
      */
-    InputStream minIoDownload(String fileName) throws Exception;
+    InputStream minIoDownload(String fileName) throws IOException, InvalidKeyException, NoSuchAlgorithmException, RegionConflictException, InvalidObjectPrefixException, InsufficientDataException, InvalidPortException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, InvalidEndpointException, ErrorResponseException, InvalidArgumentException;
 }

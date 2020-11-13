@@ -96,7 +96,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public InputStream minIoDownload(String fileName) throws Exception {
+    public InputStream minIoDownload(String fileName) throws IOException, InvalidKeyException, NoSuchAlgorithmException, RegionConflictException, InvalidObjectPrefixException, InsufficientDataException, InvalidPortException, InternalException, NoResponseException, InvalidBucketNameException, XmlPullParserException, InvalidEndpointException, ErrorResponseException, InvalidArgumentException {
         MinioClient minioClient = minIoClientFactory();
         return minioClient.getObject(BUCKET_NAME,fileName);
     }

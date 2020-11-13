@@ -4,20 +4,21 @@ import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import com.jugu.www.pcbonlinev2.domain.vo.MinioUploadVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.FileService;
+import io.minio.errors.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.xmlpull.v1.XmlPullParserException;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * 文件管理controller
@@ -113,43 +114,89 @@ public class FileController {
     )
     @GetMapping("/download/zip")
     public void downloadZip(@RequestParam("filename") String fileName, HttpServletResponse response) {
-        BufferedInputStream bis = null;
-        try {
-            InputStream obj = fileService.minIoDownload(fileName);
-
+//        BufferedInputStream bis = null;
+//        try {
+//            InputStream obj = fileService.minIoDownload(fileName);
+//
+//            String[] split = fileName.split("/");
+//            String fn = split[split.length - 1];
+//            log.info("原先的路径->[{}],提取出的name->[{}]", fileName, fn);
+//            byte[] buf = new byte[1024];
+////            int length;
+//            response.reset();
+//
+//            response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fn, "UTF-8"));
+//            response.setContentType("application/octet-stream");
+//            response.setCharacterEncoding("utf-8");
+//            OutputStream outputStream = response.getOutputStream();
+//
+//            bis = new BufferedInputStream(obj);
+//            int i = bis.read(buf);
+//            while (i != -1) {
+//                outputStream.write(buf, 0, buf.length);
+//                outputStream.flush();
+//                i = bis.read(buf);
+//            }
+////            while ((length = obj.read(buf)) > 0) {
+////                outputStream.write(buf, 0, length);
+////            }
+////            outputStream.close();
+//        } catch (Exception e) {
+//            log.error("下载文件出错", e);
+//        } finally {
+//            if (bis != null){
+//                try {
+//                    bis.close();
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+        try (InputStream ism = new BufferedInputStream(fileService.minIoDownload(fileName))) {
             String[] split = fileName.split("/");
             String fn = split[split.length - 1];
             log.info("原先的路径->[{}],提取出的name->[{}]", fileName, fn);
-            byte[] buf = new byte[1024];
-//            int length;
-            response.reset();
 
+            byte[] buf = new byte[1024];
+            int length = 0;
+
+            response.reset();
             response.setHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fn, "UTF-8"));
             response.setContentType("application/octet-stream");
             response.setCharacterEncoding("utf-8");
-            OutputStream outputStream = response.getOutputStream();
-
-            bis = new BufferedInputStream(obj);
-            int i = bis.read(buf);
-            while (i != -1) {
-                outputStream.write(buf, 0, buf.length);
-                outputStream.flush();
-                i = bis.read(buf);
+            OutputStream osm = new BufferedOutputStream(response.getOutputStream());
+            while ((length = ism.read(buf))>0){
+                osm.write(buf,0,length);
             }
-//            while ((length = obj.read(buf)) > 0) {
-//                outputStream.write(buf, 0, length);
-//            }
-            outputStream.close();
-        } catch (Exception e) {
-            log.error("下载文件出错", e);
-        } finally {
-            if (bis != null){
-                try {
-                    bis.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
+            osm.close();
+        } catch (InvalidPortException e) {
+            e.printStackTrace();
+        } catch (XmlPullParserException e) {
+            e.printStackTrace();
+        } catch (RegionConflictException e) {
+            e.printStackTrace();
+        } catch (InvalidEndpointException e) {
+            e.printStackTrace();
+        } catch (InternalException e) {
+            e.printStackTrace();
+        } catch (InvalidObjectPrefixException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (InvalidBucketNameException e) {
+            e.printStackTrace();
+        } catch (InsufficientDataException e) {
+            e.printStackTrace();
+        } catch (InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (NoResponseException e) {
+            e.printStackTrace();
+        } catch (ErrorResponseException e) {
+            e.printStackTrace();
+        } catch (InvalidArgumentException e) {
+            e.printStackTrace();
         }
     }
 

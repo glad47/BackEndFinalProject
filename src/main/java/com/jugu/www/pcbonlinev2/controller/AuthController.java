@@ -76,10 +76,10 @@ public class AuthController {
     })
     @PostMapping(value = "/auth/login")
     public ResponseResult login(@NotNull String username, @NotNull String password, @NotNull String recaptchaResponse){
-        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
-        if (!verifyResult.getSuccess()){
-            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
-        }
+//        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
+//        if (!verifyResult.getSuccess()){
+//            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+//        }
         return authService.login(username,password);
     }
 
