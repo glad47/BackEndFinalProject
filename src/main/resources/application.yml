@@ -23,9 +23,9 @@ spring:
     allow-bean-definition-overriding: true
   #email
   mail:
-    host: smtp.qq.com #发送邮件服务器
-    username: 1170737711@qq.com #QQ邮箱
-    password: fxeiodttozepgide #客户端授权码
+    host: smtp.qiye.aliyun.com #发送邮件服务器
+    username: team@pcbonline.com #QQ邮箱
+    password: PCBONLINE2020@ #客户端授权码
     protocol: smtp #发送邮件协议
     properties.mail.smtp.auth: true
     properties.mail.smtp.port: 465 #端口号465或587
@@ -62,3 +62,4 @@ logging:
 pcbonline:
   send-notice-base-url: http://localhost:3000
   registered-coupon-grant: true
+  google-catcha-verify-switch: false

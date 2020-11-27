@@ -9,6 +9,7 @@ import com.jugu.www.pcbonlinev2.service.MailSendService;
 import com.jugu.www.pcbonlinev2.utils.ReCaptchaUtil;
 import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,6 +31,9 @@ public class AuthController {
     private final ReCaptchaUtil reCaptchaUtil;
 
     private final MailSendService mailSendService;
+
+    @Value("${pcbonline.google-catcha-verify-switch}")
+    private Boolean googleCaptchaVerifySwitch;
 
     @Autowired
     public AuthController(AuthService authService, ReCaptchaUtil reCaptchaUtil, MailSendService mailSendService) {
@@ -75,12 +79,14 @@ public class AuthController {
             @ApiResponse(code = 2004, message = "google校验失败")
     })
     @PostMapping(value = "/auth/login")
-    public ResponseResult login(@NotNull String username, @NotNull String password, @NotNull String recaptchaResponse){
-//        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
-//        if (!verifyResult.getSuccess()){
-//            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
-//        }
-        return authService.login(username,password);
+    public ResponseResult login(@NotNull String username, @NotNull String password, @NotNull String recaptchaResponse) {
+        if (googleCaptchaVerifySwitch){
+            ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
+            if (!verifyResult.getSuccess()) {
+                return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+            }
+        }
+        return authService.login(username, password);
     }
 
     @ApiOperation(
@@ -167,6 +173,12 @@ public class AuthController {
                     paramType = "query",
                     dataType = "string",
                     example = "a120"
+            ),
+            @ApiImplicitParam(
+                    name = "from",
+                    value = "来自那个页面标识",
+                    paramType = "query",
+                    dataType = "string"
             )
     })
     @ApiResponses({
@@ -178,16 +190,19 @@ public class AuthController {
             @NotNull String username,
             @NotNull String password,
             @NotNull String recaptchaResponse,
-            String invite){
-        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
-        if (!verifyResult.getSuccess()){
-            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+            String invite,
+            String from){
+        if (googleCaptchaVerifySwitch){
+            ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
+            if (!verifyResult.getSuccess()){
+                return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+            }
         }
 
         //获取激活码token
         Result save = authService.register(username, password,invite);
         if (save.isSuccess()){
-            mailSendService.asyncSendRegisterMail(username);
+            mailSendService.asyncSendRegisterMail(username,from);
             return ResponseResult.success("注册成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
@@ -366,10 +381,13 @@ public class AuthController {
     })
     @PostMapping("/sendFeedbackReviewEmail")
     public ResponseResult sendFeedBackReviewEmail(@NotNull String email, @NotNull String name, @NotNull String msg, @NotNull String recaptchaResponse) {
-        ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
-        if (!verifyResult.getSuccess()){
-            return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+        if (googleCaptchaVerifySwitch){
+            ReCaptchaVerifyVO verifyResult = reCaptchaUtil.verifyToken(recaptchaResponse);
+            if (!verifyResult.getSuccess()) {
+                return ResponseResult.failure(ErrorCodeEnum.RE_CAPTCHA_ERROR);
+            }
         }
+
         mailSendService.asyncSendReviewEmail(email, name, msg);
         return ResponseResult.success("发送成功");
     }

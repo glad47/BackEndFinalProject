@@ -7,8 +7,9 @@ public interface MailSendService {
     /**
      * 异步发送注册邮件
      * @param username
+     * @param form
      */
-    void asyncSendRegisterMail(String username);
+    void asyncSendRegisterMail(String username, String form);
 
     /**
      * 异步发送修改密码邮件

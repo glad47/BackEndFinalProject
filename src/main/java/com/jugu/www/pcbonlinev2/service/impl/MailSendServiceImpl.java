@@ -115,20 +115,25 @@ public class MailSendServiceImpl implements MailSendService {
 
     @Async("msgSendServerExecutor")
     @Override
-    public void asyncSendRegisterMail(String username) {
+    public void asyncSendRegisterMail(String username, String form) {
         log.info("异步发送注册邮件，邮箱：【{}】",username);
-        Map<String, Object> data = createTokenEmailSendData(username,sendNoticeBaseUrl+"/user/activeAccount");
+        Map<String, Object> data = createTokenEmailSendData(username,form,sendNoticeBaseUrl+"/user/activeAccount");
         sendMail(new String[]{username},"PCBONLINE Account Verification","mail-notice-template-registration",data,null);
 
     }
 
-    private Map<String, Object> createTokenEmailSendData(String username,Object url) {
+    private Map<String, Object> createTokenEmailSendData(String username,String form,Object url) {
         UserDetailsDTO userDetailsDTO = new UserDetailsDTO();
         userDetailsDTO.setUsername(username);
 
         Map<String,Object> data = new HashMap<>();
         String token = jwtTokenUtil.generateToken(userDetailsDTO);
-        data.put("url",url+"?token="+token);
+        if (form != null){
+            data.put("url",url+"?token="+token+"&from="+form);
+        }else{
+            data.put("url",url+"?token="+token);
+        }
+
         return data;
     }
 
@@ -136,7 +141,7 @@ public class MailSendServiceImpl implements MailSendService {
     @Override
     public void asyncSendPasswordResetMail(String email) {
         log.info("异步发送重置密码邮箱,【{}】", email);
-        Map<String, Object> tokenEmailSendData = createTokenEmailSendData(email, sendNoticeBaseUrl+"/user/resetPassword");
+        Map<String, Object> tokenEmailSendData = createTokenEmailSendData(email, null,sendNoticeBaseUrl+"/user/resetPassword");
         sendMail(new String[]{email},"PCBONLINE Account Change Password","mail-template-updatepwd",tokenEmailSendData,null);
     }
 
@@ -146,7 +151,7 @@ public class MailSendServiceImpl implements MailSendService {
         log.info("发送询盘邮件");
         Map<String,Object> data = new HashMap<>();
         data.put("data","收到新的联系信息，Name: " + name + ",Email: " + email+", msg:"+ msg);
-        sendMail(new String[]{DEFAULT_CONTACT_EMAIL},"pcbonline首页询盘通知","mail-template-contact",data,null);
+        sendMail(new String[]{DEFAULT_CONTACT_EMAIL},"PCBONLINE 首页询盘通知","mail-template-contact",data,null);
     }
 
     @Async("msgSendServerExecutor")
@@ -155,6 +160,6 @@ public class MailSendServiceImpl implements MailSendService {
         log.info("发送反馈邮件");
         Map<String,Object> data = new HashMap<>();
         data.put("data","收到新的联系信息，Name: " + name + ",Email: " + email+", msg:"+ msg);
-        sendMail(new String[]{DEFAULT_CONTACT_EMAIL},"pcbonlineFeedback页面反馈通知","mail-template-feedback-review",data,null);
+        sendMail(new String[]{DEFAULT_CONTACT_EMAIL},"PCBONINE Feedback页面反馈通知","mail-template-feedback-review",data,null);
     }
 }
