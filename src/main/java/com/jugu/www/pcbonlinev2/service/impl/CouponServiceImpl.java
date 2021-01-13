@@ -95,7 +95,7 @@ public class CouponServiceImpl extends ServiceImpl<CouponMapper, CouponDO> imple
 
         Date endTime = calendar.getTime();
         CouponDO couponDO = new CouponDO();
-        couponDO.setCouponType(ruleDO.getId());
+        couponDO.setCouponType(Integer.valueOf(ruleDO.getCodeFlag()));
         couponDO.setCouponMoney(ruleDO.getMoney());
         couponDO.setUserId(userId);
         couponDO.setStartTime(nowDate);

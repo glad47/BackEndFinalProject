@@ -116,6 +116,7 @@ public class AssemblyDO implements Serializable {
     /**
      * 逻辑id
      */
+    @TableField(fill = FieldFill.INSERT)
     private String uuid;
     /**
      * 支付订单id

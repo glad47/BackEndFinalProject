@@ -68,7 +68,7 @@ spring:
 #MinIO对象存储相关配置
 # MinIO对象存储相关配置
 minio:
-  endpoint: http://120.79.77.169:9090 #MinIO服务所在地址
+  endpoint: http://47.89.176.26:9090 #MinIO服务所在地址
   bucketName: pcbonline #存储桶名称
   accessKey: minioadmin #访问的key
   secretKey: minioadmin #访问的秘钥

@@ -53,8 +53,8 @@ public class SHA256Util {
         String test2 = SHA256Util.getSHA256StrJava("123456@qq.com" + key);
 
 
-//        System.out.println(test1);
-//        System.out.println(test2);
+        System.out.println(test1);
+        System.out.println(test2);
 //
 //        System.out.println(test1.equals(test2));
 

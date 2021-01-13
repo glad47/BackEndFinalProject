@@ -138,6 +138,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         }
         if (subtotal.getAssemblyFee() != null && subtotal.getAssemblyFee().compareTo(new BigDecimal("0")) >= 1) {
             AssemblyDO assemblyDO = conversionToAssemblyDO(orderSaveDTO);
+            //插入价格
+            assemblyDO.setTotalAssemblyFee(subtotal.getAssemblyFee());
+
             log.info("插入贴片信息:[{}]", assemblyDO.toString());
             boolean saveAssembly = assemblyService.save(assemblyDO);
             log.info("插入贴片结果:[{}]", saveAssembly);

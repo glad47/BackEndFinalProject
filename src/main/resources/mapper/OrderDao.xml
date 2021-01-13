@@ -36,4 +36,41 @@
     </resultMap>
 
 
+    <select id="statOrderSale" resultType="com.jugu.www.pcbonlinev2.domain.dto.OrderAmountDTO">
+    SELECT
+        sum( subtotal ) AS amount,
+        DATE_FORMAT( gmt_create, '%Y%m' ) AS time,
+        'pcb' AS `name`
+    FROM
+        quote
+    WHERE
+        user_id = #{uid}
+        AND YEAR ( gmt_create ) = #{currYear}
+    GROUP BY
+        time UNION ALL
+    SELECT
+        sum( total_stencil_fee ) AS amount,
+        DATE_FORMAT( gmt_create, '%Y%m' ) AS time,
+        'smt' AS `name`
+    FROM
+        sml_stencil
+    WHERE
+        user_id = #{uid}
+        AND YEAR ( gmt_create ) = #{currYear}
+    GROUP BY
+        time UNION ALL
+    SELECT
+        SUM( total_assembly_fee ) AS amount,
+        DATE_FORMAT( gmt_create, '%Y%m' ) AS time,
+        'assembly' AS `name`
+    FROM
+        assembly
+    WHERE
+        user_id = #{uid}
+        AND YEAR ( gmt_create ) = #{currYear}
+    GROUP BY
+        time
+    </select>
+
+
 </mapper>
