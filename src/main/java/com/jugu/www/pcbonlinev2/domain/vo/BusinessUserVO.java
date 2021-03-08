@@ -9,4 +9,5 @@ public class BusinessUserVO {
     private String prefixNo;
     private String avatar;
     private String contactEmail;
+    private String skype;
 }

@@ -1,13 +1,18 @@
 package com.jugu.www.pcbonlinev2.controller;
 
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
+import com.jugu.www.pcbonlinev2.domain.dto.UserDTO;
+import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
 import com.jugu.www.pcbonlinev2.domain.vo.MinioUploadVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.FileService;
+import com.jugu.www.pcbonlinev2.service.UserService;
 import io.minio.errors.*;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,8 +22,13 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.*;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 
 /**
  * 文件管理controller
@@ -28,11 +38,20 @@ import java.security.NoSuchAlgorithmException;
 @Slf4j
 @Validated
 @Api(value = "文件上传管理", tags = "文件上传controller", protocols = "http,https")
-public class FileController {
+public class FileController extends BasicController<UserDO, UserDTO>{
 
 
     @Autowired
     private FileService fileService;
+
+    @Autowired
+    private UserService userService;
+
+    @Value("${pcbonline.img-access-url}")
+    private String imgAccessUrl;
+
+    @Value("${pcbonline.img-upload-dir}")
+    private String imgUploadDir;
 
     @ApiOperation(
             value = "上传图片",
@@ -53,8 +72,25 @@ public class FileController {
     @PostMapping("/upload/img")
     public ResponseResult upload(@NotNull(message = "文件不能为空") @RequestParam("file") MultipartFile file) {
         try {
-            String url = fileService.minIoUpload(file.getInputStream(), file.getOriginalFilename(), file.getContentType(), "img");
-            MinioUploadVO result = getMinIoUploadVO(file.getOriginalFilename(), url);
+//            String url = fileService.minIoUpload(file.getInputStream(), file.getOriginalFilename(), file.getContentType(), "img");
+            String location = "/"+ DateUtils.formatDate(new Date(),"yyyy-MM-dd") + "/";
+            File targetFile = new File(imgUploadDir+location);
+
+            if(!targetFile.exists()){
+                targetFile.mkdirs();
+            }
+            String filename = file.getOriginalFilename();
+            Files.copy(file.getInputStream(), Paths.get(imgUploadDir+location,filename), StandardCopyOption.REPLACE_EXISTING);
+
+            MinioUploadVO result = getMinIoUploadVO(file.getOriginalFilename(), imgAccessUrl+location+filename);
+
+            //更新用户头像
+            UserDO userDO = new UserDO();
+            userDO.setId(getUserId());
+            userDO.setFavicon(result.getUrl());
+
+            userService.updateById(userDO);
+
             return ResponseResult.success(result);
         } catch (IOException e) {
             log.error("上传文件失败: ",e);

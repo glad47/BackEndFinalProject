@@ -141,7 +141,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public boolean isExistByEmail(String email) {
-        Integer existCount = userMapper.selectCount(new QueryWrapper<UserDO>().eq("email",email).last("limit 1"));
+        Integer existCount = userMapper.selectCount(new QueryWrapper<UserDO>().eq("email",email).eq("user_type",0).last("limit 1"));
         return existCount >= 1;
     }
 
@@ -197,7 +197,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private String getCustomerNo(BusinessUserDO businessUser) {
-        return redisUtil.SeqGenerator(businessUser.getPrefixNo(),2,RedisUtil.NOT_EXPIRE);
+        return redisUtil.SeqGenerator(businessUser.getPrefixNo(),3,RedisUtil.NOT_EXPIRE);
     }
 
     private Boolean validateTokenAndUserUpdate(String token, UserDO userDO) {

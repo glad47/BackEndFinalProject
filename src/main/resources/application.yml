@@ -64,3 +64,5 @@ pcbonline:
   registered-coupon-grant: true
   google-catcha-verify-switch: false
   common-pwd: PCBonline888
+  img-access-url: http://localhost:8871/file
+  img-upload-dir: /Users/mc/WorkProject/pcbonline/compressed

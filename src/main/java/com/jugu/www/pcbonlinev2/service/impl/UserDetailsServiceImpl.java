@@ -29,7 +29,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserDO query = new UserDO();
-        query.setEmail(username);
+        query.setEmail(username);//email
+        query.setUserType(0); //用户类型都为0的
         QueryWrapper<UserDO> queryWrapper = new QueryWrapper<>(query);
         UserDO userDO = userMapper.selectOne(queryWrapper);
         return Optional.ofNullable(userDO)

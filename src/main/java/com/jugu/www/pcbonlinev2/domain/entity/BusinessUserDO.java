@@ -17,5 +17,6 @@ public class BusinessUserDO {
     private Integer score;
     private Integer businessId;//跟单员id 即erp系统中user角色为跟单员的userId
     private String avatar;
+    private String skype;
 
 }
