@@ -24,7 +24,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 生产日志
+ * 生产日志接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -40,6 +40,10 @@ public class ProductionLogController extends BasicController<ProductionLogDO,Pro
     @Autowired
     private ProductionLogService productionLogService;
 
+    /**
+     * 查询生产日志信息
+     * @param productId 对应pcb的id
+     */
     @ApiOperation(
             value = "查询生产日志信息",
             notes = "备注",

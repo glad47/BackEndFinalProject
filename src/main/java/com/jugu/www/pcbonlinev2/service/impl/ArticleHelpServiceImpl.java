@@ -9,6 +9,7 @@ import com.jugu.www.pcbonlinev2.domain.dto.ArticleHelpDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.ArticleHelpQueryDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.ArticleHelpDO;
 import com.jugu.www.pcbonlinev2.mapper.ArticleHelpMapper;
+import com.jugu.www.pcbonlinev2.mapper.ArticleMapper;
 import com.jugu.www.pcbonlinev2.service.ArticleHelpService;
 import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
 import org.springframework.beans.BeanUtils;
@@ -31,6 +32,9 @@ public class ArticleHelpServiceImpl extends ServiceImpl<ArticleHelpMapper, Artic
     public  PageResult<List<ArticleHelpDTO>> queryPage(PageQuery<ArticleHelpQueryDTO, ArticleHelpDO> params) {
         ValidatorUtil.validate(params);
 
+        /**
+         * 2021年03月10日16:11:57 修改为查询article表
+         */
         ArticleHelpDO query = new ArticleHelpDO();
         BeanUtils.copyProperties(params.getQuery(), query);
 

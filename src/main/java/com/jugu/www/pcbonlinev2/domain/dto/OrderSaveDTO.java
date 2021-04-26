@@ -23,12 +23,12 @@ public class OrderSaveDTO implements Serializable {
     private StencilField stencilField;
     private AssemblyFieldDTO assemblyField;
 
-    private Boolean isExistPcb = false;
-    private Integer pcbId;
-    private String pno;
+    private Boolean isExistPcb = false; //是否存在pcb
+    private Integer pcbId; //pcbid
+    private String pno; //客户型号
 
     @NotBlank(message = "文件名不能为null")
-    private String fileName;
+    private String fileName; //gerber文件名
     @NotBlank(message = "文件上传路径不能为null")
-    private String fileUploadPtah;
+    private String fileUploadPtah; //gerber上传后路径
 }

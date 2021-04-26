@@ -118,6 +118,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
                             .add(subtotal.getTestFee())
                             .add(subtotal.getUrgentFee())
             );
+            quoteDO.setTotalFee(quoteDO.getSubtotal());
             quoteDO.setBuildTime(subtotal.getBuildTime());
             log.info("插入pcb报价：【{}】",quoteDO.toString());
             boolean saveQuote = quoteService.save(quoteDO);

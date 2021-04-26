@@ -25,7 +25,7 @@ public class ResponseResult<T> implements Serializable {
             required = true,
             dataType = "boolean"
     )
-    private Boolean success;
+    private Boolean success; //是否成功
 
     /**
      * 编码
@@ -36,7 +36,7 @@ public class ResponseResult<T> implements Serializable {
             required = false,
             dataType = "string"
     )
-    private String code;
+    private String code; //返回吗
 
     /**
      * 描述信息
@@ -44,7 +44,7 @@ public class ResponseResult<T> implements Serializable {
     @ApiModelProperty(
             value = "描述信息"
     )
-    private String message;
+    private String message; //描述信息
 
     /**
      * 结果
@@ -52,7 +52,7 @@ public class ResponseResult<T> implements Serializable {
     @ApiModelProperty(
             value = "泛型结果T"
     )
-    private T result;
+    private T result; //结果
 
     /**
      * 成功

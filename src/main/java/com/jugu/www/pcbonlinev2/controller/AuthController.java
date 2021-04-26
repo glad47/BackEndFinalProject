@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
 
+/**
+ * 授权接口
+ */
 @RestController
 @RequestMapping("/api")
 @Api(
@@ -42,7 +45,13 @@ public class AuthController {
         this.mailSendService = mailSendService;
     }
 
-
+    /**
+     * 登录接口
+     * @param username 用户邮箱
+     * @param password 用户密码
+     * @param recaptchaResponse google校验码 reCaptcha,返回的g-recaptcha-response
+     * @return token字符串
+     */
     @ApiOperation(
             value = "登录",
             notes = "登录接口",
@@ -89,6 +98,14 @@ public class AuthController {
         return authService.login(username, password);
     }
 
+    /**
+     * google登录接口
+     * @param gid google授权后的id
+     * @param username 用户名
+     * @param email 用户邮箱
+     * @param favicon 用户头像
+     * @return
+     */
     @ApiOperation(
             value = "google登录",
             notes = "google登录接口",
@@ -137,6 +154,15 @@ public class AuthController {
     }
 
 
+    /**
+     * 注册接口
+     * @param username 用户名
+     * @param password 密码
+     * @param recaptchaResponse google校验码 reCaptcha,返回的g-recaptcha-response
+     * @param invite 邀请码
+     * @param from 来自那个页面标识
+     * @return
+     */
     @ApiOperation(
             value = "注册",
             notes = "注册接口",
@@ -209,6 +235,11 @@ public class AuthController {
         }
     }
 
+    /**
+     * 激活接口
+     * @param token token
+     * @return
+     */
     @ApiOperation(
             value = "激活",
             notes = "激活接口",
@@ -234,7 +265,12 @@ public class AuthController {
         }
     }
 
-
+    /**
+     * 发送重置密码邮件接口
+     * @param email 邮箱
+     * @param recaptchaResponse google校验码 reCaptcha,返回的g-recaptcha-response
+     * @return
+     */
     @ApiOperation(
             value = "发送重置密码邮件",
             notes = "发送重置密码邮件接口",
@@ -267,7 +303,12 @@ public class AuthController {
     }
 
 
-
+    /**
+     * 重置密码接口
+     * @param token token
+     * @param nowPwd 新密码
+     * @return
+     */
     @ApiOperation(
             value = "重置密码",
             notes = "重置密码接口",
@@ -302,6 +343,13 @@ public class AuthController {
         }
     }
 
+    /**
+     * 首页发送联系邮件接口
+     * @param email 邮箱
+     * @param name 名字
+     * @param msg 信息
+     * @return
+     */
     @ApiOperation(
             value = "首页发送联系邮件",
             notes = "发送联系邮件",
@@ -340,6 +388,14 @@ public class AuthController {
         return ResponseResult.success("发送成功");
     }
 
+    /**
+     * feedback发送反馈邮件接口
+     * @param email 邮箱
+     * @param name 名字
+     * @param msg 信息
+     * @param recaptchaResponse google校验码 reCaptcha,返回的g-recaptcha-response
+     * @return
+     */
     @ApiOperation(
             value = "feedback发送反馈邮件",
             notes = "发送反馈邮件",

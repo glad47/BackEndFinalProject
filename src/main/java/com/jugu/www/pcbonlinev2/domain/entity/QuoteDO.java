@@ -417,4 +417,9 @@ public class QuoteDO implements Serializable {
      */
     private String production;
 
+    /**
+     * 总价
+     */
+    private BigDecimal totalFee;
+
 }

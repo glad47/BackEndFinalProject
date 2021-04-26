@@ -13,6 +13,7 @@ import com.jugu.www.pcbonlinev2.redis.CountryRedis;
 import com.jugu.www.pcbonlinev2.service.CountryService;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
+import io.github.yedaxia.apidocs.Ignore;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -29,7 +30,7 @@ import java.util.stream.Stream;
 
 
 /**
- *
+ * 国家信息接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -70,6 +71,7 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
+    @Ignore
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody CountryDTO countryDTO) {
         if (countryService.save(conversionDO(new CountryDO(), countryDTO))){
             return ResponseResult.success("新增成功");
@@ -105,6 +107,7 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PutMapping("/{id}")
+    @Ignore
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody CountryDTO countryDTO){
         CountryDO countryDO = conversionDO(new CountryDO(), countryDTO);
         countryDO.setId(id);
@@ -132,6 +135,7 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @DeleteMapping("/{id}")
+    @Ignore
     public ResponseResult delete(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id){
         if (countryService.removeById(id)){
             return ResponseResult.success("删除成功");
@@ -140,6 +144,13 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
         }
     }
 
+    /**
+     * 查询
+     * @param pageNo
+     * @param pageSize
+     * @param query
+     * @return
+     */
     @ApiOperation(
             value = "查询信息",
             notes = "备注",
@@ -174,6 +185,7 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping
+    @Ignore
     public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated CountryQueryDTO query){
         //构造查询条件
         PageQuery<CountryQueryDTO, CountryDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
@@ -203,6 +215,9 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
     }
 
 
+    /**
+     * 查询所有国家
+     */
     @ApiOperation(
             value = "查询所有国家",
             notes = "备注",
@@ -213,7 +228,7 @@ public class CountryController extends BasicController<CountryDO,CountryDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping("/all")
-    public ResponseResult all(){
+    public ResponseResult<List<CountryAllVO>> all(){
         // TODO: 2020-09-22 可有改进空间？ 
         List list = countryRedis.get();
         if (list == null || list.size() == 0){

@@ -3,11 +3,15 @@ package com.jugu.www.pcbonlinev2.controller;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
+import com.jugu.www.pcbonlinev2.domain.dto.ArticleDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.ArticleHelpDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.ArticleHelpQueryDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.ArticleQueryDTO;
+import com.jugu.www.pcbonlinev2.domain.entity.ArticleDO;
 import com.jugu.www.pcbonlinev2.domain.entity.ArticleHelpDO;
 import com.jugu.www.pcbonlinev2.domain.vo.ArticleHelpVO;
 import com.jugu.www.pcbonlinev2.service.ArticleHelpService;
+import com.jugu.www.pcbonlinev2.service.ArticleService;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -26,7 +30,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 帮助主题表
+ * 帮助主题接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -41,6 +45,9 @@ public class ArticleHelpController extends BasicController<ArticleHelpDO,Article
 
     @Autowired
     private ArticleHelpService articleHelpService;
+
+    @Autowired
+    private ArticleService articleService;
 
 //    @ApiOperation(
 //            value = "新增信息",
@@ -134,6 +141,12 @@ public class ArticleHelpController extends BasicController<ArticleHelpDO,Article
 //        }
 //    }
 
+    /**
+     * 查询帮助信息
+     * @param pageNo 页码
+     * @param pageSize 显示多少条
+     * @param query 查询条件
+     */
     @ApiOperation(
             value = "查询信息",
             notes = "备注",
@@ -170,19 +183,37 @@ public class ArticleHelpController extends BasicController<ArticleHelpDO,Article
     @GetMapping
     public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated ArticleHelpQueryDTO query){
         //构造查询条件
-        PageQuery<ArticleHelpQueryDTO, ArticleHelpDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
+//        PageQuery<ArticleHelpQueryDTO, ArticleHelpDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
+//
+//        //查询
+//        PageResult<List<ArticleHelpDTO>> listPageResult = articleHelpService.queryPage(pageQuery);
 
-        //查询
-        PageResult<List<ArticleHelpDTO>> listPageResult = articleHelpService.queryPage(pageQuery);
+        /**
+         * 2021年03月10日16:13:41 修改为查询article表
+         */
+        ArticleQueryDTO articleDTO = new ArticleQueryDTO();
+
+        articleDTO.setArticleType(3);//帮助
+        articleDTO.setArticleClassify(query.getClassifyOne());//
+
+        PageQuery<ArticleQueryDTO, ArticleDO> pageQuery1 = new PageQuery<>(pageNo, pageSize, articleDTO);
+        PageResult<List<ArticleDTO>> list = articleService.queryPage(pageQuery1);
 
         //转化VO
-        List<ArticleHelpVO> articleHelpVOS = Optional.ofNullable(listPageResult.getData())
+        List<ArticleHelpVO> articleHelpVOS = Optional.ofNullable(list.getData())
                 .map(List::stream)
                 .orElseGet(Stream::empty)
                 .map(ArticleHelpDTO -> {
                     ArticleHelpVO vo = new ArticleHelpVO();
-                    BeanUtils.copyProperties(ArticleHelpDTO, vo);
+//                    BeanUtils.copyProperties(ArticleHelpDTO, vo);
                     // TODO: 特殊字段处理
+                    vo.setId(ArticleHelpDTO.getId().intValue());
+                    vo.setContent(ArticleHelpDTO.getArticleContent());
+                    vo.setClassifyOne(ArticleHelpDTO.getArticleClassify());
+                    vo.setClassifyTwo(ArticleHelpDTO.getArticleKeyword());
+                    vo.setGmtCreate(ArticleHelpDTO.getArticleTime());
+                    vo.setGmtModified(ArticleHelpDTO.getArticleUpdateTime());
+                    vo.setTitle(ArticleHelpDTO.getArticleName());
 
                     return vo;
                 })
@@ -190,7 +221,7 @@ public class ArticleHelpController extends BasicController<ArticleHelpDO,Article
 
         //最终返回结果
         PageResult<List<ArticleHelpVO>> result = new PageResult<>();
-        BeanUtils.copyProperties(listPageResult, result);
+        BeanUtils.copyProperties(list, result);
         result.setData(articleHelpVOS);
 
         return ResponseResult.success(result);

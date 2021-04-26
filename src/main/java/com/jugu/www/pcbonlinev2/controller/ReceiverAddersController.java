@@ -44,6 +44,10 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
     @Autowired
     private ReceiverAddersService receiverAddersService;
 
+    /**
+     * 新增收货地址信息
+     * @param receiverAddersDTO 收货地址实体类
+     */
     @ApiOperation(
             value = "新增收货地址信息",
             notes = "备注",
@@ -76,6 +80,12 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
         }
     }
 
+    /**
+     * 修改收货地址信息
+     * @param id id
+     * @param receiverAddersDTO 收货地址实体类
+     * @return
+     */
     @ApiOperation(
             value = "修改收货地址信息",
             notes = "备注",
@@ -144,6 +154,12 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
         }
     }
 
+    /**
+     * 查询收货地址
+     * @param pageNo 页码
+     * @param pageSize 显示多少条
+     * @param query 收货地址实体类
+     */
     @ApiOperation(
             value = "查询信息",
             notes = "备注",
@@ -206,7 +222,10 @@ public class ReceiverAddersController extends BasicController<ReceiverAddersDO,R
         return ResponseResult.success(result);
     }
 
-
+    /**
+     * 查询当前用户默认地址信息
+     * @return
+     */
     @ApiOperation(
             value = "查询当前用户默认地址信息",
             notes = "备注",

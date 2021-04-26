@@ -12,6 +12,7 @@ import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.AssemblyService;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
+import io.github.yedaxia.apidocs.Ignore;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +41,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "切片订单表管理", tags = {"切片订单表controller"}, protocols = "http, https", hidden = true)
+@Ignore
 public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO> {
 
     @Autowired

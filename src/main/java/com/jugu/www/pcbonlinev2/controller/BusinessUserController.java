@@ -15,6 +15,7 @@ import com.jugu.www.pcbonlinev2.service.BusinessUserService;
 import com.jugu.www.pcbonlinev2.service.UserService;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
+import io.github.yedaxia.apidocs.Ignore;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -28,6 +29,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * 跟单员信息接口
+ */
 @RestController
 @RequestMapping("/api/business-users")
 @Validated
@@ -64,6 +68,7 @@ public class BusinessUserController extends BasicController<BusinessUserDO, Busi
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
+    @Ignore
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody BusinessUserDTO businessUserDTO) {
         if (businessUserService.save(conversionDO(new BusinessUserDO(), businessUserDTO))){
             return ResponseResult.success("新增成功");
@@ -99,6 +104,7 @@ public class BusinessUserController extends BasicController<BusinessUserDO, Busi
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PutMapping("/{id}")
+    @Ignore
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody BusinessUserDTO businessUserDTO) {
         BusinessUserDO businessUserDO = conversionDO(new BusinessUserDO(), businessUserDTO);
         businessUserDO.setId(id);
@@ -127,6 +133,7 @@ public class BusinessUserController extends BasicController<BusinessUserDO, Busi
             @ApiResponse(code = 0, message = "操作成功")
     })
     @DeleteMapping("/{id}")
+    @Ignore
     public ResponseResult delete(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id){
         if (businessUserService.removeById(id)){
             return ResponseResult.success("删除成功");
@@ -169,6 +176,7 @@ public class BusinessUserController extends BasicController<BusinessUserDO, Busi
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping
+    @Ignore
     public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated BusinessUserQueryDTO query){
         //构造查询条件
         PageQuery<BusinessUserQueryDTO, BusinessUserDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
@@ -197,6 +205,10 @@ public class BusinessUserController extends BasicController<BusinessUserDO, Busi
         return ResponseResult.success(result);
     }
 
+    /**
+     * 查询当前登录用户对应跟单员信息
+     * @return
+     */
     @ApiOperation(
             value = "查询当前登录用户对应跟单员信息",
             notes = "备注",

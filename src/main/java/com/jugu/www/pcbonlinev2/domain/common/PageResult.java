@@ -20,31 +20,31 @@ public  class PageResult<T> implements Serializable {
      * 当前页号
      */
     @ApiModelProperty(value = "当前页号")
-    private Integer pageNo;
+    private Integer pageNo; //当前页号
 
     /**
      * 每页行数
      */
     @ApiModelProperty(value = "每页行数")
-    private Integer pageSize;
+    private Integer pageSize; //每页行数
 
     /**
      * 总记录数
      */
     @ApiModelProperty(value = "总记录数")
-    private Long total;
+    private Long total; //总记录数
 
     /**
      * 总页数
      */
     @ApiModelProperty(value = "总页数")
-    private Long pageNum;
+    private Long pageNum; //总页数
 
     /**
      * 动态的内容
      */
     @ApiModelProperty(value = "返回数据")
-    private T data;
+    private T data; //返回数据
 
     public PageResult() {
     }

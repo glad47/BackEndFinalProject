@@ -5,6 +5,7 @@
 
     <groupId>com.jugu.www</groupId>
     <artifactId>pcb-online-v2</artifactId>
+    <packaging>jar</packaging>
     <version>0.0.1-SNAPSHOT</version>
     <name>pcb-online-v2</name>
     <description>Demo project for Spring Boot</description>
@@ -12,6 +13,8 @@
     <properties>
         <java.version>1.8</java.version>
     </properties>
+
+
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -225,6 +228,20 @@
             <artifactId>minio</artifactId>
             <version>3.0.10</version>
         </dependency>
+
+        <!--文档-->
+        <dependency>
+            <groupId>io.github.yedaxia</groupId>
+            <artifactId>japidocs</artifactId>
+            <version>1.4.4</version>
+        </dependency>
+
+        <!--web services-->
+        <!--<dependency>-->
+            <!--<groupId>org.apache.cxf</groupId>-->
+            <!--<artifactId>cxf-spring-boot-starter-jaxws</artifactId>-->
+            <!--<version>3.2.4</version>-->
+        <!--</dependency>-->
 
         <!--日志log4j2-->
         <!--<dependency>-->

@@ -12,6 +12,7 @@ import com.jugu.www.pcbonlinev2.service.ArticleService;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
 import io.swagger.annotations.*;
+import jdk.nashorn.internal.ir.annotations.Ignore;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,7 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "文章表管理", tags = {"文章表controller"}, protocols = "http, https", hidden = true)
+@Ignore
 public class ArticleController extends BasicController<ArticleDO,ArticleDTO>{
 
     @Autowired

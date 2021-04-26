@@ -16,6 +16,8 @@ import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.PanelValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.SingleValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
+import io.github.yedaxia.apidocs.ApiDoc;
+import io.github.yedaxia.apidocs.Ignore;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -34,7 +36,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 订单表
+ * 订单相关接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -54,6 +56,11 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
         this.orderService = orderService;
     }
 
+    /**
+     * 下单接口
+     * @param orderSaveDTO
+     * @return
+     */
     @ApiOperation(
             value = "下单接口",
             notes = "备注",
@@ -72,6 +79,7 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
+    @ApiDoc(result = ResponseResult.class)
     public ResponseResult save(@Validated @RequestBody OrderSaveDTO orderSaveDTO) {
 
         if (orderService.saveOrder(orderSaveDTO).isSuccess()){
@@ -82,6 +90,12 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
 
     }
 
+    /**
+     * 修改订单
+     * @param id
+     * @param orderDTO
+     * @return
+     */
     @ApiOperation(
             value = "修改信息",
             notes = "备注",
@@ -109,6 +123,7 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PutMapping("/{id}")
+    @Ignore
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody OrderDTO orderDTO){
 
         OrderDO orderDO = conversionDO(new OrderDO(),orderDTO);
@@ -122,7 +137,7 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
     }
 
     @ApiOperation(
-            value = "新增信息",
+            value = "删除订单",
             notes = "备注",
             response = ResponseResult.class,
             httpMethod = "DELETE"
@@ -138,6 +153,7 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @DeleteMapping("/{id}")
+    @Ignore
     public ResponseResult delete(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id){
         if (orderService.removeById(id)){
             return ResponseResult.success("删除成功");
@@ -180,6 +196,7 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping
+    @Ignore
     public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated OrderQueryDTO query){
         //构造查询条件
         PageQuery<OrderQueryDTO, OrderDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
@@ -208,7 +225,11 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
         return ResponseResult.success(result);
     }
 
-
+    /**
+     * 创建系统订单编号及计算基本价格信息和优惠券信息
+     * @param toPaymentParameterDTO 去支付页面的封装参数对象
+     * @return
+     */
     @ApiOperation(
             value = "创建系统订单编号及计算基本价格信息和优惠券信息",
             notes = "paypal支付后,回调的订单保存接口",
@@ -231,7 +252,11 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
         return ResponseResult.success(result);
     }
 
-
+    /**
+     * 支付后回调接口
+     * @param paymentParameterDTO 支付后回调参数
+     * @return
+     */
     @ApiOperation(
             value = "支付后回调接口",
             notes = "备注",
@@ -257,6 +282,11 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
         return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
     }
 
+    /**
+     * 发票信息查询接口
+     * @param orderId 订单id
+     * @return
+     */
     @ApiOperation(
             value = "发票信息接口查询",
             notes = "备注",

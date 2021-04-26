@@ -31,7 +31,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 /**
- * 文件管理controller
+ * 文件管理接口
  */
 @RestController
 @RequestMapping("/api/file")
@@ -53,6 +53,10 @@ public class FileController extends BasicController<UserDO, UserDTO>{
     @Value("${pcbonline.img-upload-dir}")
     private String imgUploadDir;
 
+    /**
+     * 上传图片
+     * @param file 图片文件
+     */
     @ApiOperation(
             value = "上传图片",
             notes = "备注",
@@ -99,7 +103,10 @@ public class FileController extends BasicController<UserDO, UserDTO>{
         return ResponseResult.failure(ErrorCodeEnum.UPLOAD_FILE_ERROR);
     }
 
-
+    /**
+     * 上传压缩包
+     * @param file 压缩包文件
+     */
     @ApiOperation(
             value = "上传压缩包",
             notes = "备注",
@@ -135,6 +142,10 @@ public class FileController extends BasicController<UserDO, UserDTO>{
         return result;
     }
 
+    /**
+     * 下载压缩包
+     * @param fileName 文件上传的路径名
+     */
     @ApiOperation(
             value = "下载文件",
             notes = "下载压缩包",

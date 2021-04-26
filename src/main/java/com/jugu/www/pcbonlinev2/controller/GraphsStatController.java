@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * 图形统计controller
+ * 统计接口
  */
 @RestController
 @Validated
@@ -25,6 +25,11 @@ public class GraphsStatController {
     @Autowired
     private GraphsStatService graphsStatService;
 
+    /**
+     * 统计各类型订单各个月份销售额
+     * @param currYears 年份
+     * @return
+     */
     @ApiOperation(
             value = "统计各类型订单各个月份销售额",
             notes = "备注",

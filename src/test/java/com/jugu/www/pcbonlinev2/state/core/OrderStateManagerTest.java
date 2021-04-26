@@ -29,4 +29,22 @@ class OrderStateManagerTest {
     public void createPostTest(){
         Assert.assertEquals(2, orderStateManager.post(1, Event.CREATE_EVENT,State.TEMPORARY_ORDER));
     }
+
+//    @Test
+//    public void wsTest(){
+//        JaxWsDynamicClientFactory dcf = JaxWsDynamicClientFactory.newInstance();
+//
+//        Client client = dcf.createClient("https://wsbeta.fedex.com:443/web-services");
+//
+//        try {
+//            Object[] invoke = client.invoke("CodReturnReferenceIndicatorType");
+//
+//            System.out.println("返回数据:" + invoke.toString() );
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//
+//    }
 }

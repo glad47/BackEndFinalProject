@@ -11,6 +11,7 @@ import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.MessageService;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
+import io.github.yedaxia.apidocs.Ignore;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 信息消息
+ * 系统消息通知接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -39,7 +40,6 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "信息消息管理", tags = {"信息消息controller"}, protocols = "http, https", hidden = true)
-@ApiIgnore
 public class MessageController extends BasicController<MessageDO,MessageDTO>{
 
     @Autowired
@@ -63,6 +63,7 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
+    @Ignore
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody MessageDTO messageDTO) {
 
         if (messageService.save(conversionDO(new MessageDO(),messageDTO))){
@@ -72,6 +73,12 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
         }
     }
 
+    /**
+     * 标记消息为已读
+     * @param id id
+     * @param messageDTO 消息对象
+     * @return
+     */
     @ApiOperation(
             value = "修改信息",
             notes = "备注",
@@ -128,6 +135,7 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @DeleteMapping("/{id}")
+    @Ignore
     public ResponseResult delete(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id){
         if (messageService.removeById(id)){
             return ResponseResult.success("删除成功");
@@ -170,6 +178,7 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @GetMapping
+    @Ignore
     public ResponseResult<PageResult> queryPage(@NotNull Integer pageNo, @NotNull Integer pageSize, @Validated MessageQueryDTO query){
         //构造查询条件
         PageQuery<MessageQueryDTO, MessageDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
@@ -198,5 +207,12 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
         return ResponseResult.success(result);
     }
 
-
+    /**
+     * 查询用户系统消息
+     * @return
+     */
+    @RequestMapping("/queryCurrUserMsg")
+    public ResponseResult queryCurrUserMsg(){
+        return null;
+    }
 }

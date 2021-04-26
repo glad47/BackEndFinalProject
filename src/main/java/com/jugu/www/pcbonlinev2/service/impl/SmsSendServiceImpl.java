@@ -9,9 +9,11 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.jugu.www.pcbonlinev2.service.SmsSendService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+@Slf4j
 @Service("smsSendService")
 public class SmsSendServiceImpl implements SmsSendService {
     /**
@@ -42,8 +44,10 @@ public class SmsSendServiceImpl implements SmsSendService {
         request.putQueryParameter("TemplateCode", templateCode);
         request.putQueryParameter("TemplateParam", templateParam);
         try {
+            log.info("最终发送人:[{}]",phoneNumber);
             CommonResponse response = acsClient.getCommonResponse(request);
-            System.out.println(response.getData());
+//            System.out.println(response.getData());
+            log.info("发送结果:[{}],",response.getData());
         } catch (ServerException e) {
             e.printStackTrace();
         } catch (ClientException e) {

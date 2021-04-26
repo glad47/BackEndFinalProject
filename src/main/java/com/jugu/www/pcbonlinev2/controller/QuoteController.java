@@ -1,7 +1,6 @@
 package com.jugu.www.pcbonlinev2.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import com.jugu.www.pcbonlinev2.domain.dto.QuoteDTO;
@@ -19,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -30,7 +28,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 报价表
+ * 报价订单接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -186,6 +184,7 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
 
         return ResponseResult.success(result);
     }
+
 
 
 }

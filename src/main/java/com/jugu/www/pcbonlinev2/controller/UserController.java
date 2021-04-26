@@ -25,6 +25,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * 用户管理接口
+ */
 @RestController
 @RequestMapping("/api/users")
 @Slf4j
@@ -39,7 +42,13 @@ public class UserController extends BasicController<UserDO,UserDTO>{
     @Autowired
     private UserService userService;
 
-
+    /**
+     * 查询用户信息
+     * @param pageNo 页码
+     * @param pageSize 显示多少条
+     * @param query 用户查询封装的对象
+     * @return
+     */
     @GetMapping
     @ApiOperation(
             value = "查询用户信息",
@@ -112,6 +121,11 @@ public class UserController extends BasicController<UserDO,UserDTO>{
         return ResponseResult.success(result);
     }
 
+    /**
+     * 修改用户信息
+     * @param userDTO 用户对象实体
+     * @return
+     */
     @ApiOperation(
             value = "修改信息",
             notes = "备注",
@@ -144,7 +158,10 @@ public class UserController extends BasicController<UserDO,UserDTO>{
         }
     }
 
-
+    /**
+     * 查询当前登录用户信息
+     * @return
+     */
     @ApiOperation(
             value = "查询当前登录用户信息",
             notes = "备注",
@@ -167,8 +184,11 @@ public class UserController extends BasicController<UserDO,UserDTO>{
     }
 
 
-
-
+    /**
+     * 校验当前密码
+     * @param currPwd 当前密码
+     * @return
+     */
     @ApiOperation(
             value = "校验当前密码",
             notes = "备注",
@@ -191,6 +211,10 @@ public class UserController extends BasicController<UserDO,UserDTO>{
         return ResponseResult.success(userDO.getPassword().equals(SHA256Util.getSHA256StrJava(currPwd.trim() + "password")));
     }
 
+    /**
+     * 修改密码
+     * @param newPwd 新密码
+     */
     @ApiOperation(
             value = "修改密码",
             notes = "备注",

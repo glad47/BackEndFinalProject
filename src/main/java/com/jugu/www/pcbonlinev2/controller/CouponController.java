@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 优惠券表
+ * 优惠券接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -136,6 +136,10 @@ public class CouponController extends BasicController<CouponDO, CouponDTO> {
 //        }
 //    }
 
+    /**
+     * 查询当前用户的所有优惠券信息
+     * @param query 查询封装的对象
+     */
     @ApiOperation(
             value = "查询当前用户的所有优惠券信息",
             notes = "备注",
@@ -180,7 +184,10 @@ public class CouponController extends BasicController<CouponDO, CouponDTO> {
         return ResponseResult.success(couponVOS);
     }
 
-
+    /**
+     * 生成优惠券
+     * @param flag 对应优惠券规则表code_flag字段
+     */
     @ApiOperation(
             value = "生成优惠券",
             notes = "备注",
@@ -202,6 +209,10 @@ public class CouponController extends BasicController<CouponDO, CouponDTO> {
         return ResponseResult.success(GenSerialUtil.generateCode(flag));
     }
 
+    /**
+     * 检验及兑换优惠券
+     * @param code 优惠码
+     */
     @ApiOperation(
             value = "检验及兑换优惠券",
             notes = "备注",

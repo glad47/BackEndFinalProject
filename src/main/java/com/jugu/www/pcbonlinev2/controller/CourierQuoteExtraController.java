@@ -11,6 +11,7 @@ import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.CourierQuoteExtraService;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
+import io.github.yedaxia.apidocs.Ignore;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -40,6 +41,7 @@ import java.util.stream.Stream;
 @Slf4j
 @Api(value = "运费其它项表管理", tags = {"运费其它项表controller"}, protocols = "http, https", hidden = true)
 @ApiIgnore
+@Ignore
 public class CourierQuoteExtraController extends BasicController<CourierQuoteExtraDO,CourierQuoteExtraDTO>{
 
     @Autowired
