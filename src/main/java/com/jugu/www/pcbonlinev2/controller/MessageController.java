@@ -1,5 +1,6 @@
 package com.jugu.www.pcbonlinev2.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
@@ -209,10 +210,40 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
 
     /**
      * 查询用户系统消息
-     * @return
      */
     @RequestMapping("/queryCurrUserMsg")
-    public ResponseResult queryCurrUserMsg(){
-        return null;
+    public ResponseResult queryCurrUserMsg() {
+        List<MessageDO> messageDOList = messageService.list(new QueryWrapper<MessageDO>().eq("receiveUser", getUserId()).eq("isread", 0));
+
+        List<MessageVO> result = Optional.ofNullable(messageDOList)
+                .map(List::stream)
+                .orElse(Stream.empty())
+                .map(MessageDO -> {
+                    MessageVO vo = new MessageVO();
+                    BeanUtils.copyProperties(MessageDO, vo);
+
+                    return vo;
+                })
+                .collect(Collectors.toList());
+        return ResponseResult.success(result);
     }
+
+    /**
+     * 标记消息为已读
+     * @param id 消息id
+     */
+    @PutMapping("/readMsg/{id}")
+    public ResponseResult readMsg(@NotNull(message = "消息id不能为空！") @PathVariable("id") Integer id){
+        MessageDO messageDO = new MessageDO();
+        messageDO.setId(id);
+        messageDO.setIsread(1);
+
+        if (messageService.updateById(messageDO)){
+           return ResponseResult.success("更新成功");
+        }else{
+            return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+        }
+    }
+
+
 }

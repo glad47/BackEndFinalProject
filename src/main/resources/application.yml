@@ -24,7 +24,7 @@ spring:
   #email
   mail:
     host: smtp.qiye.aliyun.com #发送邮件服务器
-    username: team@pcbonline.com #QQ邮箱
+    username: team@pcbonline.com #邮箱
     password: PCBONLINE2020@ #客户端授权码
     protocol: smtp #发送邮件协议
     properties.mail.smtp.auth: true
