@@ -107,6 +107,7 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PutMapping("/{id}")
+    @Ignore
     public ResponseResult update(@NotNull(message = "用户id不能为空！") @PathVariable("id") Integer id, @Validated(UpdateValidationGroup.class) @RequestBody MessageDTO messageDTO){
 
         MessageDO messageDO = conversionDO(new MessageDO(),messageDTO);
