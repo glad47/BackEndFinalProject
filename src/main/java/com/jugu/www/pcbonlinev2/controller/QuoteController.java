@@ -11,6 +11,7 @@ import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.QuoteService;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
+import io.github.yedaxia.apidocs.Ignore;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -28,7 +29,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 报价订单接口
+ * PCB报价接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -62,6 +63,7 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
+    @Ignore
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody QuoteDTO quoteDTO) {
 
         if (quoteService.save(conversionDO(new QuoteDO(),quoteDTO))){
@@ -71,6 +73,12 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
         }
     }
 
+    /**
+     * 修改PCB订单
+     * @param id id
+     * @param quoteDTO pcb订单实体
+     * @return
+     */
     @ApiOperation(
             value = "修改信息",
             notes = "备注",
@@ -110,6 +118,11 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
         }
     }
 
+    /**
+     * 删除PCB订单
+     * @param id id
+     * @return
+     */
     @ApiOperation(
             value = "删除信息",
             notes = "备注",
@@ -135,6 +148,10 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
         }
     }
 
+    /**
+     * 查询pcb订单信息
+     * @param quoteQueryDTO pcb查询条件对象
+     */
     @ApiOperation(
             value = "查询pcb订单信息",
             notes = "备注",
@@ -153,7 +170,7 @@ public class QuoteController extends BasicController<QuoteDO,QuoteDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping("/query")
-    public ResponseResult<PageResult> queryPage(@Validated @RequestBody QuoteQueryDTO quoteQueryDTO) {
+    public ResponseResult<PageResult<List<QuoteVO>>> queryPage(@Validated @RequestBody QuoteQueryDTO quoteQueryDTO) {
         //构造查询条件
 //        PageQuery<QuoteQueryDTO, QuoteDO> pageQuery = new PageQuery<>(pageNo, pageSize, quoteQueryDTO);
 

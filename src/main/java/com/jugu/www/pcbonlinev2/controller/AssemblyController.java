@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 切片订单表
+ * 贴片报价接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -41,7 +41,6 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "切片订单表管理", tags = {"切片订单表controller"}, protocols = "http, https", hidden = true)
-@Ignore
 public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO> {
 
     @Autowired
@@ -65,6 +64,7 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
+    @Ignore
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody AssemblyDTO assemblyDTO) {
         if (assemblyService.save(conversionDO(new AssemblyDO(), assemblyDTO))) {
             return ResponseResult.success("新增成功");
@@ -73,7 +73,12 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
         }
     }
 
-
+    /**
+     * 修改贴片订单信息
+     * @param id id
+     * @param assemblyDTO 对象
+     * @return
+     */
     @ApiOperation(
             value = "修改信息",
             notes = "备注",
@@ -112,6 +117,11 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
         }
     }
 
+    /**
+     * 删除贴片订单信息
+     * @param id id
+     * @return
+     */
     @ApiOperation(
             value = "新增信息",
             notes = "备注",
@@ -137,6 +147,10 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
         }
     }
 
+    /**
+     * 查询贴片订单信息
+     * @param assemblyQueryDTO 查询对象
+     */
     @ApiOperation(
             value = "查询贴片订单信息",
             notes = "备注",
@@ -155,7 +169,7 @@ public class AssemblyController extends BasicController<AssemblyDO, AssemblyDTO>
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping("/query")
-    public ResponseResult<PageResult> queryPage(@Validated @RequestBody AssemblyQueryDTO assemblyQueryDTO) {
+    public ResponseResult<PageResult<List<AssemblyVO>>> queryPage(@Validated @RequestBody AssemblyQueryDTO assemblyQueryDTO) {
         //构造查询条件
 //        PageQuery<AssemblyQueryDTO, AssemblyDO> pageQuery = new PageQuery<>(pageNo, pageSize, query);
 

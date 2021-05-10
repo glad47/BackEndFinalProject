@@ -21,9 +21,9 @@ public class SmlStencilQueryDTO implements Serializable {
     private static final long serialVersionUID = -6562070232279793927L;
 
     @ApiModelProperty(value = "状态")
-    private Integer status;
+    private Integer status; //状态,和pcb一样
 
     @ApiModelProperty(value = "状态list")
-    private List statusList;
+    private List statusList; //状态list
 
 }

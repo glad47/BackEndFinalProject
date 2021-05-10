@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 
 
 /**
- * 钢网订单表
+ * 钢网报价接口
  *
  * @author turing
  * @email zlturing@gmail.com
@@ -42,7 +42,6 @@ import java.util.stream.Stream;
 @Validated
 @Slf4j
 @Api(value = "钢网订单表管理", tags = {"钢网订单表controller"}, protocols = "http, https", hidden = false)
-@Ignore
 public class SmlStencilController extends BasicController<SmlStencilDO,SmlStencilDTO>{
 
     @Autowired
@@ -66,6 +65,7 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
+    @Ignore
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody SmlStencilDTO smlStencilDTO) {
         if (smlStencilService.save(conversionDO(new SmlStencilDO(),smlStencilDTO))){
             return ResponseResult.success("新增成功");
@@ -74,6 +74,12 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
         }
     }
 
+    /**
+     * 修改钢网报价接口
+     * @param id id
+     * @param smlStencilDTO 钢网报价对象
+     * @return
+     */
     @ApiOperation(
             value = "修改信息",
             notes = "备注",
@@ -112,6 +118,11 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
         }
     }
 
+    /**
+     * 删除钢网报价订单
+     * @param id id
+     * @return
+     */
     @ApiOperation(
             value = "新增信息",
             notes = "备注",
@@ -137,6 +148,11 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
         }
     }
 
+    /**
+     * 查询钢网报价订单信息
+     * @param smlStencilQueryDTO 查询对象
+     * @return
+     */
     @ApiOperation(
             value = "查询钢网订单信息",
             notes = "备注",
@@ -155,7 +171,7 @@ public class SmlStencilController extends BasicController<SmlStencilDO,SmlStenci
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping("/query")
-    public ResponseResult<PageResult> queryPage(@Validated SmlStencilQueryDTO smlStencilQueryDTO) {
+    public ResponseResult<PageResult<List<SmlStencilVO>>> queryPage(@Validated SmlStencilQueryDTO smlStencilQueryDTO) {
         //构造查询条件
 //        PageQuery<SmlStencilQueryDTO, SmlStencilDO> pageQuery = new PageQuery<>(pageNo, pageSize, smlStencilQueryDTO);
 

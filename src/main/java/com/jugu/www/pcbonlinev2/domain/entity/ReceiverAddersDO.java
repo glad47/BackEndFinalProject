@@ -90,5 +90,15 @@ public class ReceiverAddersDO implements Serializable {
      * 指定快递账号
      */
     private String courierAccount;
+    /**
+     * 姓
+     */
+    private String lastName;
+    /**
+     *州
+     */
+    private String stateTerritory;
+
+
 
 }

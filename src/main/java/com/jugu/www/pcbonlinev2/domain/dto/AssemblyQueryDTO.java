@@ -21,9 +21,9 @@ public class AssemblyQueryDTO implements Serializable {
     private static final long serialVersionUID = 4643566434253894856L;
 
     @ApiModelProperty(value = "状态")
-    private Integer status;
+    private Integer status; //状态,和pcb一样
 
     @ApiModelProperty(value = "状态list")
-    private List statusList;
+    private List statusList; //状态list
 
 }
