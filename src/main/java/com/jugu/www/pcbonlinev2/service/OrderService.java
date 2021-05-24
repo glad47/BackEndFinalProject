@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.Result;
-import com.jugu.www.pcbonlinev2.domain.dto.OrderDTO;
-import com.jugu.www.pcbonlinev2.domain.dto.OrderQueryDTO;
-import com.jugu.www.pcbonlinev2.domain.dto.OrderSaveDTO;
-import com.jugu.www.pcbonlinev2.domain.dto.PaymentParameterDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.*;
 import com.jugu.www.pcbonlinev2.domain.dto.order.ToPaymentParameterDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
 import com.jugu.www.pcbonlinev2.domain.vo.InvoiceInfoVO;
@@ -39,5 +36,7 @@ public interface OrderService extends IService<OrderDO> {
     PaymentParameterDTO getToPaymentInfo(ToPaymentParameterDTO toPaymentParameterDTO);
 
     InvoiceInfoVO getInvoiceInfo(Integer orderId);
+
+    boolean payCard(CardPaymentDTO cardPaymentDTO);
 }
 

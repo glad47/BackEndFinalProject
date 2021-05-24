@@ -356,6 +356,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
                 .receiverAddersVO(receiverAddersVO).build();
     }
 
+    @Override
+    public boolean payCard(CardPaymentDTO cardPaymentDTO) {
+
+        return false;
+
+    }
+
     private AssemblyDO conversionToAssemblyDO(OrderSaveDTO orderSaveDTO) {
         AssemblyDO assemblyDO = new AssemblyDO();
         AssemblyFieldDTO assemblyField = orderSaveDTO.getAssemblyField();
