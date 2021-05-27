@@ -3,6 +3,7 @@ package com.jugu.www.pcbonlinev2.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.google.gson.Gson;
 import com.jugu.www.pcbonlinev2.aspect.EmailSmsSend;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
@@ -18,10 +19,20 @@ import com.jugu.www.pcbonlinev2.utils.RedisUtil;
 import com.jugu.www.pcbonlinev2.utils.ThreadSessionLocal;
 import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.util.DigestUtils;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
+import org.springframework.web.client.RestTemplate;
+import sun.security.provider.MD5;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -55,8 +66,25 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
     private final ReceiverAddersService receiverAddersService;
 
+    @Value("${pcbonline.merchant-id}")
+    private String merchantId;
+
+    @Value("${pcbonline.business-id}")
+    private String businessId;
+
+    @Value("${pcbonline.card-pay-url}")
+    private String cardPayUrl;
+
+    @Value("${pcbonline.sign-key}")
+    private String signKey;
+
+
+    private final RestTemplate restTemplate;
+
+
+
     @Autowired
-    public OrderServiceImpl(OrderMapper orderMapper, QuoteService quoteService, SmlStencilService smlStencilService, AssemblyService assemblyService, RedisUtil redisUtil, UserService userService, MemberLevelService memberLevelService, CouponService couponService, ReceiverAddersService receiverAddersService) {
+    public OrderServiceImpl(OrderMapper orderMapper, QuoteService quoteService, SmlStencilService smlStencilService, AssemblyService assemblyService, RedisUtil redisUtil, UserService userService, MemberLevelService memberLevelService, CouponService couponService, ReceiverAddersService receiverAddersService, RestTemplate restTemplate) {
         this.orderMapper = orderMapper;
         this.quoteService = quoteService;
         this.smlStencilService = smlStencilService;
@@ -66,6 +94,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         this.memberLevelService = memberLevelService;
         this.couponService = couponService;
         this.receiverAddersService = receiverAddersService;
+        this.restTemplate = restTemplate;
     }
 
     @Override
@@ -358,9 +387,44 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
     @Override
     public boolean payCard(CardPaymentDTO cardPaymentDTO) {
+        //封装请求实体
+        HttpEntity<MultiValueMap<String, String>> requestEntity = fullPayRequestEntity(cardPaymentDTO);
+        //发送交易授权信息
+        restTemplate.postForEntity(cardPayUrl, requestEntity, String.class);
 
         return false;
 
+    }
+
+    private HttpEntity<MultiValueMap<String,String>> fullPayRequestEntity(CardPaymentDTO cardPaymentDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        Gson gson  = new Gson();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
+        params.add("version","3.0");
+        params.add("merchant_id",merchantId);
+        params.add("business_id",businessId);
+        params.add("access_type","s2s");
+        params.add("order_number",cardPaymentDTO.getOrderNumber());
+        params.add("trans_type","authorization");
+        params.add("trans_channel","cc");
+        params.add("pay_method","normal");
+        params.add("trans_timeout","60");
+        params.add("url","www.test.com");
+        params.add("currency","USD");
+        params.add("amount",cardPaymentDTO.getAmount().toString());
+        params.add("settle_currency",cardPaymentDTO.getSettleCurrency());
+        params.add("product_info",gson.toJson(cardPaymentDTO.getProductInfo()));
+        params.add("pay_method_info",gson.toJson(cardPaymentDTO.getPayMethodInfo()));
+        params.add("terminal_type","0");
+        params.add("risk_info",gson.toJson(cardPaymentDTO.getRiskInfo()));
+        params.add("redirect_url","https://www.pcbonline.com");
+        params.add("sign_type","MD5");
+
+        String ss = merchantId+businessId+cardPaymentDTO.getOrderNumber()+"authorizationccnormalwww.test.comUSD"+cardPaymentDTO.getAmount()+cardPaymentDTO.getSettleCurrency()+signKey;
+        String sign = DigestUtils.md5DigestAsHex(ss.getBytes());
+        params.add("sign", sign);//加密
+        return new HttpEntity<MultiValueMap<String,String>>(params,headers);
     }
 
     private AssemblyDO conversionToAssemblyDO(OrderSaveDTO orderSaveDTO) {

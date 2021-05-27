@@ -12,6 +12,7 @@ package com.jugu.www.pcbonlinev2.domain.dto;
 
 import com.jugu.www.pcbonlinev2.domain.dto.order.PayMethodInfo;
 import com.jugu.www.pcbonlinev2.domain.dto.order.ProductInfo;
+import com.jugu.www.pcbonlinev2.domain.dto.order.RiskInfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
@@ -31,6 +32,9 @@ public class CardPaymentDTO {
     private ProductInfo productInfo;
 
     private PayMethodInfo payMethodInfo;
+
+
+    private RiskInfo riskInfo;
 
     private String settleCurrency; //结算币种
 
