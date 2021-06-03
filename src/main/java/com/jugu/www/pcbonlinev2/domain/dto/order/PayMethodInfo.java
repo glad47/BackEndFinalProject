@@ -26,4 +26,5 @@ public class PayMethodInfo {
     private String cvv; //安全码
     private String first_name; //名字
     private String last_name; //姓
+    private String billing_desc; //账单描述
 }

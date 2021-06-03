@@ -26,13 +26,13 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
-import sun.security.provider.MD5;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -82,7 +82,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
     private final RestTemplate restTemplate;
 
 
-
     @Autowired
     public OrderServiceImpl(OrderMapper orderMapper, QuoteService quoteService, SmlStencilService smlStencilService, AssemblyService assemblyService, RedisUtil redisUtil, UserService userService, MemberLevelService memberLevelService, CouponService couponService, ReceiverAddersService receiverAddersService, RestTemplate restTemplate) {
         this.orderMapper = orderMapper;
@@ -98,7 +97,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
     }
 
     @Override
-    public  PageResult<List<OrderDTO>> queryPage(PageQuery<OrderQueryDTO, OrderDO> params) {
+    public PageResult<List<OrderDTO>> queryPage(PageQuery<OrderQueryDTO, OrderDO> params) {
         ValidatorUtil.validate(params);
 
         OrderDO query = new OrderDO();
@@ -107,7 +106,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         Page<OrderDO> orderDOPage = orderMapper.selectPage(params.getPage(), new QueryWrapper<>(query));
 
         //数据转换
-        List<OrderDTO> orderDTOList  = Optional.ofNullable(orderDOPage.getRecords())
+        List<OrderDTO> orderDTOList = Optional.ofNullable(orderDOPage.getRecords())
                 .map(List::stream)
                 .orElseGet(Stream::empty)
                 .map(OrderDO -> {
@@ -117,11 +116,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
                 })
                 .collect(Collectors.toList());
 
-        return new PageResult<>(orderDOPage,orderDTOList);
+        return new PageResult<>(orderDOPage, orderDTOList);
     }
 
     /**
      * 下单业务处理
+     *
      * @param orderSaveDTO
      * @return
      */
@@ -132,7 +132,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         boolean r = false;
         StringBuilder pns = new StringBuilder();
         //pcb报价
-        if(subtotal.getBoardFee() != null && subtotal.getBoardFee().compareTo(new BigDecimal("0")) >= 1){
+        if (subtotal.getBoardFee() != null && subtotal.getBoardFee().compareTo(new BigDecimal("0")) >= 1) {
             QuoteDO quoteDO = conversionToQuoteDO(orderSaveDTO);
             quoteDO.setGerberName(orderSaveDTO.getFileName());
             quoteDO.setGerberPath(orderSaveDTO.getFileUploadPtah());
@@ -149,7 +149,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             );
             quoteDO.setTotalFee(quoteDO.getSubtotal());
             quoteDO.setBuildTime(subtotal.getBuildTime());
-            log.info("插入pcb报价：【{}】",quoteDO.toString());
+            log.info("插入pcb报价：【{}】", quoteDO.toString());
             boolean saveQuote = quoteService.save(quoteDO);
             log.info("插入pcb结果【{}】,返回id：[{}]", saveQuote, quoteDO.getId());
             orderSaveDTO.setIsExistPcb(true);
@@ -162,7 +162,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             SmlStencilDO smlStencilDO = conversionToStencilDO(orderSaveDTO);
             log.info("插入钢网报价：【{}】", smlStencilDO.toString());
             boolean saveStencil = smlStencilService.save(smlStencilDO);
-            log.info("插入钢网结果【{}】",saveStencil);
+            log.info("插入钢网结果【{}】", saveStencil);
             r = saveStencil;
             pns.append(smlStencilDO.getProductNo()).append(" ");
         }
@@ -182,6 +182,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
     /**
      * 支付后的下单处理业务方法
+     *
      * @param paymentParameterDTO 支付业务对象
      */
     @EmailSmsSend
@@ -191,13 +192,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         OrderDO orderDO = conversionToOrderDO(paymentParameterDTO);
 
         //用户余额支付，更新点数
-        if (paymentParameterDTO.getPaymentType() == 4){
-            userService.updatePoints(paymentParameterDTO.getPaymentTotal(),orderDO.getUserId());
+        if (paymentParameterDTO.getPaymentType() == 4) {
+            userService.updatePoints(paymentParameterDTO.getPaymentTotal(), orderDO.getUserId());
         }
 //        int insertOrderResult = orderMapper.insert(orderDO);
         boolean insertOrderResult = this.saveOrUpdate(orderDO);
         StringBuilder pns = new StringBuilder();
-        if (insertOrderResult){
+        if (insertOrderResult) {
             List<OrderDetails> orderDetailsList = paymentParameterDTO.getOrderDetailsList();
             for (OrderDetails o : orderDetailsList) {
                 pns.append(o.getProductNo()).append(" ");
@@ -300,7 +301,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
         //会员优惠
         BigDecimal memberPreferential = new BigDecimal(memberLevelDO.getPreferentialDetail()).divide(new BigDecimal("100"), 2, RoundingMode.HALF_UP);
-        BigDecimal member =  memberPreferential.multiply(toPaymentParameterDTO.getSubtotal()).setScale(2,RoundingMode.HALF_UP);
+        BigDecimal member = memberPreferential.multiply(toPaymentParameterDTO.getSubtotal()).setScale(2, RoundingMode.HALF_UP);
 
         BigDecimal totalPrice = toPaymentParameterDTO.getSubtotal().add(toPaymentParameterDTO.getShipping());
         //计算小计
@@ -315,7 +316,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         //查找当前可用优惠券
         List<CouponDO> couponDOList = couponService.getValidCoupon(toPaymentParameterDTO.getUserId());
         //数据转换
-        List<CouponVO> couponVOList  = Optional.ofNullable(couponDOList)
+        List<CouponVO> couponVOList = Optional.ofNullable(couponDOList)
                 .map(List::stream)
                 .orElseGet(Stream::empty)
                 .map(data -> {
@@ -373,9 +374,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
                     return assemblyVO;
                 }).collect(Collectors.toList());
         OrderVO orderVO = new OrderVO();
-        BeanUtils.copyProperties(orderDO,orderVO);
+        BeanUtils.copyProperties(orderDO, orderVO);
         ReceiverAddersVO receiverAddersVO = new ReceiverAddersVO();
-        BeanUtils.copyProperties(receiverAddersDO,receiverAddersVO);
+        BeanUtils.copyProperties(receiverAddersDO, receiverAddersVO);
 
         return InvoiceInfoVO.builder()
                 .quoteVOList(quoteVOList)
@@ -387,61 +388,129 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
     @Override
     public boolean payCard(CardPaymentDTO cardPaymentDTO) {
+        Gson gson = new Gson();
         //封装请求实体
         HttpEntity<MultiValueMap<String, String>> requestEntity = fullPayRequestEntity(cardPaymentDTO);
+        log.info("发送请求实体：[{}]", requestEntity.toString());
         //发送交易授权信息
-        restTemplate.postForEntity(cardPayUrl, requestEntity, String.class);
+        ResponseEntity<String> entity = restTemplate.postForEntity(cardPayUrl, requestEntity, String.class);
 
-        return false;
+        String entityBody = entity.getBody();
+        log.info("支付授权请求返回:[{}]",entityBody);
+
+        CardPayAuthResponse cardPayAuthResponse = gson.fromJson(entityBody, CardPayAuthResponse.class);
+        log.info("序列化为javabean结果:[{}]",cardPayAuthResponse);
+
+        if ("1".equals(cardPayAuthResponse.getStatus()) && "0000".equals(cardPayAuthResponse.getResp_code())){
+            //发送交易请款
+            HttpEntity<MultiValueMap<String, String>> captureRequestEntity = fullCaptureRequestEntity(cardPayAuthResponse);
+            ResponseEntity<String> captureResponse = restTemplate.postForEntity(cardPayUrl, captureRequestEntity, String.class);
+            log.info("capture请求返回:[{}]",captureResponse.getBody());
+
+            CardPayAuthResponse result = gson.fromJson(captureResponse.getBody(), CardPayAuthResponse.class);
+            if ("1".equals(result.getStatus()) && "0000".equals(result.getResp_code())){
+                return true;
+            }else{
+                log.info("支付授权发送成功，请款交易失败");
+                return false;
+            }
+        }else {
+            return false;
+        }
+
 
     }
 
-    private HttpEntity<MultiValueMap<String,String>> fullPayRequestEntity(CardPaymentDTO cardPaymentDTO) {
+    private HttpEntity<MultiValueMap<String,String>> fullCaptureRequestEntity(CardPayAuthResponse cardPayAuthResponse) {
         HttpHeaders headers = new HttpHeaders();
-        Gson gson  = new Gson();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-        MultiValueMap<String,String> params = new LinkedMultiValueMap<>();
-        params.add("version","3.0");
-        params.add("merchant_id",merchantId);
-        params.add("business_id",businessId);
-        params.add("access_type","s2s");
-        params.add("order_number",cardPaymentDTO.getOrderNumber());
-        params.add("trans_type","authorization");
-        params.add("trans_channel","cc");
-        params.add("pay_method","normal");
-        params.add("trans_timeout","60");
-        params.add("url","www.test.com");
-        params.add("currency","USD");
-        params.add("amount",cardPaymentDTO.getAmount().toString());
-        params.add("settle_currency",cardPaymentDTO.getSettleCurrency());
-        params.add("product_info",gson.toJson(cardPaymentDTO.getProductInfo()));
-        params.add("pay_method_info",gson.toJson(cardPaymentDTO.getPayMethodInfo()));
-        params.add("terminal_type","0");
-        params.add("risk_info",gson.toJson(cardPaymentDTO.getRiskInfo()));
-        params.add("redirect_url","https://www.pcbonline.com");
-        params.add("sign_type","MD5");
+        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
 
-        String ss = merchantId+businessId+cardPaymentDTO.getOrderNumber()+"authorizationccnormalwww.test.comUSD"+cardPaymentDTO.getAmount()+cardPaymentDTO.getSettleCurrency()+signKey;
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("version", "3.0");
+        params.add("merchant_id", merchantId);
+        params.add("business_id", businessId);
+        params.add("access_type", "s2s");
+        params.add("trans_channel", "");
+        params.add("original_order_id", cardPayAuthResponse.getOrder_id());
+        params.add("trans_type", "capture");
+        params.add("amount", "");
+        params.add("notify_url", "");
+        params.add("req_reserved", "");
+        params.add("reserved", "");
+        params.add("sign_type", "MD5");
+
+        String ss = "3.0"+merchantId+businessId+"s2s"+cardPayAuthResponse.getOrder_id()+"captureMD5"+signKey;
+        log.info("加密前:[{}]", ss);
         String sign = DigestUtils.md5DigestAsHex(ss.getBytes());
+        log.info("加密后:[{}]",sign);
+
+        params.add("sign",sign);
+
+        return new HttpEntity<>(params, headers);
+
+    }
+
+    private HttpEntity<MultiValueMap<String, String>> fullPayRequestEntity(CardPaymentDTO cardPaymentDTO) {
+        HttpHeaders headers = new HttpHeaders();
+        Gson gson = new Gson();
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        //避免403
+        headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("version", "3.0");
+        params.add("merchant_id", merchantId);
+        params.add("business_id", businessId);
+        params.add("access_type", "s2s");
+        params.add("order_number", cardPaymentDTO.getOrderNumber());
+        params.add("trans_type", "authorization");
+        params.add("trans_channel", "cc");
+        params.add("pay_method", "normal");
+        params.add("trans_timeout", "60");
+        params.add("url", "www.test.com");
+        params.add("country", "US");
+        params.add("language", "zh");
+        params.add("currency", "USD");
+        params.add("amount", cardPaymentDTO.getAmount().toString());
+        params.add("settle_currency", cardPaymentDTO.getSettleCurrency());
+        params.add("product_info", gson.toJson(cardPaymentDTO.getProductInfo()));
+        params.add("pay_method_info", gson.toJson(cardPaymentDTO.getPayMethodInfo()));
+        params.add("terminal_type", "0");
+        params.add("risk_info", gson.toJson(cardPaymentDTO.getRiskInfo()));
+        params.add("redirect_url", "https://www.pcbonline.com");
+        params.add("sign_type", "MD5");
+        params.add("skin_code","");
+        params.add("logo","");
+        params.add("dcc","");
+        params.add("notify_url", "");
+        params.add("req_reserved","");
+        params.add("reserved","");
+
+
+
+        String ss = merchantId + businessId + cardPaymentDTO.getOrderNumber() + "authorizationccnormalwww.test.comUSD" + cardPaymentDTO.getAmount() + cardPaymentDTO.getSettleCurrency() + signKey;
+        log.info("加密前:[{}]", ss);
+        String sign = DigestUtils.md5DigestAsHex(ss.getBytes());
+        log.info("加密后:[{}]", sign);
         params.add("sign", sign);//加密
-        return new HttpEntity<MultiValueMap<String,String>>(params,headers);
+        return new HttpEntity<>(params, headers);
     }
 
     private AssemblyDO conversionToAssemblyDO(OrderSaveDTO orderSaveDTO) {
         AssemblyDO assemblyDO = new AssemblyDO();
         AssemblyFieldDTO assemblyField = orderSaveDTO.getAssemblyField();
 
-        BeanUtils.copyProperties(assemblyField,assemblyDO);
+        BeanUtils.copyProperties(assemblyField, assemblyDO);
 
         //登录后的信息
         UserDetailsDTO userDetailsDTO = ThreadSessionLocal.getUserInfo();
 
-        if (orderSaveDTO.getIsExistPcb()){
+        if (orderSaveDTO.getIsExistPcb()) {
             assemblyDO.setProductNo(orderSaveDTO.getPno() + "a");
             assemblyDO.setQuoteId(orderSaveDTO.getPcbId());
-        }else {
+        } else {
             assemblyDO.setProductNo(redisUtil.SeqGenerator(userDetailsDTO.getUserSystemId(), 5, RedisUtil.NOT_EXPIRE) + "aa");
-            if(StringUtils.isEmpty(orderSaveDTO.getPno())) orderSaveDTO.setPno(assemblyDO.getProductNo());
+            if (StringUtils.isEmpty(orderSaveDTO.getPno())) orderSaveDTO.setPno(assemblyDO.getProductNo());
         }
 
         assemblyDO.setUserId(userDetailsDTO.getId());
@@ -450,9 +519,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         assemblyDO.setBusinessId(userDetailsDTO.getBusinessId());
         assemblyDO.setBusinessName(userDetailsDTO.getBusinessName());
 
-        if(userDetailsDTO.getAuditMark() == 1){
+        if (userDetailsDTO.getAuditMark() == 1) {
             assemblyDO.setStatus(State.FORMAL_ORDER.status);
-        }else{
+        } else {
             assemblyDO.setStatus(State.TEMPORARY_ORDER.status);
         }
 
@@ -481,11 +550,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         //登录后的信息
         UserDetailsDTO userDetailsDTO = ThreadSessionLocal.getUserInfo();
 
-        if(orderSaveDTO.getIsExistPcb()){
+        if (orderSaveDTO.getIsExistPcb()) {
             stencilDO.setProductNo(orderSaveDTO.getPno() + "s");
             stencilDO.setQuoteId(orderSaveDTO.getPcbId());
-        } else{
-            stencilDO.setProductNo(redisUtil.SeqGenerator(userDetailsDTO.getUserSystemId(),5,RedisUtil.NOT_EXPIRE)+"s");
+        } else {
+            stencilDO.setProductNo(redisUtil.SeqGenerator(userDetailsDTO.getUserSystemId(), 5, RedisUtil.NOT_EXPIRE) + "s");
             orderSaveDTO.setPno(stencilDO.getProductNo());
         }
 
@@ -495,15 +564,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         stencilDO.setGerberName(orderSaveDTO.getFileName());
         stencilDO.setGerberPath(orderSaveDTO.getFileUploadPtah());
 
-        if(userDetailsDTO.getAuditMark() == 1){
+        if (userDetailsDTO.getAuditMark() == 1) {
             stencilDO.setStatus(State.FORMAL_ORDER.status);
-        }else{
+        } else {
             stencilDO.setStatus(State.TEMPORARY_ORDER.status);
         }
 
         return stencilDO;
     }
-
 
 
     private QuoteDO conversionToQuoteDO(OrderSaveDTO orderSaveDTO) {
@@ -512,17 +580,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         int boardType = pcbSizeField.getBoardType().equals("Single") ? 1 : 2;
         quote.setBoardType(boardType);
         // TODO: 2020-08-27 需要计算
-        if(boardType == 2){ //拼板需要计算p
+        if (boardType == 2) { //拼板需要计算p
             quote.setQuantityPanel(pcbSizeField.getQuantity());
             quote.setQuantityPcs(Integer.valueOf(pcbSizeField.getPanelSize().getSizeY()) * Integer.valueOf(pcbSizeField.getPanelSize().getSizeX()) * Integer.valueOf(pcbSizeField.getQuantity()));
-        }else{
+        } else {
             quote.setQuantityPcs(pcbSizeField.getQuantity());
         }
-        quote.setAreaSq(computeAreaSq(new BigDecimal(pcbSizeField.getSingleSize().getSizeX()),new BigDecimal(pcbSizeField.getSingleSize().getSizeY()),quote.getQuantityPcs()));
-        if(boardType== 1){
+        quote.setAreaSq(computeAreaSq(new BigDecimal(pcbSizeField.getSingleSize().getSizeX()), new BigDecimal(pcbSizeField.getSingleSize().getSizeY()), quote.getQuantityPcs()));
+        if (boardType == 1) {
             quote.setDimensionsX(new BigDecimal(pcbSizeField.getSingleSize().getSizeX()));
             quote.setDimensionsY(new BigDecimal(pcbSizeField.getSingleSize().getSizeY()));
-        }else {
+        } else {
             quote.setPanelSizeX(new BigDecimal(pcbSizeField.getSingleSize().getSizeX()));
             quote.setPanelSizeY(new BigDecimal(pcbSizeField.getSingleSize().getSizeY()));
             quote.setPanelWayX(Integer.valueOf(pcbSizeField.getPanelSize().getSizeX()));
@@ -537,7 +605,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         quote.setHeatConductivity(pcbStandardField.getHeatConductivity());
         quote.setPthCopper(pcbStandardField.getHoleCopper());
         quote.setInnerLayerCopper(pcbStandardField.getInnerCopper());
-        quote.setLayerNum(Integer.valueOf(pcbStandardField.getLayer().substring(0,1)));
+        quote.setLayerNum(Integer.valueOf(pcbStandardField.getLayer().substring(0, 1)));
         quote.setMinHoleSize(new BigDecimal(pcbStandardField.getMinHoleSize()));
         quote.setOuterMinTrack(pcbStandardField.getMinTrack());
         quote.setOuterLayerCopper(pcbStandardField.getOuterCopper());
@@ -547,10 +615,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         quote.setSolderMaskTopColor(pcbStandardField.getSolderMask());
         quote.setSurfaceFinish(pcbStandardField.getSurfaceFinish());
         // TODO: 2020-05-19 surfaceThickness
-        if(pcbStandardField.getSurfaceFinish().equals("Immersion Gold")){
+        if (pcbStandardField.getSurfaceFinish().equals("Immersion Gold")) {
             String th = pcbStandardField.getSurfaceThickness().split(" ")[1].split(":")[1];
-            quote.setThickness(th.substring(0,th.length() -1));
-        }else{
+            quote.setThickness(th.substring(0, th.length() - 1));
+        } else {
             quote.setThickness(pcbStandardField.getThickness());
         }
         quote.setTg(pcbStandardField.getTg());
@@ -581,15 +649,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
         //登录后的信息
         UserDetailsDTO userDetailsDTO = ThreadSessionLocal.getUserInfo();
-        if (userDetailsDTO != null){
+        if (userDetailsDTO != null) {
             quote.setUserId(userDetailsDTO.getId());
             quote.setBusinessId(userDetailsDTO.getBusinessId());
             quote.setBusinessName(userDetailsDTO.getBusinessName());
-            quote.setProductNo(redisUtil.SeqGenerator(userDetailsDTO.getUserSystemId(),5,RedisUtil.NOT_EXPIRE)+"a");
+            quote.setProductNo(redisUtil.SeqGenerator(userDetailsDTO.getUserSystemId(), 5, RedisUtil.NOT_EXPIRE) + "a");
 
-            if (userDetailsDTO.getAuditMark() == 1){
+            if (userDetailsDTO.getAuditMark() == 1) {
                 quote.setStatus(State.FORMAL_ORDER.status);
-            }else {
+            } else {
                 quote.setStatus(State.TEMPORARY_ORDER.status);
             }
         }
@@ -599,7 +667,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
     }
 
     private BigDecimal computeAreaSq(BigDecimal dimensionsX, BigDecimal dimensionsY, Integer quantityPcs) {
-        return dimensionsX.multiply(dimensionsY).multiply(new BigDecimal(quantityPcs)).divide(new BigDecimal("1000000"),2, RoundingMode.HALF_UP);
+        return dimensionsX.multiply(dimensionsY).multiply(new BigDecimal(quantityPcs)).divide(new BigDecimal("1000000"), 2, RoundingMode.HALF_UP);
     }
 
 }

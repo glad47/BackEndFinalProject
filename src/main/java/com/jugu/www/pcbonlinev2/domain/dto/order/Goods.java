@@ -1,8 +1,8 @@
 /*
  * Copyright (C), 2015-2021, XXX有限公司
- * FileName: ProductInfo
+ * FileName: Goods
  * Author:   zhoulei
- * Date:     2021/5/24 9:21 PM
+ * Date:     2021/5/31 10:14 PM
  * Description:
  * History:
  * <author>          <time>          <version>          <desc>
@@ -19,11 +19,13 @@ import lombok.Data;
  * @since 1.0.0
  */
 @Data
-public class ProductInfo {
-    private String qty; //商品数量
+public class Goods {
+    private String sku; //商品SKU
     private String name; //商品名称
     private String price; //商品单价
+    private String qty; //商品数量
     private String url; //商品链接
     private String attribute; //商品属性
-    private String image; //商品图片(采用base64加密后传输)
+    private String is_gift; //是否礼品:yes/no
+    private String is_virtual; //是否虚拟商品:yes/no
 }

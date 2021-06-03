@@ -16,6 +16,7 @@ import com.jugu.www.pcbonlinev2.domain.dto.order.RiskInfo;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 〈〉
@@ -29,7 +30,7 @@ public class CardPaymentDTO {
 
     private String orderNumber; //订单号
 
-    private ProductInfo productInfo;
+    private List<ProductInfo> productInfo;
 
     private PayMethodInfo payMethodInfo;
 

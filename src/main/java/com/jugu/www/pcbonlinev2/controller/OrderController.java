@@ -309,12 +309,17 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
         return ResponseResult.success(invoiceInfoVO);
     }
 
+    /**
+     * 使用信用卡支付
+     * @param cardPaymentDTO 信用卡支付对象
+     * @return
+     */
     @PostMapping("/cardPayment")
     public ResponseResult paymentCard(@RequestBody CardPaymentDTO cardPaymentDTO){
         if (orderService.payCard(cardPaymentDTO)){
             return ResponseResult.success("pay success");
         }else {
-            return ResponseResult.failure(ErrorCodeEnum.XXX);
+            return ResponseResult.failure("3333","信用卡支付失败");
         }
     }
 
