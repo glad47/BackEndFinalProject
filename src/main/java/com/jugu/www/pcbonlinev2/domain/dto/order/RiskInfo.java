@@ -16,6 +16,6 @@ public class RiskInfo {
     private Cust cust; //用户参数
     private List<Goods> goods; //商品信息
     private List<Buried> buried; //埋点数据
-    private Ship ship; //收获地址
+    private Ship ship; //收货地址
     private Bill bill; //账单信息
 }

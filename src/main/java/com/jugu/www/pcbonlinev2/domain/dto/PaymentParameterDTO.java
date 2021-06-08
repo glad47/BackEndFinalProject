@@ -1,6 +1,7 @@
 package com.jugu.www.pcbonlinev2.domain.dto;
 
 import com.jugu.www.pcbonlinev2.domain.dto.order.OrderDetails;
+import com.jugu.www.pcbonlinev2.domain.dto.order.PayMethodInfo;
 import com.jugu.www.pcbonlinev2.domain.vo.CouponVO;
 import com.jugu.www.pcbonlinev2.domain.vo.MemberLevelVO;
 import io.swagger.annotations.ApiModel;
@@ -66,7 +67,7 @@ public class PaymentParameterDTO implements Serializable {
 
     @NotNull(message = "paypalFee不能为空")
     @ApiModelProperty(value = "paypal手续费")
-    private BigDecimal paypalFee; //paypal手续费
+    private BigDecimal paypalFee; //paypal手续费 或信用卡手续费
 
     @NotNull(message = "amount不能为空")
     @ApiModelProperty(value = "扣除优惠后的总价格")
@@ -74,11 +75,11 @@ public class PaymentParameterDTO implements Serializable {
 
     @NotNull(message = "orderNoBySys 不能为空")
     @ApiModelProperty(value = "生成的order订单号")
-    private String orderNoBySys; //生成的order订单号
+    private String orderNoBySys; //系统生成的order订单号, 此参数原先是系统后台生成，由paypal支付后传给paypal系统的custom自定义字段。用于后续的订单支付完成状态修改。在购物车paypal或信用卡支付场景中，需要前端生成一个随机字符串做标识。例如：2021060200002
 
     @NotNull(message = "payPayOrderId不能为空")
     @ApiModelProperty(value = "payPay返回的orderId")
-    private String payPayOrderId; //payPay返回的orderId
+    private String payPayOrderId; //payPay返回的orderId 信用卡支付时可以随便填，但不能为空
 
     @NotNull(message = "receiverAddressId不能为空")
     @ApiModelProperty(value = "送货地址id")
@@ -86,12 +87,16 @@ public class PaymentParameterDTO implements Serializable {
 
     @NotNull(message = "paymentType不能为空")
     @ApiModelProperty(value = "支付类型1->payPal、2->BankTransfer、3->WesternUnion、4->PayWithAccountBalance")
-    private Integer paymentType; //支付类型1->payPal、2->BankTransfer、3->WesternUnion、4->PayWithAccountBalance
+    private Integer paymentType; //支付类型1->payPal、2->BankTransfer、3->WesternUnion、4->PayWithAccountBalance，5->credit
 
     @ApiModelProperty(value = "当前用户的可用优惠卷")
     private List<CouponVO> couponVOList; //当前用户的可用优惠卷
 
     @ApiModelProperty(value = "会员等级信息")
     private MemberLevelVO memberLevelVO; //会员等级信息
+
+
+    private PayMethodInfo payMethodInfo; //信用卡信息
+
 
 }

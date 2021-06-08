@@ -3,6 +3,7 @@ package com.jugu.www.pcbonlinev2.controller;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
+import com.jugu.www.pcbonlinev2.domain.common.Result;
 import com.jugu.www.pcbonlinev2.domain.dto.*;
 import com.jugu.www.pcbonlinev2.domain.dto.order.ToPaymentParameterDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
@@ -10,11 +11,6 @@ import com.jugu.www.pcbonlinev2.domain.vo.InvoiceInfoVO;
 import com.jugu.www.pcbonlinev2.domain.vo.OrderVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.OrderService;
-import com.jugu.www.pcbonlinev2.utils.RedisUtil;
-import com.jugu.www.pcbonlinev2.validator.ValidatorUtil;
-import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
-import com.jugu.www.pcbonlinev2.validator.group.PanelValidationGroup;
-import com.jugu.www.pcbonlinev2.validator.group.SingleValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
 import io.github.yedaxia.apidocs.ApiDoc;
 import io.github.yedaxia.apidocs.Ignore;
@@ -26,8 +22,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -276,10 +270,11 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
     })
     @PostMapping("/save")
     public ResponseResult createOrder(@Validated @RequestBody PaymentParameterDTO paymentParameterDTO) {
-        if (orderService.createOrder(paymentParameterDTO).isSuccess()){
+        Result result = orderService.createOrder(paymentParameterDTO);
+        if (result.isSuccess()){
             return ResponseResult.success("支付创建订单成功");
         }
-        return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+        return ResponseResult.failure("3333",result.getErrorMsg());
     }
 
     /**
@@ -315,11 +310,13 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
      * @return
      */
     @PostMapping("/cardPayment")
+    @Ignore
     public ResponseResult paymentCard(@RequestBody CardPaymentDTO cardPaymentDTO){
-        if (orderService.payCard(cardPaymentDTO)){
+        Result result = orderService.payCard(cardPaymentDTO);
+        if (result.isSuccess()){
             return ResponseResult.success("pay success");
         }else {
-            return ResponseResult.failure("3333","信用卡支付失败");
+            return ResponseResult.failure("3333",result.getErrorMsg());
         }
     }
 

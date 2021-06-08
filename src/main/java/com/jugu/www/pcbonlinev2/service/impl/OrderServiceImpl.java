@@ -34,9 +34,11 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
+import javax.validation.Valid;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -194,6 +196,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         //用户余额支付，更新点数
         if (paymentParameterDTO.getPaymentType() == 4) {
             userService.updatePoints(paymentParameterDTO.getPaymentTotal(), orderDO.getUserId());
+        }else if(paymentParameterDTO.getPaymentType() == 5){ //信用卡支付
+            log.info("进入使用信用卡支付流程");
+            CardPaymentDTO cardPaymentDTO = conversionToCardPaymentDTO(paymentParameterDTO);
+            Result result = this.payCard(cardPaymentDTO);
+            if (!result.isSuccess()) return  result;
         }
 //        int insertOrderResult = orderMapper.insert(orderDO);
         boolean insertOrderResult = this.saveOrUpdate(orderDO);
@@ -219,6 +226,77 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         }
 
         return Result.builder().isSuccess(insertOrderResult).pns(pns.toString().trim()).msgType(2).total(orderDO.getTotalFee()).build();
+    }
+
+    private CardPaymentDTO conversionToCardPaymentDTO(PaymentParameterDTO paymentParameterDTO) {
+        List<OrderDetails> orderDetailsList = paymentParameterDTO.getOrderDetailsList();
+        List<ProductInfo> productInfoList = new ArrayList<>();
+        List<Goods> goodsList = new ArrayList<>();
+        List<Buried> buriedList = new ArrayList<>();
+
+        buriedList.add(new Buried());
+
+        for (OrderDetails o:orderDetailsList) {
+            ProductInfo productInfo = new ProductInfo();
+            productInfo.setName(o.getProductNo());
+            productInfo.setPrice(o.getSubtotal().toString());
+            productInfo.setUrl(o.getOType().toString());
+            productInfoList.add(productInfo);
+
+            Goods goods = new Goods();
+            goods.setSku(o.getProductNo());
+            goods.setName(o.getProductNo());
+            goods.setPrice(o.getSubtotal().toString());
+            goods.setQty(o.getOType().toString());
+            goodsList.add(goods);
+        }
+        Cust cust = new Cust();
+        cust.setIp("149.28.144.221");
+        cust.setEmail("6kf6bcat6ps@thrubay.com");
+        cust.setPhone("435-577-7055");
+
+        Ship ship = new Ship();
+        ship.setFirst_name(paymentParameterDTO.getPayMethodInfo().getFirst_name());
+        ship.setLast_name(paymentParameterDTO.getPayMethodInfo().getLast_name());
+        ship.setEmail("6kf6bcat6ps@thrubay.com");
+        ship.setPhone("435-577-7055");
+        ship.setCity("Circleville");
+        ship.setAddress("3888 Austin SecretLane");
+        ship.setState("Utah");
+        ship.setPostcode("84723");
+        ship.setCountry("US");
+
+
+
+        Bill bill = new Bill();
+        bill.setFirst_name(paymentParameterDTO.getPayMethodInfo().getFirst_name());
+        bill.setLast_name(paymentParameterDTO.getPayMethodInfo().getLast_name());
+        bill.setEmail("6kf6bcat6ps@thrubay.com");
+        bill.setPhone("435-577-7055");
+        bill.setCity("Circleville");
+        bill.setAddress("3888 Austin SecretLane");
+        bill.setState("Utah");
+        bill.setPostcode("84723");
+        bill.setCountry("Us");
+
+        RiskInfo riskInfo = new RiskInfo();
+        riskInfo.setGoods(goodsList);
+        riskInfo.setTrade(new Trade());
+        riskInfo.setDevice(new Device());
+        riskInfo.setCust(cust);
+        riskInfo.setBuried(buriedList);
+        riskInfo.setShip(ship);
+        riskInfo.setBill(bill);
+
+
+        CardPaymentDTO cardPaymentDTO = new CardPaymentDTO();
+        cardPaymentDTO.setAmount(paymentParameterDTO.getAmount());
+        cardPaymentDTO.setOrderNumber(paymentParameterDTO.getOrderNoBySys());
+        cardPaymentDTO.setProductInfo(productInfoList);
+        cardPaymentDTO.setPayMethodInfo(paymentParameterDTO.getPayMethodInfo());
+        cardPaymentDTO.setRiskInfo(riskInfo);
+        cardPaymentDTO.setSettleCurrency("USD");
+        return cardPaymentDTO;
     }
 
     private AssemblyDO conversionToPayAfterAss(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime) {
@@ -387,7 +465,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
     }
 
     @Override
-    public boolean payCard(CardPaymentDTO cardPaymentDTO) {
+    public Result payCard(CardPaymentDTO cardPaymentDTO) {
         Gson gson = new Gson();
         //封装请求实体
         HttpEntity<MultiValueMap<String, String>> requestEntity = fullPayRequestEntity(cardPaymentDTO);
@@ -409,13 +487,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
             CardPayAuthResponse result = gson.fromJson(captureResponse.getBody(), CardPayAuthResponse.class);
             if ("1".equals(result.getStatus()) && "0000".equals(result.getResp_code())){
-                return true;
+                return Result.builder().isSuccess(true).build();
             }else{
                 log.info("支付授权发送成功，请款交易失败");
-                return false;
+                return Result.builder().isSuccess(false).errorMsg("晶粒信用卡支付授权成功，请款交易失败！详细:code->"+result.getResp_code()+",msg->"+result.getResp_msg()).build();
             }
         }else {
-            return false;
+            if (cardPayAuthResponse.getCode() != null && "1002".equals(cardPayAuthResponse.getCode())){
+                return Result.builder().isSuccess(false).errorMsg("晶粒信用卡授权请求参数无效,详细: code->"+cardPayAuthResponse.getCode()+",msg->"+cardPayAuthResponse.getMsg()).build();
+            }
+            return Result.builder().isSuccess(false).errorMsg("晶粒信用卡支付授权请求失败,详细:code->"+cardPayAuthResponse.getResp_code()+",msg->"+cardPayAuthResponse.getResp_msg()).build();
         }
 
 

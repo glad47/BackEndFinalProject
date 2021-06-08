@@ -37,6 +37,6 @@ public interface OrderService extends IService<OrderDO> {
 
     InvoiceInfoVO getInvoiceInfo(Integer orderId);
 
-    boolean payCard(CardPaymentDTO cardPaymentDTO);
+    Result payCard(CardPaymentDTO cardPaymentDTO);
 }
 

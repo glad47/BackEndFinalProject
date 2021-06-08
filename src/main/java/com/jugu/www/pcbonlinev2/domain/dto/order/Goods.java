@@ -10,6 +10,7 @@
  */
 package com.jugu.www.pcbonlinev2.domain.dto.order;
 
+import lombok.Builder;
 import lombok.Data;
 
 /**

@@ -19,14 +19,14 @@ import java.math.BigDecimal;
 import java.util.List;
 
 /**
- * 〈〉
+ * 信用卡支付类
  *
  * @author zhoulei
  * @since 1.0.0
  */
 @Data
 public class CardPaymentDTO {
-    private BigDecimal amount; //交易金额
+    private BigDecimal amount; //扣除优惠后的总价格
 
     private String orderNumber; //订单号
 
@@ -40,7 +40,5 @@ public class CardPaymentDTO {
     private String settleCurrency; //结算币种
 
     //private String currency; //
-
-
 
 }

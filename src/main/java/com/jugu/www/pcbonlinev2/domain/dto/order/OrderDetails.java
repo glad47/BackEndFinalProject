@@ -19,18 +19,18 @@ public class OrderDetails implements Serializable {
 
     @ApiModelProperty(value = "订单项id")
     @NotNull(message = "产品id不能为null")
-    private Integer id;
+    private Integer id; //产品id
 
     @ApiModelProperty(value = "产品编号")
-    private String productNo;
+    private String productNo; //产品编号
 
     @NotNull(message = "oType不能为null")
     @ApiModelProperty(value = "产品类型 1pcb 2钢网 3贴片")
-    private Integer oType;
+    private Integer oType; //产品类型 1pcb 2钢网 3贴片
 
     @ApiModelProperty(value = "产品重量")
-    private BigDecimal weight;
+    private BigDecimal weight; //产品重量"
 
     @ApiModelProperty(value = "产品小计")
-    private BigDecimal subtotal;
+    private BigDecimal subtotal; //产品小计
 }

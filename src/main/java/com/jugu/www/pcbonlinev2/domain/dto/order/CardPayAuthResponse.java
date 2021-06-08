@@ -42,4 +42,7 @@ public class CardPayAuthResponse {
     //private RiskResult risk_result;
     private String sign_type;
     private String sign;
+
+    private String msg;
+    private String code;
 }

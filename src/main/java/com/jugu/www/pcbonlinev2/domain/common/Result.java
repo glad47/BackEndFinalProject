@@ -13,6 +13,8 @@ public class Result implements Serializable {
 
     private boolean isSuccess;
 
+    private String errorMsg;
+
     private int id;
 
     //聚谷型号

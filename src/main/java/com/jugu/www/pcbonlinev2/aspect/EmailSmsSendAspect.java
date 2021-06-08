@@ -46,12 +46,17 @@ public class EmailSmsSendAspect {
 
         //发送消息
         log.info("发送各种消息业务开始执行>>>>>");
-        sendMsg(result);
+        Result r = (Result) result;
+        if (r.isSuccess()){
+            sendMsg(r);
+        }else {
+            log.info("执行结果失败发送信息");
+        }
         return result;
     }
 
-    private void sendMsg(Object result) {
-        Result r = (Result) result;
+    private void sendMsg(Result r) {
+
         log.info("开始发送短信,参数->[{}]",r.toString());
         Integer businessId = ThreadSessionLocal.getUserInfo().getBusinessId();
         //获取跟单员信息
