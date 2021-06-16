@@ -209,15 +209,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             List<OrderDetails> orderDetailsList = paymentParameterDTO.getOrderDetailsList();
             for (OrderDetails o : orderDetailsList) {
                 pns.append(o.getProductNo()).append(" ");
-                if (o.getOType() == 1) {
+                if (o.getType() == 1) {
                     QuoteDO quoteDO = conversionToPayAfterPcb(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
                     insertOrderResult = quoteService.updateById(quoteDO);
                     log.info("支付PCB订单后修改状态结果：[{}]", insertOrderResult);
-                } else if (o.getOType() == 2) {
+                } else if (o.getType() == 2) {
                     SmlStencilDO stencilDO = conversionToPayAgterSmt(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
                     insertOrderResult = smlStencilService.updateById(stencilDO);
                     log.info("支付SMT订单后修改状态结果：[{}]", insertOrderResult);
-                } else if (o.getOType() == 3) {
+                } else if (o.getType() == 3) {
                     AssemblyDO assemblyDO = conversionToPayAfterAss(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
                     insertOrderResult = assemblyService.updateById(assemblyDO);
                     log.info("支付贴片订单后修改状态结果：[{}]", insertOrderResult);
@@ -225,7 +225,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             }
         }
 
-        return Result.builder().isSuccess(insertOrderResult).pns(pns.toString().trim()).msgType(2).total(orderDO.getTotalFee()).build();
+        return Result.builder().isSuccess(insertOrderResult).pns(pns.toString().trim()).msgType(2).total(orderDO.getTotalFee()).id(orderDO.getId()).build();
     }
 
     private CardPaymentDTO conversionToCardPaymentDTO(PaymentParameterDTO paymentParameterDTO) {
@@ -240,14 +240,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             ProductInfo productInfo = new ProductInfo();
             productInfo.setName(o.getProductNo());
             productInfo.setPrice(o.getSubtotal().toString());
-            productInfo.setUrl(o.getOType().toString());
+            productInfo.setUrl(o.getType().toString());
             productInfoList.add(productInfo);
 
             Goods goods = new Goods();
             goods.setSku(o.getProductNo());
             goods.setName(o.getProductNo());
             goods.setPrice(o.getSubtotal().toString());
-            goods.setQty(o.getOType().toString());
+            goods.setQty(o.getType().toString());
             goodsList.add(goods);
         }
         Cust cust = new Cust();

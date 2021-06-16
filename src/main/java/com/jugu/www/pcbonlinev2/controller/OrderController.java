@@ -272,7 +272,7 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
     public ResponseResult createOrder(@Validated @RequestBody PaymentParameterDTO paymentParameterDTO) {
         Result result = orderService.createOrder(paymentParameterDTO);
         if (result.isSuccess()){
-            return ResponseResult.success("支付创建订单成功");
+            return ResponseResult.success(result.getId());
         }
         return ResponseResult.failure("3333",result.getErrorMsg());
     }

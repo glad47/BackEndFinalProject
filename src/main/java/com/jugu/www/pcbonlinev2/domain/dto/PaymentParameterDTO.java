@@ -19,8 +19,8 @@ import java.util.List;
 public class PaymentParameterDTO implements Serializable {
     private static final long serialVersionUID = -3993127174799315511L;
 
-    @Valid
     @ApiModelProperty(value = "订单详细")
+    @Valid
     private List<OrderDetails> orderDetailsList; //订单详细
 
     @ApiModelProperty(value = "此次订单的积分数")
