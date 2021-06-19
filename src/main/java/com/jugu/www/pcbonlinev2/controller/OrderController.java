@@ -5,6 +5,7 @@ import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import com.jugu.www.pcbonlinev2.domain.common.Result;
 import com.jugu.www.pcbonlinev2.domain.dto.*;
+import com.jugu.www.pcbonlinev2.domain.dto.order.OrderDetails;
 import com.jugu.www.pcbonlinev2.domain.dto.order.ToPaymentParameterDTO;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
 import com.jugu.www.pcbonlinev2.domain.vo.InvoiceInfoVO;
@@ -319,5 +320,15 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
             return ResponseResult.failure("3333",result.getErrorMsg());
         }
     }
+
+
+    //@PostMapping("/auditOrderDetails")
+    //public ResponseResult auditOrder(@Validated @RequestBody List<OrderDetails> orderDetailsList){
+    //    if (orderService.auditOrderDetails(orderDetailsList)){
+    //        return ResponseResult.success("操作成功");
+    //    }else {
+    //        return ResponseResult.failure(ErrorCodeEnum.SYSTEM_ERROR);
+    //    }
+    //}
 
 }

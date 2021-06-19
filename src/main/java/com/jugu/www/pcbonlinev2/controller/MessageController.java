@@ -46,6 +46,11 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
     @Autowired
     private MessageService messageService;
 
+    /**
+     * 新增消息信息
+     * @param messageDTO
+     * @return
+     */
     @ApiOperation(
             value = "新增信息",
             notes = "备注",
@@ -64,7 +69,6 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping
-    @Ignore
     public ResponseResult save(@Validated(InsertValidationGroup.class) @RequestBody MessageDTO messageDTO) {
 
         if (messageService.save(conversionDO(new MessageDO(),messageDTO))){
@@ -121,7 +125,7 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
     }
 
     @ApiOperation(
-            value = "新增信息",
+            value = "删除信息",
             notes = "备注",
             response = ResponseResult.class,
             httpMethod = "DELETE"
@@ -244,6 +248,29 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
         }else{
             return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
         }
+    }
+
+    /**
+     * 发送通知审核信息
+     * @param productNos 产品型号
+     * @return
+     */
+    @PostMapping("/send/auditMsg")
+    public ResponseResult auditOrder(@NotNull(message = "产品编号不能为空！") String productNos){
+        MessageDO messageDO = new MessageDO();
+        messageDO.setSendUser(getUserId().toString());
+        messageDO.setContent("用户:"+getUserSysName()+" 有需要审核的订单-> "+productNos);
+        messageDO.setReceiveUser("sys");
+        messageDO.setIsread(0);
+        messageDO.setCreateUser(getUserId());
+        messageDO.setType(0);
+
+        if (messageService.save(messageDO)){
+            return ResponseResult.success("新增成功");
+        }else{
+            return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
+        }
+
     }
 
 

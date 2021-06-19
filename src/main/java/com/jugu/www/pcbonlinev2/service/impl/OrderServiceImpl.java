@@ -502,6 +502,23 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
 
     }
 
+    @Override
+    public boolean auditOrderDetails(List<OrderDetails> orderDetailsList) {
+        //for (OrderDetails o:orderDetailsList) {
+        //    if (o.getType() == 1){
+        //        QuoteDO quoteDO = new QuoteDO();
+        //        quoteDO.setId(o.getId());
+        //        quoteDO.setStatus();
+        //    }else if(o.getType() == 2){
+        //
+        //    }else if(o.getType() == 3){
+        //
+        //    }
+        //}
+
+        return false;
+    }
+
     private HttpEntity<MultiValueMap<String,String>> fullCaptureRequestEntity(CardPayAuthResponse cardPayAuthResponse) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);

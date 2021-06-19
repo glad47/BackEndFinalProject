@@ -197,7 +197,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private String getCustomerNo(BusinessUserDO businessUser) {
-        return redisUtil.SeqGenerator(businessUser.getPrefixNo(),3,RedisUtil.NOT_EXPIRE);
+        return redisUtil.SeqGenerator(businessUser.getPrefixNo(),4,RedisUtil.NOT_EXPIRE);
     }
 
     private Boolean validateTokenAndUserUpdate(String token, UserDO userDO) {

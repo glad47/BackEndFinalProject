@@ -13,5 +13,9 @@ public abstract class BasicController<T, E> {
         return ThreadSessionLocal.getUserInfo().getId();
     }
 
+    protected String getUserSysName(){
+        return ThreadSessionLocal.getUserInfo().getUserSystemId();
+    }
+
 
 }
