@@ -52,7 +52,8 @@ public class ApiSecurityConfig extends WebSecurityConfigurerAdapter {
             "/api/auth/googlelogin",
             "/api/sendContactEmail",
             "/api/sendFeedbackReviewEmail",
-            "/api/file/download/zip"
+            "/api/file/download/zip",
+            "/api/country/all"
     };
 
     private static final String[] STATIC_WHITELIST = {

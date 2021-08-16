@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.jugu.www.pcbonlinev2.mapper.CartMapper">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.jugu.www.pcbonlinev2.domain.entity.CityDO" id="cityMap">
+        <result property="id" column="id"/>
+        <result property="countryId" column="country_id"/>
+        <result property="state" column="state"/>
+        <result property="name" column="name"/>
+        <result property="lowerName" column="lower_name"/>
+        <result property="cnState" column="cn_state"/>
+        <result property="cnName" column="cn_name"/>
+        <result property="cityCode" column="city_code"/>
+        <result property="stateCode" column="state_code"/>
+    </resultMap>
+    <select id="queryCartList" resultType="com.jugu.www.pcbonlinev2.domain.vo.CartListVO">
+    SELECT id,gerber_name as pno,subtotal,quantity_pcs as psc,gerber_img_path as gerberImgPath,1 as type FROM quote WHERE user_id = #{userId} AND `status` IN (1,2)
+    UNION
+    SELECT id,gerber_name as pno,total_stencil_fee as subtotal,quantity as psc,null as gerberImgPath, 2 as type  FROM sml_stencil WHERE user_id = #{userId} AND `status` IN (1,2)
+    UNION
+    SELECT id,gerber_name as pno,total_assembly_fee as sutotal,quantity as psc, null as gerberImgPath, 3 as type FROM assembly WHERE user_id = #{userId} AND `status` IN (1,2)
+    </select>
+    <select id="queryCartCount" resultType="java.lang.Integer">
+        SELECT COUNT(a.id) FROM (
+        SELECT id FROM quote WHERE user_id = #{userId} AND `status` IN (1,2)
+        UNION
+        SELECT id FROM sml_stencil WHERE user_id = #{userId} AND `status` IN (1,2)
+        UNION
+        SELECT id FROM assembly WHERE user_id = #{userId} AND `status` IN (1,2)
+        ) a
+    </select>
+
+
+</mapper>

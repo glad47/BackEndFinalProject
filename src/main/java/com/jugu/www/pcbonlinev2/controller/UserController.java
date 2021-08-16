@@ -9,6 +9,7 @@ import com.jugu.www.pcbonlinev2.domain.entity.UserDO;
 import com.jugu.www.pcbonlinev2.domain.vo.UserVO;
 import com.jugu.www.pcbonlinev2.exception.BusinessException;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
+import com.jugu.www.pcbonlinev2.service.CartService;
 import com.jugu.www.pcbonlinev2.service.UserService;
 import com.jugu.www.pcbonlinev2.utils.SHA256Util;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
@@ -41,6 +42,9 @@ public class UserController extends BasicController<UserDO,UserDTO>{
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CartService cartService;
 
     /**
      * 查询用户信息
@@ -180,6 +184,9 @@ public class UserController extends BasicController<UserDO,UserDTO>{
                     BeanUtils.copyProperties(u, vo);
                     return vo;
                 }).orElseThrow(() -> new BusinessException(ErrorCodeEnum.USER_LOGIN_INFO_NULL));
+        //查询购物车数量
+        Integer cartCount = cartService.cartCount(getUserId());
+        userVO.setCartCount(cartCount);
         return ResponseResult.success(userVO);
     }
 

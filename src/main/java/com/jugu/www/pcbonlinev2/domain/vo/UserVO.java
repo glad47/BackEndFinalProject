@@ -208,5 +208,9 @@ public class UserVO implements Serializable {
      * 用户充值的点数
      */
     private BigDecimal points;
+    /**
+     * 购物车数量
+     */
+    private Integer cartCount;
 
 }

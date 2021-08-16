@@ -37,7 +37,7 @@ public class MessageVO implements Serializable {
      */
     private Integer isread;
     /**
-     * 类型（0 单聊 1 群聊）
+     * 类型（0 单聊 1 群聊 2审核信息）
      */
     private Integer type;
     /**

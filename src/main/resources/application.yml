@@ -49,7 +49,7 @@ mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
-    call-setters-on-nulls:
+#    call-setters-on-nulls: true
 #looger
 logging:
   pattern:
@@ -70,3 +70,4 @@ pcbonline:
   business-id: 1557899299001
   card-pay-url: https://test-gateway.ginltech.com/payment/interface/do
   sign-key: zZlNcuJyTtmEVRoh
+  redirect-url: https://sys.pcbonline.com/paySuc

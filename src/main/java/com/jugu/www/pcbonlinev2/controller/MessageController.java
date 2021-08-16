@@ -218,7 +218,7 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
      */
     @RequestMapping("/queryCurrUserMsg")
     public ResponseResult queryCurrUserMsg() {
-        List<MessageDO> messageDOList = messageService.list(new QueryWrapper<MessageDO>().eq("receiveUser", getUserId()).eq("isread", 0));
+        List<MessageDO> messageDOList = messageService.list(new QueryWrapper<MessageDO>().eq("receive_user", getUserId()).eq("isread", 0).eq("type",3));
 
         List<MessageVO> result = Optional.ofNullable(messageDOList)
                 .map(List::stream)

@@ -80,6 +80,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
     @Value("${pcbonline.sign-key}")
     private String signKey;
 
+    @Value("${pcbonline.redirect-url}")
+    private String redirectUrl;
+
 
     private final RestTemplate restTemplate;
 
@@ -575,7 +578,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         params.add("pay_method_info", gson.toJson(cardPaymentDTO.getPayMethodInfo()));
         params.add("terminal_type", "0");
         params.add("risk_info", gson.toJson(cardPaymentDTO.getRiskInfo()));
-        params.add("redirect_url", "https://www.pcbonline.com");
+        params.add("redirect_url", redirectUrl);
         params.add("sign_type", "MD5");
         params.add("skin_code","");
         params.add("logo","");
@@ -677,6 +680,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         PcbSizeField pcbSizeField = orderSaveDTO.getPcbSizeField();
         int boardType = pcbSizeField.getBoardType().equals("Single") ? 1 : 2;
         quote.setBoardType(boardType);
+        quote.setRemark(orderSaveDTO.getRemark());
         // TODO: 2020-08-27 需要计算
         if (boardType == 2) { //拼板需要计算p
             quote.setQuantityPanel(pcbSizeField.getQuantity());

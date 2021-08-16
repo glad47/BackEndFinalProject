@@ -31,4 +31,6 @@ public class OrderSaveDTO implements Serializable {
     private String fileName; //gerber文件名
     @NotBlank(message = "文件上传路径不能为null")
     private String fileUploadPtah; //gerber上传后路径
+
+    private String remark;//备注
 }
