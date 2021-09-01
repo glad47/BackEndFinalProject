@@ -244,6 +244,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             productInfo.setName(o.getProductNo());
             productInfo.setPrice(o.getSubtotal().toString());
             productInfo.setUrl(o.getType().toString());
+            if (o.getQty() != null){
+                productInfo.setQty(o.getQty());
+            }else{
+                productInfo.setQty(o.getType().toString());
+            }
+
             productInfoList.add(productInfo);
 
             Goods goods = new Goods();

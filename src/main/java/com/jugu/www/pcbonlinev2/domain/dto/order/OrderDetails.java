@@ -33,4 +33,6 @@ public class OrderDetails implements Serializable {
 
     @ApiModelProperty(value = "产品小计")
     private BigDecimal subtotal; //产品小计
+
+    private String qty; //商品数量
 }
