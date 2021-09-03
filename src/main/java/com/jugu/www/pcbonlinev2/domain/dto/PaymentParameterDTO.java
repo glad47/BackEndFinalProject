@@ -98,5 +98,6 @@ public class PaymentParameterDTO implements Serializable {
 
     private PayMethodInfo payMethodInfo; //信用卡信息
 
+    private String remark;//备注
 
 }

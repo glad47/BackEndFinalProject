@@ -210,18 +210,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         StringBuilder pns = new StringBuilder();
         if (insertOrderResult) {
             List<OrderDetails> orderDetailsList = paymentParameterDTO.getOrderDetailsList();
+            String remark = paymentParameterDTO.getRemark() != null ? paymentParameterDTO.getRemark() : "";
             for (OrderDetails o : orderDetailsList) {
                 pns.append(o.getProductNo()).append(" ");
                 if (o.getType() == 1) {
-                    QuoteDO quoteDO = conversionToPayAfterPcb(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
+                    QuoteDO quoteDO = conversionToPayAfterPcb(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime(),remark);
                     insertOrderResult = quoteService.updateById(quoteDO);
                     log.info("支付PCB订单后修改状态结果：[{}]", insertOrderResult);
                 } else if (o.getType() == 2) {
-                    SmlStencilDO stencilDO = conversionToPayAgterSmt(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
+                    SmlStencilDO stencilDO = conversionToPayAgterSmt(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime(),remark);
                     insertOrderResult = smlStencilService.updateById(stencilDO);
                     log.info("支付SMT订单后修改状态结果：[{}]", insertOrderResult);
                 } else if (o.getType() == 3) {
-                    AssemblyDO assemblyDO = conversionToPayAfterAss(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime());
+                    AssemblyDO assemblyDO = conversionToPayAfterAss(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime(),remark);
                     insertOrderResult = assemblyService.updateById(assemblyDO);
                     log.info("支付贴片订单后修改状态结果：[{}]", insertOrderResult);
                 }
@@ -308,7 +309,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         return cardPaymentDTO;
     }
 
-    private AssemblyDO conversionToPayAfterAss(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime) {
+    private AssemblyDO conversionToPayAfterAss(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime, String remark) {
         AssemblyDO assemblyDO = new AssemblyDO();
         assemblyDO.setId(id);
         assemblyDO.setOrderId(oid);
@@ -316,10 +317,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         assemblyDO.setOrderNo(corderNo);
         assemblyDO.setOrderTime(paymentTime);
         assemblyDO.setStatus(3);
+        assemblyDO.setRemark(remark);
         return assemblyDO;
     }
 
-    private SmlStencilDO conversionToPayAgterSmt(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime) {
+    private SmlStencilDO conversionToPayAgterSmt(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime, String remark) {
         SmlStencilDO stencilDO = new SmlStencilDO();
         stencilDO.setId(id);
         stencilDO.setOrderId(oid);
@@ -330,7 +332,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         return stencilDO;
     }
 
-    private QuoteDO conversionToPayAfterPcb(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime) {
+    private QuoteDO conversionToPayAfterPcb(Integer id, Integer oid, String orderno, String corderNo, Date paymentTime, String remark) {
         QuoteDO quoteDO = new QuoteDO();
         quoteDO.setId(id);
         quoteDO.setOrderId(oid);
@@ -338,6 +340,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         quoteDO.setInvoiceNo(orderno);
         quoteDO.setOrderTime(paymentTime);
         quoteDO.setStatus(3);
+        quoteDO.setRemark(remark);
         return quoteDO;
     }
 
