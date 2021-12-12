@@ -4,6 +4,7 @@ import com.jugu.www.pcbonlinev2.domain.dto.UserDetailsDTO;
 import com.jugu.www.pcbonlinev2.service.MailSendService;
 import com.jugu.www.pcbonlinev2.utils.JwtTokenUtil;
 import com.jugu.www.pcbonlinev2.utils.MessageContentBuilder;
+import com.jugu.www.pcbonlinev2.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,12 +16,14 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 @Slf4j
-@Service
+@Service("mailSendService")
 public class MailSendServiceImpl implements MailSendService {
     private static final String encoding = "UTF-8";
     private static final boolean ISHTML = true;
@@ -31,6 +34,8 @@ public class MailSendServiceImpl implements MailSendService {
     private final JavaMailSender mailSender;
 
     private final JwtTokenUtil jwtTokenUtil;
+
+    private final RedisUtil redisUtil;
 
     @Value("${spring.mail.username}")
     private String from;
@@ -44,10 +49,11 @@ public class MailSendServiceImpl implements MailSendService {
     private final String DEFAULT_CONTACT_EMAIL = "info@pcbonline.com";
 
     @Autowired
-    public MailSendServiceImpl(MessageContentBuilder contentBuilder, JavaMailSender mailSender, JwtTokenUtil jwtTokenUtil) {
+    public MailSendServiceImpl(MessageContentBuilder contentBuilder, JavaMailSender mailSender, JwtTokenUtil jwtTokenUtil, RedisUtil redisUtil) {
         this.contentBuilder = contentBuilder;
         this.mailSender = mailSender;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.redisUtil = redisUtil;
     }
 
 
@@ -161,5 +167,18 @@ public class MailSendServiceImpl implements MailSendService {
         Map<String,Object> data = new HashMap<>();
         data.put("data","收到新的联系信息，Name: " + name + ",Email: " + email+", msg:"+ msg);
         sendMail(new String[]{DEFAULT_CONTACT_EMAIL},"PCBONINE Feedback页面反馈通知","mail-template-feedback-review",data,null);
+    }
+
+    @Override
+    public void sendAllMsgEmail(int msgType, String pns, BigDecimal total) {
+        Map<String, Object> data = new HashMap<>();
+        data.put("msgType",msgType);
+        data.put("pns",pns);
+        data.put("total",total);
+
+        //获取所有接收邮件邮箱
+        Set<Object> emailReceivers = redisUtil.sGet("NotifyEmailList-Set");
+        String[] emails = emailReceivers.toArray(new String[]{});
+        sendMail(emails,"PCBONLINE 审核/付款通知邮件","mail-notice-template-order-pcb",data,null);
     }
 }

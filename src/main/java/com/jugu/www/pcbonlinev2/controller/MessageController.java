@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
+import com.jugu.www.pcbonlinev2.domain.dto.AuditMsgDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.MessageDTO;
 import com.jugu.www.pcbonlinev2.domain.dto.MessageQueryDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.order.AuditOrderItem;
 import com.jugu.www.pcbonlinev2.domain.entity.MessageDO;
 import com.jugu.www.pcbonlinev2.domain.vo.MessageVO;
 import com.jugu.www.pcbonlinev2.exception.ErrorCodeEnum;
 import com.jugu.www.pcbonlinev2.service.MessageService;
+import com.jugu.www.pcbonlinev2.service.OrderService;
 import com.jugu.www.pcbonlinev2.validator.group.InsertValidationGroup;
 import com.jugu.www.pcbonlinev2.validator.group.UpdateValidationGroup;
 import io.github.yedaxia.apidocs.Ignore;
@@ -17,9 +20,9 @@ import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -45,6 +48,9 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private OrderService orderService;
 
     /**
      * 新增消息信息
@@ -252,20 +258,35 @@ public class MessageController extends BasicController<MessageDO,MessageDTO>{
 
     /**
      * 发送通知审核信息
-     * @param productNos 产品型号
+     * @param auditMsgDTO 审核信息对象
      * @return
      */
     @PostMapping("/send/auditMsg")
-    public ResponseResult auditOrder(@NotNull(message = "产品编号不能为空！") String productNos){
-        MessageDO messageDO = new MessageDO();
-        messageDO.setSendUser(getUserId().toString());
-        messageDO.setContent("用户:"+getUserSysName()+" 有需要审核的订单-> "+productNos);
-        messageDO.setReceiveUser("sys");
-        messageDO.setIsread(0);
-        messageDO.setCreateUser(getUserId());
-        messageDO.setType(0);
+    public ResponseResult auditOrder(@RequestBody AuditMsgDTO auditMsgDTO){
+       boolean isSuccess = false;
 
-        if (messageService.save(messageDO)){
+        //更新备注字段
+        List<AuditOrderItem> orderDetailsList = auditMsgDTO.getOrderDetailsList();
+
+        if (orderDetailsList != null && orderDetailsList.size() != 0){
+            if (!StringUtils.isEmpty(auditMsgDTO.getRemark()))
+            orderService.remarkUpdate(orderDetailsList,auditMsgDTO.getRemark());
+
+            String pns = orderDetailsList.stream().map(AuditOrderItem::getProductNo).collect(Collectors.joining(","));
+
+            pns = pns.length() <= 1024 ? pns : pns.substring(0,1020)+"...";
+            MessageDO messageDO = new MessageDO();
+            messageDO.setSendUser(getUserId().toString());
+            messageDO.setContent("用户:"+getUserSysName()+" 有需要审核的订单-> "+pns);
+            messageDO.setReceiveUser("sys");
+            messageDO.setIsread(0);
+            messageDO.setCreateUser(getUserId());
+            messageDO.setType(0);
+            isSuccess = messageService.save(messageDO);
+        }
+
+
+        if (isSuccess){
             return ResponseResult.success("新增成功");
         }else{
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);

@@ -5,8 +5,7 @@ import com.jugu.www.pcbonlinev2.domain.common.PageQuery;
 import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.Result;
 import com.jugu.www.pcbonlinev2.domain.dto.*;
-import com.jugu.www.pcbonlinev2.domain.dto.order.OrderDetails;
-import com.jugu.www.pcbonlinev2.domain.dto.order.ToPaymentParameterDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.order.*;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
 import com.jugu.www.pcbonlinev2.domain.vo.InvoiceInfoVO;
 
@@ -41,5 +40,9 @@ public interface OrderService extends IService<OrderDO> {
     Result payCard(CardPaymentDTO cardPaymentDTO);
 
     boolean auditOrderDetails(List<OrderDetails> orderDetailsList);
+
+    void remarkUpdate(List<AuditOrderItem> orderDetailsList, String remark);
+
+    QuoteInfoList queryQuoteItemByIds(OrderIds orderIds);
 }
 

@@ -22,18 +22,11 @@
         </tr>
         <tr>
             <td bgcolor="#eaeaea" style="padding: 40px 30px 40px 30px;">
-                <p >你有一个新PCB订单,订单号:<b th:text="${pno}"></b></p>
-                <p>请尽快登录后台系统查看</p>
-                <a th:text="${url}" target="_blank" th:href="${url}"></a>
+                <p th:if="${msgType} eq 1">你好，有一个新订单需要审核,订单号:<b th:text="${pns}"></b>,订单金额:<b th:text="${total}"></b></p>
+                <p th:if="${msgType} eq 2">你好，有一个订单已经支付,请注意跟进,订单号:<b th:text="${pns}"></b>,订单金额:<b th:text="${total}"></b></p>
+                <p>请尽快登录后台系统<a href="http://121.201.102.135:8881/" target="_blank" rel="noopener">查看</a></p>
             </td>
         </tr>
-        <!--<tr>-->
-            <!--<td bgcolor="#777777" style="padding: 30px 30px 30px 30px;">-->
-                <!--<p th:text="${signature}"></p>-->
-                <!--<p th:text="${location}"></p>-->
-                <!--<p th:text="${url}"></p>-->
-            <!--</td>-->
-        <!--</tr>-->
     </table>
 </body>
 </html>

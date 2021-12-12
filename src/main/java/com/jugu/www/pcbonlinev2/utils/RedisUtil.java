@@ -5,10 +5,12 @@ import com.jugu.www.pcbonlinev2.aspect.RedisCacheException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.ListOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SetOperations;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Component
@@ -31,10 +33,13 @@ public class RedisUtil {
 
     private ListOperations<String, Object> listOperations;
 
-    public RedisUtil(RedisTemplate<String, Object>  redisTemplate,ValueOperations<String, Object> valueOperations, ListOperations<String, Object> listOperations) {
+    private SetOperations<String, Object> setOperations;
+
+    public RedisUtil(RedisTemplate<String, Object>  redisTemplate,ValueOperations<String, Object> valueOperations, ListOperations<String, Object> listOperations, SetOperations<String, Object> setOperations) {
         this.redisTemplate = redisTemplate;
         this.valueOperations = valueOperations;
         this.listOperations = listOperations;
+        this.setOperations = setOperations;
     }
 
     /**
@@ -159,5 +164,13 @@ public class RedisUtil {
 
     public void delete(String key) {
         redisTemplate.delete(key);
+    }
+
+    /**
+     * 列出key的所有set集合
+     * @param key key键
+     */
+    public Set<Object> sGet(String key){
+        return setOperations.members(key);
     }
 }

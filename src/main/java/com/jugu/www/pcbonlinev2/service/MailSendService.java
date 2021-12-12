@@ -1,5 +1,7 @@
 package com.jugu.www.pcbonlinev2.service;
 
+import java.math.BigDecimal;
+
 /**
  * 邮件发送接口
  */
@@ -32,4 +34,12 @@ public interface MailSendService {
      * @param msg
      */
     void asyncSendReviewEmail(String email, String name, String msg);
+
+    /**
+     * 发送面向管理者的通知邮件
+     * @param msgType 订单类型
+     * @param pns 订单型号
+     * @param total 金额
+     */
+    void sendAllMsgEmail(int msgType, String pns, BigDecimal total);
 }

@@ -1,5 +1,6 @@
 package com.jugu.www.pcbonlinev2.domain.common;
 
+import com.jugu.www.pcbonlinev2.domain.dto.order.QuoteInfo;
 import lombok.Builder;
 import lombok.Data;
 
@@ -26,4 +27,6 @@ public class Result implements Serializable {
     //支付金额
     private BigDecimal total;
 
+    //报价信息
+    private QuoteInfo quoteInfo;
 }

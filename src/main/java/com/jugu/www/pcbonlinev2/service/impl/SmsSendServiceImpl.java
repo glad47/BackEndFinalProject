@@ -9,9 +9,14 @@ import com.aliyuncs.exceptions.ServerException;
 import com.aliyuncs.http.MethodType;
 import com.aliyuncs.profile.DefaultProfile;
 import com.jugu.www.pcbonlinev2.service.SmsSendService;
+import com.jugu.www.pcbonlinev2.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service("smsSendService")
@@ -24,6 +29,9 @@ public class SmsSendServiceImpl implements SmsSendService {
      * 支付
      */
     public final String TEMPLATE_ORDER_PAY = "SMS_175420523";
+
+    @Autowired
+    private RedisUtil redisUtil;
 
     private IAcsClient acsClient;
 
@@ -71,9 +79,17 @@ public class SmsSendServiceImpl implements SmsSendService {
 
     private String conversionTelephone(String phoneNumber) {
         if (!StringUtils.isEmpty(phoneNumber)){
-            return phoneNumber.trim().split(" ")[1]+",19925272868";
+            return phoneNumber.trim().split(" ")[1]+","+notifyUserPhoneByRedis();
         }else{
-            return "19925272868";
+            return notifyUserPhoneByRedis();
         }
+    }
+
+    /**
+     * 从redis中获取公共通知人手机号码
+     */
+    private String notifyUserPhoneByRedis() {
+        Set<Object> objects = redisUtil.sGet("NotifyMobileList-Set");
+        return objects.stream().map(Object::toString).collect(Collectors.joining(","));
     }
 }

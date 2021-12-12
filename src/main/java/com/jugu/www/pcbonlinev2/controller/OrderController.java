@@ -5,8 +5,7 @@ import com.jugu.www.pcbonlinev2.domain.common.PageResult;
 import com.jugu.www.pcbonlinev2.domain.common.ResponseResult;
 import com.jugu.www.pcbonlinev2.domain.common.Result;
 import com.jugu.www.pcbonlinev2.domain.dto.*;
-import com.jugu.www.pcbonlinev2.domain.dto.order.OrderDetails;
-import com.jugu.www.pcbonlinev2.domain.dto.order.ToPaymentParameterDTO;
+import com.jugu.www.pcbonlinev2.domain.dto.order.*;
 import com.jugu.www.pcbonlinev2.domain.entity.OrderDO;
 import com.jugu.www.pcbonlinev2.domain.vo.InvoiceInfoVO;
 import com.jugu.www.pcbonlinev2.domain.vo.OrderVO;
@@ -75,10 +74,10 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
     })
     @PostMapping
     @ApiDoc(result = ResponseResult.class)
-    public ResponseResult save(@Validated @RequestBody OrderSaveDTO orderSaveDTO) {
-
-        if (orderService.saveOrder(orderSaveDTO).isSuccess()){
-            return ResponseResult.success("新增成功");
+    public ResponseResult<QuoteInfo> save(@Validated @RequestBody OrderSaveDTO orderSaveDTO) {
+        Result result = orderService.saveOrder(orderSaveDTO);
+        if (result.isSuccess()){
+            return ResponseResult.success(result.getQuoteInfo());
         }else {
             return ResponseResult.failure(ErrorCodeEnum.INSERT_FAILURE);
         }
@@ -330,5 +329,17 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
     //        return ResponseResult.failure(ErrorCodeEnum.SYSTEM_ERROR);
     //    }
     //}
+
+    /**
+     * 查询订单详情，支持所有报价类型
+     * @param orderIds
+     * @return
+     */
+    @RequestMapping(method = RequestMethod.POST, value = "/orderItemByIds")
+    //@PostMapping("/itemByIds")
+    public  ResponseResult queryOrderItemByIds(@RequestBody OrderIds orderIds){
+        QuoteInfoList quoteInfoList = orderService.queryQuoteItemByIds(orderIds);
+        return ResponseResult.success(quoteInfoList);
+    }
 
 }
