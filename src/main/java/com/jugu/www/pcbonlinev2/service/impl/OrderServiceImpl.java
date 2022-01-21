@@ -136,6 +136,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         QuoteSubtotal subtotal = orderSaveDTO.getSubtotal();
         boolean r = false;
         StringBuilder pns = new StringBuilder();
+        QuoteInfo quoteInfo = new QuoteInfo();
         //pcb报价
         if (subtotal.getBoardFee() != null && subtotal.getBoardFee().compareTo(new BigDecimal("0")) >= 1) {
             QuoteDO quoteDO = conversionToQuoteDO(orderSaveDTO);
@@ -162,6 +163,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             orderSaveDTO.setPno(quoteDO.getProductNo());
             r = saveQuote;
             pns.append(quoteDO.getProductNo()).append(" ");
+            quoteInfo.setPcbQuoteInfo(quoteDO);
         }
         if (subtotal.getStencilFee() != null && subtotal.getStencilFee().compareTo(new BigDecimal("0")) >= 1) {
             SmlStencilDO smlStencilDO = conversionToStencilDO(orderSaveDTO);
@@ -170,6 +172,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             log.info("插入钢网结果【{}】", saveStencil);
             r = saveStencil;
             pns.append(smlStencilDO.getProductNo()).append(" ");
+            quoteInfo.setStencilQuoteInfo(smlStencilDO);
         }
         if (subtotal.getAssemblyFee() != null && subtotal.getAssemblyFee().compareTo(new BigDecimal("0")) >= 1) {
             AssemblyDO assemblyDO = conversionToAssemblyDO(orderSaveDTO);
@@ -181,8 +184,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             log.info("插入贴片结果:[{}]", saveAssembly);
             r = saveAssembly;
             pns.append(assemblyDO.getProductNo()).append(" ");
+            quoteInfo.setAssemblyQuoteInfo(assemblyDO);
         }
-        return Result.builder().isSuccess(r).pns(pns.toString().trim()).msgType(1).build();
+        return Result.builder().isSuccess(r).pns(pns.toString().trim()).msgType(1).quoteInfo(quoteInfo).build();
     }
 
     /**
@@ -541,6 +545,46 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         //}
 
         return false;
+    }
+
+    @Override
+    public void remarkUpdate(List<AuditOrderItem> orderDetailsList, String remark) {
+        for (AuditOrderItem a:orderDetailsList) {
+            if (a.getType() == 1) {
+                QuoteDO quoteDO = new QuoteDO();
+                quoteDO.setId(a.getId());
+                quoteDO.setRemark(remark);
+                quoteService.updateById(quoteDO);
+                //log.info("支付PCB订单后修改状态结果：[{}]", insertOrderResult);
+            } else if (a.getType() == 2) {
+               // SmlStencilDO stencilDO = conversionToPayAgterSmt(o.getId(), orderDO.getId(), orderDO.getOrderno(), orderDO.getCorderNo(), orderDO.getPaymentTime(),remark);
+               // insertOrderResult = smlStencilService.updateById(stencilDO);
+               // log.info("支付SMT订单后修改状态结果：[{}]", insertOrderResult);
+            } else if (a.getType() == 3) {
+                AssemblyDO assemblyDO = new AssemblyDO();
+                assemblyDO.setId(a.getId());
+                assemblyDO.setRemark(remark);
+                assemblyService.updateById(assemblyDO);
+            }
+        }
+    }
+
+    @Override
+    public QuoteInfoList queryQuoteItemByIds(OrderIds orderIds) {
+        QuoteInfoList result = new QuoteInfoList();
+        if (orderIds.getPcbIds() != null && orderIds.getPcbIds().size() != 0){
+            List<QuoteDO> quoteDOS = quoteService.listByIds(orderIds.getPcbIds());
+            result.setQuoteList(quoteDOS);
+        }
+        if (orderIds.getStencilIds() != null && orderIds.getStencilIds().size() != 0){
+            List<SmlStencilDO> smlStencilDOS = smlStencilService.listByIds(orderIds.getStencilIds());
+            result.setSmlStencilList(smlStencilDOS);
+        }
+        if (orderIds.getAssemblyIds() != null && orderIds.getAssemblyIds().size() != 0){
+            List<AssemblyDO> assemblyDOS = assemblyService.listByIds(orderIds.getAssemblyIds());
+            result.setAssemblyList(assemblyDOS);
+        }
+        return result;
     }
 
     private HttpEntity<MultiValueMap<String,String>> fullCaptureRequestEntity(CardPayAuthResponse cardPayAuthResponse) {

@@ -7,6 +7,7 @@ import com.jugu.www.pcbonlinev2.domain.entity.BusinessUserDO;
 import com.jugu.www.pcbonlinev2.domain.vo.AuditSmsVo;
 import com.jugu.www.pcbonlinev2.domain.vo.PaySmsVo;
 import com.jugu.www.pcbonlinev2.service.BusinessUserService;
+import com.jugu.www.pcbonlinev2.service.MailSendService;
 import com.jugu.www.pcbonlinev2.service.SmsSendService;
 import com.jugu.www.pcbonlinev2.utils.ThreadSessionLocal;
 import lombok.extern.slf4j.Slf4j;
@@ -28,10 +29,14 @@ public class EmailSmsSendAspect {
 
     private final BusinessUserService businessUserService;
 
+    private final MailSendService mailSendService;
+
+
     @Autowired
-    public EmailSmsSendAspect(SmsSendService smsSendService, BusinessUserService businessUserService) {
+    public EmailSmsSendAspect(SmsSendService smsSendService, BusinessUserService businessUserService, MailSendService mailSendService) {
         this.smsSendService = smsSendService;
         this.businessUserService = businessUserService;
+        this.mailSendService = mailSendService;
     }
 
     @Pointcut("@annotation(com.jugu.www.pcbonlinev2.aspect.EmailSmsSend)")
@@ -49,10 +54,16 @@ public class EmailSmsSendAspect {
         Result r = (Result) result;
         if (r.isSuccess()){
             sendMsg(r);
+            sendEmail(r);
         }else {
             log.info("执行结果失败发送信息");
         }
         return result;
+    }
+
+    private void sendEmail(Result r) {
+        log.info("开始发送邮箱通知消息");
+        mailSendService.sendAllMsgEmail(r.getMsgType(),r.getPns(),r.getTotal());
     }
 
     private void sendMsg(Result r) {
