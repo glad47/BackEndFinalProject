@@ -18,4 +18,5 @@ public class RiskInfo {
     private List<Buried> buried; //埋点数据
     private Ship ship; //收货地址
     private Bill bill; //账单信息
+
 }

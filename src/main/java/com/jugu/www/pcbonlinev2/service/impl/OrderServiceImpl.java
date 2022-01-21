@@ -196,6 +196,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         //转化为do对象
         OrderDO orderDO = conversionToOrderDO(paymentParameterDTO);
 
+
         //用户余额支付，更新点数
         if (paymentParameterDTO.getPaymentType() == 4) {
             userService.updatePoints(paymentParameterDTO.getPaymentTotal(), orderDO.getUserId());
@@ -207,6 +208,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         }
 //        int insertOrderResult = orderMapper.insert(orderDO);
         boolean insertOrderResult = this.saveOrUpdate(orderDO);
+
+
         StringBuilder pns = new StringBuilder();
         if (insertOrderResult) {
             List<OrderDetails> orderDetailsList = paymentParameterDTO.getOrderDetailsList();
@@ -237,8 +240,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         List<ProductInfo> productInfoList = new ArrayList<>();
         List<Goods> goodsList = new ArrayList<>();
         List<Buried> buriedList = new ArrayList<>();
-
-        buriedList.add(new Buried());
+        Buried brd=new Buried();
+        brd.setCode("");
+        brd.setItem("");
+        buriedList.add(brd);
 
         for (OrderDetails o:orderDetailsList) {
             ProductInfo productInfo = new ProductInfo();
@@ -258,6 +263,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             goods.setName(o.getProductNo());
             goods.setPrice(o.getSubtotal().toString());
             goods.setQty(o.getType().toString());
+            goods.setUrl("");
+            goods.setAttribute("");
+            goods.setIs_gift("");
+            goods.setIs_virtual("");
             goodsList.add(goods);
         }
         Cust cust = new Cust();
@@ -275,6 +284,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         ship.setState("Utah");
         ship.setPostcode("84723");
         ship.setCountry("US");
+        ship.setAddress_last_modify_time("20170607125959");
+        ship.setPhone_last_modify_time("20170607125959");
 
 
 
@@ -292,7 +303,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         RiskInfo riskInfo = new RiskInfo();
         riskInfo.setGoods(goodsList);
         riskInfo.setTrade(new Trade());
-        riskInfo.setDevice(new Device());
+        riskInfo.setDevice(paymentParameterDTO.getDevice());
         riskInfo.setCust(cust);
         riskInfo.setBuried(buriedList);
         riskInfo.setShip(ship);
@@ -482,6 +493,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         //封装请求实体
         HttpEntity<MultiValueMap<String, String>> requestEntity = fullPayRequestEntity(cardPaymentDTO);
         log.info("发送请求实体：[{}]", requestEntity.toString());
+
         //发送交易授权信息
         ResponseEntity<String> entity = restTemplate.postForEntity(cardPayUrl, requestEntity, String.class);
 
@@ -564,6 +576,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
     private HttpEntity<MultiValueMap<String, String>> fullPayRequestEntity(CardPaymentDTO cardPaymentDTO) {
         HttpHeaders headers = new HttpHeaders();
         Gson gson = new Gson();
+
+
+
+        for(ProductInfo pi :cardPaymentDTO.getProductInfo() ){
+            pi.setAttribute("");
+            pi.setImage("");
+
+        }
+        cardPaymentDTO.getPayMethodInfo().setBilling_desc("");
+        cardPaymentDTO.getRiskInfo().setAdjustment_factor("");
+        cardPaymentDTO.getRiskInfo().setRetry_num("");
+        cardPaymentDTO.getRiskInfo().getTrade().setCode("");
+        cardPaymentDTO.getRiskInfo().getTrade().setItem("");
+        cardPaymentDTO.getRiskInfo().getCust().setLast_shopping_time("");
+        cardPaymentDTO.getRiskInfo().getCust().setRegister_user_id("");
+        cardPaymentDTO.getRiskInfo().getCust().setLevel("");
+        cardPaymentDTO.getRiskInfo().getCust().setRegistration_time("");
+
+
+
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         //避免403
         headers.add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36");

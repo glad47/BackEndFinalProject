@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>ResponseResult</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.css">
+<link href="../style.css" rel="stylesheet" />
+</head>
+<body onload="PR.prettyPrint()">
+<pre class="prettyprint lang-java">
+public class ResponseResult implements Serializable{
+
+    private boolean success; //是否成功
+    private String code; //编码
+    private String message; //描述信息
+    private CountryAllVO[] result; //结果
+
+    public boolean getSuccess(){
+        return success;
+    }
+
+    public void setSuccess(boolean success){
+        this.success = success;
+    }
+
+    public String getCode(){
+        return code;
+    }
+
+    public void setCode(String code){
+        this.code = code;
+    }
+
+    public String getMessage(){
+        return message;
+    }
+
+    public void setMessage(String message){
+        this.message = message;
+    }
+
+    public CountryAllVO[] getResult(){
+        return result;
+    }
+
+    public void setResult(CountryAllVO[] result){
+        this.result = result;
+    }
+
+}
+</pre>
+
+
+<pre class="prettyprint lang-java">
+public class CountryAllVO implements Serializable{
+
+    private int id; //id
+    private String name; //name
+    private String fbCountryCode; //简码
+
+    public int getId(){
+        return id;
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public String getName(){
+        return name;
+    }
+
+    public void setName(String name){
+        this.name = name;
+    }
+
+    public String getFbCountryCode(){
+        return fbCountryCode;
+    }
+
+    public void setFbCountryCode(String fbCountryCode){
+        this.fbCountryCode = fbCountryCode;
+    }
+
+}
+</pre>
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.js"></script>
+</body>
+</html>

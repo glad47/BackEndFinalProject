@@ -1,5 +1,6 @@
 package com.jugu.www.pcbonlinev2.domain.dto;
 
+import com.jugu.www.pcbonlinev2.domain.dto.order.Device;
 import com.jugu.www.pcbonlinev2.domain.dto.order.OrderDetails;
 import com.jugu.www.pcbonlinev2.domain.dto.order.PayMethodInfo;
 import com.jugu.www.pcbonlinev2.domain.vo.CouponVO;
@@ -87,7 +88,7 @@ public class PaymentParameterDTO implements Serializable {
 
     @NotNull(message = "paymentType不能为空")
     @ApiModelProperty(value = "支付类型1->payPal、2->BankTransfer、3->WesternUnion、4->PayWithAccountBalance")
-    private Integer paymentType; //支付类型1->payPal、2->BankTransfer、3->WesternUnion、4->PayWithAccountBalance，5->credit
+    private Integer paymentType; //支付类型1->payPal、2->、3->WesternUnion、4->PayWithAccountBalance，5->credit
 
     @ApiModelProperty(value = "当前用户的可用优惠卷")
     private List<CouponVO> couponVOList; //当前用户的可用优惠卷
@@ -97,6 +98,9 @@ public class PaymentParameterDTO implements Serializable {
 
 
     private PayMethodInfo payMethodInfo; //信用卡信息
+
+
+    private Device device;
 
     private String remark;//备注
 

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>统计接口</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body onload="PR.prettyPrint()">
+<nav class="navbar">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="index.html">
+                PcbOnLineV2
+            </a>
+        </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="https://github.com/YeDaxia/JApiDocs" target="_blank">GitHub</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">V1.0<span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="book with-summary">
+    <div class="book-summary">
+<div class="search-box form-group">
+    <input type="text" class="form-control" id="inputSearch" placeholder="搜索接口">
+    <span class="glyphicon glyphicon-search form-control-feedback" aria-hidden="true"></span>
+</div>
+<div id="accordion" class="catalog">
+        <div class="panel">
+            <div id="heading0" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse0" aria-controls="collapse0">
+                <i class="glyphicon glyphicon-align-justify"></i> 订单相关接口
+            </div>
+            <div id="collapse0" class="collapse in " aria-labelledby="heading0">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_OrderController.html#save">
+                        下单接口
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_OrderController.html#getOrderNoInfo">
+                        创建系统订单编号及计算基本价格信息和优惠券信息
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_OrderController.html#createOrder">
+                        支付后回调接口
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_OrderController.html#invoiceInfo">
+                        发票信息查询接口
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading1" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse1" aria-controls="collapse1">
+                <i class="glyphicon glyphicon-align-justify"></i> 帮助主题接口
+            </div>
+            <div id="collapse1" class="collapse " aria-labelledby="heading1">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_ArticleHelpController.html#queryPage">
+                        查询帮助信息
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading2" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse2" aria-controls="collapse2">
+                <i class="glyphicon glyphicon-align-justify"></i> 统计接口
+            </div>
+            <div id="collapse2" class="collapse in " aria-labelledby="heading2">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_GraphsStatController.html#queryOrderCount">
+                        统计各类型订单各个月份销售额
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading3" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse3" aria-controls="collapse3">
+                <i class="glyphicon glyphicon-align-justify"></i> 系统消息通知接口
+            </div>
+            <div id="collapse3" class="collapse " aria-labelledby="heading3">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_MessageController.html#queryCurrUserMsg">
+                        查询用户系统消息
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_MessageController.html#readMsg">
+                        标记消息为已读
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading4" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse4" aria-controls="collapse4">
+                <i class="glyphicon glyphicon-align-justify"></i> 授权接口
+            </div>
+            <div id="collapse4" class="collapse " aria-labelledby="heading4">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_AuthController.html#login">
+                        登录接口
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_AuthController.html#loginInGoogle">
+                        google登录接口
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_AuthController.html#register">
+                        注册接口
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_AuthController.html#active">
+                        激活接口
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_AuthController.html#requestPasswordResetByEmail">
+                        发送重置密码邮件接口
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_AuthController.html#requestPasswordReset">
+                        重置密码接口
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_AuthController.html#sendContactEmail">
+                        首页发送联系邮件接口
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_AuthController.html#sendFeedBackReviewEmail">
+                        feedback发送反馈邮件接口
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading5" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse5" aria-controls="collapse5">
+                <i class="glyphicon glyphicon-align-justify"></i> 优惠券接口
+            </div>
+            <div id="collapse5" class="collapse " aria-labelledby="heading5">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_CouponController.html#queryPage">
+                        查询当前用户的所有优惠券信息
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_CouponController.html#generateFiveCode">
+                        生成优惠券
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_CouponController.html#verifyCode">
+                        检验及兑换优惠券
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading6" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse6" aria-controls="collapse6">
+                <i class="glyphicon glyphicon-align-justify"></i> 生产日志接口
+            </div>
+            <div id="collapse6" class="collapse " aria-labelledby="heading6">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_ProductionLogController.html#queryPage">
+                        查询生产日志信息
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading7" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse7" aria-controls="collapse7">
+                <i class="glyphicon glyphicon-align-justify"></i> 文件管理接口
+            </div>
+            <div id="collapse7" class="collapse " aria-labelledby="heading7">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_FileController.html#upload">
+                        上传图片
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_FileController.html#uploadZip">
+                        上传压缩包
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_FileController.html#downloadZip">
+                        下载压缩包
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading8" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse8" aria-controls="collapse8">
+                <i class="glyphicon glyphicon-align-justify"></i> 国家信息接口
+            </div>
+            <div id="collapse8" class="collapse " aria-labelledby="heading8">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_CountryController.html#all">
+                        查询所有国家
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading9" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse9" aria-controls="collapse9">
+                <i class="glyphicon glyphicon-align-justify"></i> 报价订单接口
+            </div>
+            <div id="collapse9" class="collapse " aria-labelledby="heading9">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_QuoteController.html#save">
+                        save
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_QuoteController.html#update">
+                        update
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_QuoteController.html#delete">
+                        delete
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_QuoteController.html#queryPage">
+                        queryPage
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading10" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse10" aria-controls="collapse10">
+                <i class="glyphicon glyphicon-align-justify"></i> 收货地址
+            </div>
+            <div id="collapse10" class="collapse " aria-labelledby="heading10">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#save">
+                        新增收货地址信息
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#update">
+                        修改收货地址信息
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#delete">
+                        delete
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#queryPage">
+                        查询收货地址
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#currAdders">
+                        查询当前用户默认地址信息
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading11" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse11" aria-controls="collapse11">
+                <i class="glyphicon glyphicon-align-justify"></i> 用户管理接口
+            </div>
+            <div id="collapse11" class="collapse " aria-labelledby="heading11">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_UserController.html#query">
+                        查询用户信息
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_UserController.html#update">
+                        修改用户信息
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_UserController.html#info">
+                        查询当前登录用户信息
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_UserController.html#verifyCurrPwd">
+                        校验当前密码
+                    </a>
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_UserController.html#changePwd">
+                        修改密码
+                    </a>
+            </div>
+        </div>
+        <div class="panel">
+            <div id="heading12" data-parent="#accordion" class="catalog-title" data-toggle="collapse"
+                 aria-expanded="true" data-target="#collapse12" aria-controls="collapse12">
+                <i class="glyphicon glyphicon-align-justify"></i> 跟单员信息接口
+            </div>
+            <div id="collapse12" class="collapse " aria-labelledby="heading12">
+                    <a class="catalog-item" href="com_jugu_www_pcbonlinev2_controller_BusinessUserController.html#info">
+                        查询当前登录用户对应跟单员信息
+                    </a>
+            </div>
+        </div>
+</div>    </div>
+    <div class="book-body">
+        <div class="body-inner">
+            <div class="book-header">
+                <div class="d-flex justify-content-between">
+                    <a class="header-menu toggle-catalog" href="javascript:void(0)"><i
+                            class="glyphicon glyphicon-align-justify"></i> 目录</a>
+                </div>
+            </div>
+            <div class="page-wrapper">
+                <div class="page-inner">
+                    <div class="action-list">
+                        <div class="action-item">
+<h2 id="queryOrderCount"><a href="#">统计各类型订单各个月份销售额 </a></h2>
+<p><strong>请求URL</strong></p>
+<p>
+    <code>/api/stat/orderAmount</code>
+        <span class="label label-default">GET</span>
+</p>
+        <p><strong>请求参数</strong> <span class="badge">application/x-www-form-urlencoded</span></p>
+        <table class="table table-bordered">
+            <tr>
+                <th>参数名</th>
+                <th>类型</th>
+                <th>必须</th>
+                <th>描述</th>
+            </tr>
+                    <tr>
+                        <td>currYears</td>
+                        <td>string</td>
+                        <td>是</td>
+                        <td>年份</td>
+                    </tr>
+        </table>
+    <p><strong>返回结果</strong></p>
+    <pre class="prettyprint lang-json">{
+	"success":"boolean //是否成功",
+	"code":"string //编码",
+	"message":"string //描述信息",
+	"result":[{
+		"name":"string",
+		"time":"string",
+		"amount":"double"
+	}]
+}</pre>
+        <div class="form-group">
+            <a type="button" class="btn btn-sm btn-default" href="javaCodes/com_jugu_www_pcbonlinev2_controller_GraphsStatController_queryOrderCount_ResponseResult.html"><i
+                        class="fa fa-android" aria-hidden="true"></i> Android Model</a>
+            <a type="button" class="btn btn-sm btn-default" href="iosCodes/com_jugu_www_pcbonlinev2_controller_GraphsStatController_queryOrderCount_ResponseResult.html"><i class="fa fa-apple"
+                                                                                                 aria-hidden="true"></i>
+                iOS Model</a>
+        </div>
+                        </div>
+                        <hr>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@3.3.7/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/autocomplete.js/0/autocomplete.jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/google-code-prettify@1.0.5/bin/prettify.min.js"></script>
+<script>
+
+    var search_source_data = [
+            {name: '订单相关接口.下单接口', url: 'com_jugu_www_pcbonlinev2_controller_OrderController.html#save'},
+            {name: '订单相关接口.创建系统订单编号及计算基本价格信息和优惠券信息', url: 'com_jugu_www_pcbonlinev2_controller_OrderController.html#getOrderNoInfo'},
+            {name: '订单相关接口.支付后回调接口', url: 'com_jugu_www_pcbonlinev2_controller_OrderController.html#createOrder'},
+            {name: '订单相关接口.发票信息查询接口', url: 'com_jugu_www_pcbonlinev2_controller_OrderController.html#invoiceInfo'},
+            {name: '帮助主题接口.查询帮助信息', url: 'com_jugu_www_pcbonlinev2_controller_ArticleHelpController.html#queryPage'},
+            {name: '统计接口.统计各类型订单各个月份销售额', url: 'com_jugu_www_pcbonlinev2_controller_GraphsStatController.html#queryOrderCount'},
+            {name: '系统消息通知接口.查询用户系统消息', url: 'com_jugu_www_pcbonlinev2_controller_MessageController.html#queryCurrUserMsg'},
+            {name: '系统消息通知接口.标记消息为已读', url: 'com_jugu_www_pcbonlinev2_controller_MessageController.html#readMsg'},
+            {name: '授权接口.登录接口', url: 'com_jugu_www_pcbonlinev2_controller_AuthController.html#login'},
+            {name: '授权接口.google登录接口', url: 'com_jugu_www_pcbonlinev2_controller_AuthController.html#loginInGoogle'},
+            {name: '授权接口.注册接口', url: 'com_jugu_www_pcbonlinev2_controller_AuthController.html#register'},
+            {name: '授权接口.激活接口', url: 'com_jugu_www_pcbonlinev2_controller_AuthController.html#active'},
+            {name: '授权接口.发送重置密码邮件接口', url: 'com_jugu_www_pcbonlinev2_controller_AuthController.html#requestPasswordResetByEmail'},
+            {name: '授权接口.重置密码接口', url: 'com_jugu_www_pcbonlinev2_controller_AuthController.html#requestPasswordReset'},
+            {name: '授权接口.首页发送联系邮件接口', url: 'com_jugu_www_pcbonlinev2_controller_AuthController.html#sendContactEmail'},
+            {name: '授权接口.feedback发送反馈邮件接口', url: 'com_jugu_www_pcbonlinev2_controller_AuthController.html#sendFeedBackReviewEmail'},
+            {name: '优惠券接口.查询当前用户的所有优惠券信息', url: 'com_jugu_www_pcbonlinev2_controller_CouponController.html#queryPage'},
+            {name: '优惠券接口.生成优惠券', url: 'com_jugu_www_pcbonlinev2_controller_CouponController.html#generateFiveCode'},
+            {name: '优惠券接口.检验及兑换优惠券', url: 'com_jugu_www_pcbonlinev2_controller_CouponController.html#verifyCode'},
+            {name: '生产日志接口.查询生产日志信息', url: 'com_jugu_www_pcbonlinev2_controller_ProductionLogController.html#queryPage'},
+            {name: '文件管理接口.上传图片', url: 'com_jugu_www_pcbonlinev2_controller_FileController.html#upload'},
+            {name: '文件管理接口.上传压缩包', url: 'com_jugu_www_pcbonlinev2_controller_FileController.html#uploadZip'},
+            {name: '文件管理接口.下载压缩包', url: 'com_jugu_www_pcbonlinev2_controller_FileController.html#downloadZip'},
+            {name: '国家信息接口.查询所有国家', url: 'com_jugu_www_pcbonlinev2_controller_CountryController.html#all'},
+            {name: '报价订单接口.save', url: 'com_jugu_www_pcbonlinev2_controller_QuoteController.html#save'},
+            {name: '报价订单接口.update', url: 'com_jugu_www_pcbonlinev2_controller_QuoteController.html#update'},
+            {name: '报价订单接口.delete', url: 'com_jugu_www_pcbonlinev2_controller_QuoteController.html#delete'},
+            {name: '报价订单接口.queryPage', url: 'com_jugu_www_pcbonlinev2_controller_QuoteController.html#queryPage'},
+            {name: '收货地址.新增收货地址信息', url: 'com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#save'},
+            {name: '收货地址.修改收货地址信息', url: 'com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#update'},
+            {name: '收货地址.delete', url: 'com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#delete'},
+            {name: '收货地址.查询收货地址', url: 'com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#queryPage'},
+            {name: '收货地址.查询当前用户默认地址信息', url: 'com_jugu_www_pcbonlinev2_controller_ReceiverAddersController.html#currAdders'},
+            {name: '用户管理接口.查询用户信息', url: 'com_jugu_www_pcbonlinev2_controller_UserController.html#query'},
+            {name: '用户管理接口.修改用户信息', url: 'com_jugu_www_pcbonlinev2_controller_UserController.html#update'},
+            {name: '用户管理接口.查询当前登录用户信息', url: 'com_jugu_www_pcbonlinev2_controller_UserController.html#info'},
+            {name: '用户管理接口.校验当前密码', url: 'com_jugu_www_pcbonlinev2_controller_UserController.html#verifyCurrPwd'},
+            {name: '用户管理接口.修改密码', url: 'com_jugu_www_pcbonlinev2_controller_UserController.html#changePwd'},
+            {name: '跟单员信息接口.查询当前登录用户对应跟单员信息', url: 'com_jugu_www_pcbonlinev2_controller_BusinessUserController.html#info'},
+    ];
+
+
+
+    $('.toggle-catalog').click(function () {
+        $('.book').toggleClass('with-summary');
+    });
+
+    $('#inputSearch').autocomplete({hint: false}, [
+        {
+            source: function (query, callback) {
+                var result = [];
+                for(var i = 0; i !== search_source_data.length; i++){
+                    if(search_source_data[i].name.indexOf(query) !== -1){
+                        result.push(search_source_data[i]);
+                    }
+                }
+                callback(result);
+            },
+            displayKey: 'name',
+            templates: {
+                suggestion: function (suggestion) {
+                    return suggestion.name;
+                }
+            }
+        }
+    ]).on('autocomplete:selected', function (event, suggestion, dataset, context) {
+        self.location = suggestion.url;
+    });
+</script>
+</body>
+</html>
