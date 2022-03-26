@@ -14,5 +14,6 @@ public class QuoteSubtotal {
     private BigDecimal urgentFee;
     private BigDecimal stencilFee;
     private BigDecimal assemblyFee;
+    private BigDecimal subsidy;
     private String buildTime;
 }

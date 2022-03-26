@@ -421,5 +421,10 @@ public class QuoteDO implements Serializable {
      * 总价
      */
     private BigDecimal totalFee;
+    /**
+     * 折扣
+     */
+
+    private BigDecimal subsidy;
 
 }

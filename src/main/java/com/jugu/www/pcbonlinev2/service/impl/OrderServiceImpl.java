@@ -151,8 +151,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
                     subtotal.getBoardFee()
                             .add(subtotal.getEngineeringFee())
                             .add(subtotal.getTestFee())
-                            .add(subtotal.getUrgentFee())
+                            .add(subtotal.getUrgentFee()
+                            )
             );
+            //.subtract(subtotal.getSubsidy())
+            if(subtotal.getSubsidy().longValue() > quoteDO.getSubtotal().longValue()){
+                subtotal.setSubsidy(BigDecimal.valueOf(0));
+            }else{
+                quoteDO.setSubtotal(quoteDO.getSubtotal().subtract(subtotal.getSubsidy()));
+            }
+            quoteDO.setSubsidy(subtotal.getSubsidy());
             quoteDO.setTotalFee(quoteDO.getSubtotal());
             quoteDO.setBuildTime(subtotal.getBuildTime());
             log.info("插入pcb报价：【{}】", quoteDO.toString());
