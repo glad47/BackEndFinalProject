@@ -178,7 +178,21 @@ public class MailSendServiceImpl implements MailSendService {
 
         //获取所有接收邮件邮箱
         Set<Object> emailReceivers = redisUtil.sGet("NotifyEmailList-Set");
+        if (emailReceivers.size() == 0){
+            log.info("所有接收邮件邮箱为空，不发送邮箱!!");
+            return;
+        }
         String[] emails = emailReceivers.toArray(new String[]{});
         sendMail(emails,"PCBONLINE 审核/付款通知邮件","mail-notice-template-order-pcb",data,null);
+    }
+
+    @Override
+    public void sendAuditMsgEmail(String receiver, String templateName, Map data) {
+        sendMail(new String[]{receiver},"PCBONLINE 订单审核通知", templateName, data, null);
+    }
+
+    @Override
+    public void sendPayMsgEmail(String receiver, String templateName, Map<String, Object> data) {
+        sendMail(new String[]{receiver}, "PCBONLINE 订单付款通知邮件", templateName,data,null);
     }
 }

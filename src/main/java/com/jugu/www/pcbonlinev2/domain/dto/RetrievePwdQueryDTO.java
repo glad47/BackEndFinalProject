@@ -17,15 +17,15 @@ import lombok.Data;
 @Data
 @ApiModel(value = "取回密码")
 public class RetrievePwdQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "")
-	private Integer id;
-		@ApiModelProperty(value = "")
-	private Integer userId;
-		@ApiModelProperty(value = "")
-	private String expirationTiem;
-		@ApiModelProperty(value = "")
-	private String randomMd5;
-	
+    @ApiModelProperty(value = "")
+    private Integer id;
+    @ApiModelProperty(value = "")
+    private Integer userId;
+    @ApiModelProperty(value = "")
+    private String expirationTiem;
+    @ApiModelProperty(value = "")
+    private String randomMd5;
+
 }

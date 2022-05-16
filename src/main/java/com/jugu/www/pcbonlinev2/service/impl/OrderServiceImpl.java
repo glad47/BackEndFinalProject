@@ -208,6 +208,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         //转化为do对象
         OrderDO orderDO = conversionToOrderDO(paymentParameterDTO);
 
+        //2022年05月10日15:35:43 如果使用了优惠劵需要将优惠券更新状态
+        if (paymentParameterDTO.getIsUseCoupon() == 1){
+            CouponDO couponDO = new CouponDO();
+            couponDO.setId(paymentParameterDTO.getCouponId());
+            couponDO.setCouponStatus(2);
+            boolean updateCouponStatusResult = couponService.updateById(couponDO);
+            log.info("更新优惠劵状态结果为:[{}]",updateCouponStatusResult);
+        }
 
         //用户余额支付，更新点数
         if (paymentParameterDTO.getPaymentType() == 4) {
@@ -507,7 +515,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
         log.info("发送请求实体：[{}]", requestEntity.toString());
 
         //发送交易授权信息
-        ResponseEntity<String> entity = restTemplate.postForEntity(cardPayUrl, requestEntity, String.class);
+        ResponseEntity<String> entity;
+        try {
+            entity = restTemplate.postForEntity(cardPayUrl, requestEntity, String.class);
+        } catch (Exception e){
+            log.info("支付授权请求失败",e);
+            return Result.builder().isSuccess(false).errorMsg(e.getMessage()).build();
+        }
 
         String entityBody = entity.getBody();
         log.info("支付授权请求返回:[{}]",entityBody);
@@ -593,6 +607,28 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, OrderDO> implemen
             result.setAssemblyList(assemblyDOS);
         }
         return result;
+    }
+
+    @Override
+    public void complaintsOrder(List<OrderComplaintsDTO> orderComplaintsList) {
+        for (OrderComplaintsDTO o:orderComplaintsList) {
+            if (o.getOtype() == 1){
+                QuoteDO quoteDO = new QuoteDO();
+                quoteDO.setId(o.getId());
+                quoteDO.setStatus(8);
+                quoteService.updateById(quoteDO);
+            } else if (o.getOtype() == 2){
+                SmlStencilDO stencilDO = new SmlStencilDO();
+                stencilDO.setId(o.getId());
+                stencilDO.setStatus(8);
+                smlStencilService.updateById(stencilDO);
+            }else if (o.getOtype() == 3){
+                AssemblyDO assemblyDO = new AssemblyDO();
+                assemblyDO.setId(o.getId());
+                assemblyDO.setStatus(8);
+                assemblyService.updateById(assemblyDO);
+            }
+        }
     }
 
     private HttpEntity<MultiValueMap<String,String>> fullCaptureRequestEntity(CardPayAuthResponse cardPayAuthResponse) {

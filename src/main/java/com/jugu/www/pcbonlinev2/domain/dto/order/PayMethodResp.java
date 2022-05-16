@@ -15,8 +15,8 @@ import lombok.Data;
 import java.util.List;
 
 /**
- *
  * 支付方式返回信息
+ *
  * @author zhoulei
  * @since 1.0.0
  */

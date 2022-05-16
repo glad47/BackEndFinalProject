@@ -17,13 +17,13 @@ import lombok.Data;
 @Data
 @ApiModel(value = "报价参数类型配置表")
 public class QuoteParameterTypeQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = " 参数类型名称")
-	private String parameterTypeName;
-		@ApiModelProperty(value = "是否删除（1表示删除，0表示未删除）")
-	private Integer isDelete;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = " 参数类型名称")
+    private String parameterTypeName;
+    @ApiModelProperty(value = "是否删除（1表示删除，0表示未删除）")
+    private Integer isDelete;
+
 }

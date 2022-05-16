@@ -17,17 +17,17 @@ import lombok.Data;
 @Data
 @ApiModel(value = "点赞")
 public class ZanQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "对应作品或评论的id")
-	private Integer typeId;
-		@ApiModelProperty(value = "点赞类型 1 文章 2 评论")
-	private Integer type;
-		@ApiModelProperty(value = "用户id")
-	private Integer userId;
-		@ApiModelProperty(value = "点赞状态 0 取消 1 有效")
-	private Integer status;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "对应作品或评论的id")
+    private Integer typeId;
+    @ApiModelProperty(value = "点赞类型 1 文章 2 评论")
+    private Integer type;
+    @ApiModelProperty(value = "用户id")
+    private Integer userId;
+    @ApiModelProperty(value = "点赞状态 0 取消 1 有效")
+    private Integer status;
+
 }

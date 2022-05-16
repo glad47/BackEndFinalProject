@@ -1,6 +1,7 @@
 package com.jugu.www.pcbonlinev2.service;
 
 import java.math.BigDecimal;
+import java.util.Map;
 
 /**
  * 邮件发送接口
@@ -42,4 +43,8 @@ public interface MailSendService {
      * @param total 金额
      */
     void sendAllMsgEmail(int msgType, String pns, BigDecimal total);
+
+    void sendAuditMsgEmail(String receiver, String templateName, Map data);
+
+    void sendPayMsgEmail(String receiver, String templateName, Map<String, Object> data);
 }

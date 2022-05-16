@@ -44,5 +44,7 @@ public interface OrderService extends IService<OrderDO> {
     void remarkUpdate(List<AuditOrderItem> orderDetailsList, String remark);
 
     QuoteInfoList queryQuoteItemByIds(OrderIds orderIds);
+
+    void complaintsOrder(List<OrderComplaintsDTO> orderComplaintsList);
 }
 

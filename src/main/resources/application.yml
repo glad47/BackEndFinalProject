@@ -36,6 +36,15 @@ spring:
     properties.mail.smtp.ssl.enable: true
     default-encoding: utf-8
 
+# RabbitMQ
+  rabbitmq:
+    host: 47.252.27.96
+    port: 5672
+    virtual-host: /pcbonline
+    username: pcbonline
+    password: 123qweasd
+    publisher-returns: true #消息发送到队列确认  #消息发送到交换器确认
+    publisher-confirm-type: simple
 
 #    from: 1170737711@qq.com #与上面的username保持一致
 
@@ -58,6 +67,10 @@ logging:
 #    druid:
 #      sql:
 #        Statement: debug
+
+
+
+
 
 pcbonline:
   send-notice-base-url: http://localhost:3000

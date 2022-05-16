@@ -15,13 +15,13 @@ import lombok.Data;
  */
 @Data
 public class QuotePcbtypeDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "")
-	private Integer id;
-		@ApiModelProperty(value = "pcb类型名称")
-	private String pcbTypeName;
-		@ApiModelProperty(value = "是否删除（1表示是，0表示否）")
-	private Integer isDelete;
-	
+    @ApiModelProperty(value = "")
+    private Integer id;
+    @ApiModelProperty(value = "pcb类型名称")
+    private String pcbTypeName;
+    @ApiModelProperty(value = "是否删除（1表示是，0表示否）")
+    private Integer isDelete;
+
 }

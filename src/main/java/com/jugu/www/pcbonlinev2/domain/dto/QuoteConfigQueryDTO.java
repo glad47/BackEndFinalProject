@@ -22,7 +22,7 @@ public class QuoteConfigQueryDTO implements Serializable {
 
     @ApiModelProperty(value = "id", example = "1")
     private Integer id;
-    @ApiModelProperty(value = "面积 id",example = "1")
+    @ApiModelProperty(value = "面积 id", example = "1")
     private Integer areaSq;
     @ApiModelProperty(value = "基材对应pcbtypeid", example = "1")
     private Integer pcbtype;

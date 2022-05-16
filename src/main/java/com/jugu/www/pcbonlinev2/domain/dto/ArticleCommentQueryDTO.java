@@ -17,25 +17,25 @@ import lombok.Data;
 @Data
 @ApiModel(value = "文章评论表")
 public class ArticleCommentQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "收到评论的用户id")
-	private Integer userId;
-		@ApiModelProperty(value = "评论文章id")
-	private Long articleId;
-		@ApiModelProperty(value = "评论id")
-	private Integer commitId;
-		@ApiModelProperty(value = "评论内容")
-	private String commitContent;
-		@ApiModelProperty(value = "评论用户id")
-	private Integer commitUserId;
-		@ApiModelProperty(value = "ip")
-	private String commitIp;
-		@ApiModelProperty(value = "评论时间")
-	private Date commitTime;
-		@ApiModelProperty(value = "评论点赞次数")
-	private Integer zanNumber;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "收到评论的用户id")
+    private Integer userId;
+    @ApiModelProperty(value = "评论文章id")
+    private Long articleId;
+    @ApiModelProperty(value = "评论id")
+    private Integer commitId;
+    @ApiModelProperty(value = "评论内容")
+    private String commitContent;
+    @ApiModelProperty(value = "评论用户id")
+    private Integer commitUserId;
+    @ApiModelProperty(value = "ip")
+    private String commitIp;
+    @ApiModelProperty(value = "评论时间")
+    private Date commitTime;
+    @ApiModelProperty(value = "评论点赞次数")
+    private Integer zanNumber;
+
 }

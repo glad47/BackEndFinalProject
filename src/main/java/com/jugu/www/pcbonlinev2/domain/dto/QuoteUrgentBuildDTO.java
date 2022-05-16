@@ -16,19 +16,19 @@ import lombok.Data;
  */
 @Data
 public class QuoteUrgentBuildDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "平米id")
-	private Integer areaId;
-		@ApiModelProperty(value = "加急类型id")
-	private Integer urgentTypeId;
-		@ApiModelProperty(value = "层数id")
-	private Integer layerNumberId;
-		@ApiModelProperty(value = "建造天数")
-	private String dayNumber;
-		@ApiModelProperty(value = "费用")
-	private BigDecimal price;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "平米id")
+    private Integer areaId;
+    @ApiModelProperty(value = "加急类型id")
+    private Integer urgentTypeId;
+    @ApiModelProperty(value = "层数id")
+    private Integer layerNumberId;
+    @ApiModelProperty(value = "建造天数")
+    private String dayNumber;
+    @ApiModelProperty(value = "费用")
+    private BigDecimal price;
+
 }

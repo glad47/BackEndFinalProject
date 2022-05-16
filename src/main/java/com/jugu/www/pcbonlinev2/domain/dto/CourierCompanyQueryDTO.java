@@ -18,13 +18,13 @@ import lombok.Data;
 @Data
 @ApiModel(value = "快递公司表")
 public class CourierCompanyQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "快递公司名称")
-	private String courierName;
-		@ApiModelProperty(value = "比例")
-	private BigDecimal scale;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "快递公司名称")
+    private String courierName;
+    @ApiModelProperty(value = "比例")
+    private BigDecimal scale;
+
 }

@@ -236,6 +236,12 @@
             <version>1.4.4</version>
         </dependency>
 
+        <!--Spring AMQP依赖-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-amqp</artifactId>
+        </dependency>
+
         <!--web services-->
         <!--<dependency>-->
             <!--<groupId>org.apache.cxf</groupId>-->

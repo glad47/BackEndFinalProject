@@ -18,7 +18,7 @@ import java.util.Date;
 public class OrderDTO implements Serializable {
     // TODO serialVersionUid
 
-    @ApiModelProperty(value = "主键(不参与业务)",hidden = true)
+    @ApiModelProperty(value = "主键(不参与业务)", hidden = true)
     private Integer id;
     @ApiModelProperty(value = "订单id(使用paypay返回的orderid)", hidden = true)
     private String orderId;

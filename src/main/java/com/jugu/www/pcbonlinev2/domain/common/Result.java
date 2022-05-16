@@ -21,7 +21,7 @@ public class Result implements Serializable {
     //聚谷型号
     private String pns;
 
-    //消息类型 1下单 2支付完成
+    //消息类型 1审核 2支付
     private int msgType;
 
     //支付金额

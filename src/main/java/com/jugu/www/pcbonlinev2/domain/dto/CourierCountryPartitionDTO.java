@@ -15,15 +15,15 @@ import lombok.Data;
  */
 @Data
 public class CourierCountryPartitionDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "快递公司id")
-	private Integer courierId;
-		@ApiModelProperty(value = "国家id")
-	private String countryIds;
-		@ApiModelProperty(value = "运输时间")
-	private String shippingTime;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "快递公司id")
+    private Integer courierId;
+    @ApiModelProperty(value = "国家id")
+    private String countryIds;
+    @ApiModelProperty(value = "运输时间")
+    private String shippingTime;
+
 }

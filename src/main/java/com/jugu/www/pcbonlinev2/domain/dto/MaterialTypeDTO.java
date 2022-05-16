@@ -15,15 +15,15 @@ import lombok.Data;
  */
 @Data
 public class MaterialTypeDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "材料id")
-	private Integer materialId;
-		@ApiModelProperty(value = "材料name")
-	private String materialName;
-		@ApiModelProperty(value = "材料型号")
-	private String materialType;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "材料id")
+    private Integer materialId;
+    @ApiModelProperty(value = "材料name")
+    private String materialName;
+    @ApiModelProperty(value = "材料型号")
+    private String materialType;
+
 }

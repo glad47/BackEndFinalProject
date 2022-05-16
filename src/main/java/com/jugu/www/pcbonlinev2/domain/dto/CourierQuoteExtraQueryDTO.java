@@ -18,13 +18,13 @@ import lombok.Data;
 @Data
 @ApiModel(value = "运费其它项表")
 public class CourierQuoteExtraQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "运费项名称")
-	private String itemName;
-		@ApiModelProperty(value = "运费项收费比")
-	private BigDecimal itemRate;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "运费项名称")
+    private String itemName;
+    @ApiModelProperty(value = "运费项收费比")
+    private BigDecimal itemRate;
+
 }

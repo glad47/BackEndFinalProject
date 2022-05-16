@@ -342,4 +342,11 @@ public class OrderController extends BasicController<OrderDO,OrderDTO>{
         return ResponseResult.success(quoteInfoList);
     }
 
+
+    @PostMapping("/complaints")
+    public ResponseResult orderComplaints(@Validated @RequestBody List<OrderComplaintsDTO> orderComplaintsList){
+        orderService.complaintsOrder(orderComplaintsList);
+        return ResponseResult.success("complaints sueccess");
+    }
+
 }

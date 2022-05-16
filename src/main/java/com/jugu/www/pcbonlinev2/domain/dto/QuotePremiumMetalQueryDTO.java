@@ -18,19 +18,19 @@ import lombok.Data;
 @Data
 @ApiModel(value = "报价金属配置表")
 public class QuotePremiumMetalQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "对应参数名称")
-	private String name;
-		@ApiModelProperty(value = "参数值")
-	private BigDecimal metalPriceValue;
-		@ApiModelProperty(value = "单位")
-	private String unitName;
-		@ApiModelProperty(value = "最小孔数区间值")
-	private Integer minHolesValue;
-		@ApiModelProperty(value = "最大孔数区间值")
-	private Integer maxHolesValue;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "对应参数名称")
+    private String name;
+    @ApiModelProperty(value = "参数值")
+    private BigDecimal metalPriceValue;
+    @ApiModelProperty(value = "单位")
+    private String unitName;
+    @ApiModelProperty(value = "最小孔数区间值")
+    private Integer minHolesValue;
+    @ApiModelProperty(value = "最大孔数区间值")
+    private Integer maxHolesValue;
+
 }

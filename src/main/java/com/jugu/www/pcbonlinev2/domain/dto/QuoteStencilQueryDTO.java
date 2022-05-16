@@ -18,23 +18,23 @@ import lombok.Data;
 @Data
 @ApiModel(value = "钢网报价表")
 public class QuoteStencilQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "规格x")
-	private Integer stencilSizex;
-		@ApiModelProperty(value = "")
-	private Integer stencilSizey;
-		@ApiModelProperty(value = "面积x")
-	private Integer stencilAreax;
-		@ApiModelProperty(value = "")
-	private Integer stencilAreay;
-		@ApiModelProperty(value = "单价")
-	private BigDecimal price;
-		@ApiModelProperty(value = "重量")
-	private BigDecimal weight;
-		@ApiModelProperty(value = "物料名")
-	private String materialName;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "规格x")
+    private Integer stencilSizex;
+    @ApiModelProperty(value = "")
+    private Integer stencilSizey;
+    @ApiModelProperty(value = "面积x")
+    private Integer stencilAreax;
+    @ApiModelProperty(value = "")
+    private Integer stencilAreay;
+    @ApiModelProperty(value = "单价")
+    private BigDecimal price;
+    @ApiModelProperty(value = "重量")
+    private BigDecimal weight;
+    @ApiModelProperty(value = "物料名")
+    private String materialName;
+
 }

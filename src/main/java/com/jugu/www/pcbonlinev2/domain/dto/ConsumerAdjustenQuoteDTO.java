@@ -16,15 +16,15 @@ import lombok.Data;
  */
 @Data
 public class ConsumerAdjustenQuoteDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "报价配置id")
-	private Integer quoteConfigId;
-		@ApiModelProperty(value = "客户id")
-	private Integer userId;
-		@ApiModelProperty(value = "调整价")
-	private BigDecimal adjustedQuote;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "报价配置id")
+    private Integer quoteConfigId;
+    @ApiModelProperty(value = "客户id")
+    private Integer userId;
+    @ApiModelProperty(value = "调整价")
+    private BigDecimal adjustedQuote;
+
 }

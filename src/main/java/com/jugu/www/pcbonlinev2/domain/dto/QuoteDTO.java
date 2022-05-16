@@ -211,7 +211,7 @@ public class QuoteDTO implements Serializable {
     private Integer firstStatus;
     @ApiModelProperty(value = "跟单员名字")
     private String businessName;
-    @ApiModelProperty(value= "折扣")
+    @ApiModelProperty(value = "折扣")
     private BigDecimal subsidy;
 
 }

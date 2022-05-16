@@ -137,7 +137,6 @@ public class CourierQuoteController extends BasicController<CourierQuoteDO,Couri
             return ResponseResult.failure(ErrorCodeEnum.DELETE_FAILURE);
         }
     }
-
     @ApiOperation(
             value = "查询信息",
             notes = "备注",

@@ -213,9 +213,28 @@ public class UserController extends BasicController<UserDO,UserDTO>{
             @ApiResponse(code = 0, message = "操作成功")
     })
     @PostMapping("/verifyCurrPwd")
-    public ResponseResult verifyCurrPwd(@NotNull(message = "当前密码不能为null！") String currPwd) {
+    public ResponseResult verifyCurrPwd(@NotNull(message = "当前密码不能为null！") String currPwd,@NotNull(message = "当前密码不能为null！") String newPwd) {
         UserDO userDO = userService.getById(getUserId());
-        return ResponseResult.success(userDO.getPassword().equals(SHA256Util.getSHA256StrJava(currPwd.trim() + "password")));
+        if(!userDO.getPassword().equals(SHA256Util.getSHA256StrJava(currPwd.trim() + "password"))){
+            return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+        }else{
+            if(!currPwd.equals(newPwd)){
+                userDO.setPassword(SHA256Util.getSHA256StrJava(newPwd.trim() + "password"));
+                if (userService.updateById(userDO)){
+                    return ResponseResult.success("修改成功");
+                }else{
+                    return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+                }
+            }else{
+                return ResponseResult.failure(ErrorCodeEnum.UPDATE_FAILURE);
+
+            }
+
+
+        }
+
+
+
     }
 
     /**

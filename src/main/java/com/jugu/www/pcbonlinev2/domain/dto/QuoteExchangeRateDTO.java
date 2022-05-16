@@ -16,13 +16,13 @@ import lombok.Data;
  */
 @Data
 public class QuoteExchangeRateDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "币种")
-	private String currency;
-		@ApiModelProperty(value = "汇率")
-	private BigDecimal exchangeRate;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "币种")
+    private String currency;
+    @ApiModelProperty(value = "汇率")
+    private BigDecimal exchangeRate;
+
 }

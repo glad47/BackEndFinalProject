@@ -17,11 +17,11 @@ import lombok.Data;
 @Data
 @ApiModel(value = "材料表")
 public class MaterialQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "材料名")
-	private String name;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "材料名")
+    private String name;
+
 }

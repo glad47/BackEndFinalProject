@@ -17,13 +17,13 @@ import lombok.Data;
 @Data
 @ApiModel(value = "报价层数配置表")
 public class QuoteLayerNumberQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "层数")
-	private Integer layerNum;
-		@ApiModelProperty(value = "是否删除(1代表删除，0代表未删除)")
-	private Integer isDelete;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "层数")
+    private Integer layerNum;
+    @ApiModelProperty(value = "是否删除(1代表删除，0代表未删除)")
+    private Integer isDelete;
+
 }

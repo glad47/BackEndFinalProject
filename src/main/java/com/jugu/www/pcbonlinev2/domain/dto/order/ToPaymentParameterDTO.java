@@ -34,7 +34,7 @@ public class ToPaymentParameterDTO implements Serializable {
     @ApiModelProperty(value = "总合计(多个报价项的合计和)")
     private BigDecimal subtotal;
 
-    @ApiModelProperty(value = "用户id",hidden = true)
+    @ApiModelProperty(value = "用户id", hidden = true)
     private Integer userId;
 
 }

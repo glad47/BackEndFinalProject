@@ -32,36 +32,36 @@ public class ReceiverAddersDTO implements Serializable {
     private String receiverEmail; //收货邮箱
 
     @ApiModelProperty(value = "收货人姓名")
-    @NotNull(message = "收货人姓名不能为空",groups = {InsertValidationGroup.class})
+    @NotNull(message = "收货人姓名不能为空", groups = {InsertValidationGroup.class})
     private String receiverName; //收货人姓名
 
-    @NotNull(message = "收货人电话不能为空",groups = {InsertValidationGroup.class})
+    @NotNull(message = "收货人电话不能为空", groups = {InsertValidationGroup.class})
     @ApiModelProperty(value = "收货人电话")
     private String receiverTelephone; //收货人电话
 
-    @NotNull(message = "收货国家不能为空",groups = {InsertValidationGroup.class})
+    @NotNull(message = "收货国家不能为空", groups = {InsertValidationGroup.class})
     @ApiModelProperty(value = "收货国家")
     private String receiverCountry; //收货国家"
 
     @ApiModelProperty(value = "收货国家名")
     private String receiverCountryName; //收货国家名
 
-    @NotNull(message = "收货城市不能为空",groups = {InsertValidationGroup.class})
+    @NotNull(message = "收货城市不能为空", groups = {InsertValidationGroup.class})
     @ApiModelProperty(value = "收货城市")
     private String receiverCity; //收货城市
 
-    @NotNull(message = "收货地邮箱编码不能为空",groups = {InsertValidationGroup.class})
+    @NotNull(message = "收货地邮箱编码不能为空", groups = {InsertValidationGroup.class})
     @ApiModelProperty(value = "收货地邮箱编码")
     private String receiverPostcode; //收货地邮箱编码
 
-    @NotNull(message = "收货详细地址不能为空",groups = {InsertValidationGroup.class})
+    @NotNull(message = "收货详细地址不能为空", groups = {InsertValidationGroup.class})
     @ApiModelProperty(value = "收货详细地址")
     private String receiverAddress; //收货详细地址
 
-    @ApiModelProperty(value = "修改时间",hidden = true)
+    @ApiModelProperty(value = "修改时间", hidden = true)
     private Date gmtModified; //修改时间
 
-    @ApiModelProperty(value = "创建时间",hidden = true)
+    @ApiModelProperty(value = "创建时间", hidden = true)
     private Date gmtCreate; //创建时间
 
     @ApiModelProperty(value = "是否默认(0否 1是，默认为否)")
@@ -78,7 +78,7 @@ public class ReceiverAddersDTO implements Serializable {
      */
     private String lastName;
     /**
-     *州
+     * 州
      */
     private String stateTerritory;
 

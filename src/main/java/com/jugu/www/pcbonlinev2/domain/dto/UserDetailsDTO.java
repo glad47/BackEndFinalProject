@@ -16,7 +16,6 @@ public class UserDetailsDTO implements Serializable, UserDetails {
     private Integer invalidMark;
 
 
-
     private Integer businessId;
     private String businessName;
     private String userSystemId;
@@ -29,6 +28,7 @@ public class UserDetailsDTO implements Serializable, UserDetails {
     public void setBusinessId(Integer businessId) {
         this.businessId = businessId;
     }
+
     public String getBusinessName() {
         return businessName;
     }
@@ -91,6 +91,7 @@ public class UserDetailsDTO implements Serializable, UserDetails {
 
     /**
      * 用户账号是否过期
+     *
      * @return
      */
     @Override
@@ -100,6 +101,7 @@ public class UserDetailsDTO implements Serializable, UserDetails {
 
     /**
      * 用户账号是否被锁定
+     *
      * @return
      */
     @Override
@@ -109,6 +111,7 @@ public class UserDetailsDTO implements Serializable, UserDetails {
 
     /**
      * 用户密码是否过期
+     *
      * @return
      */
     @Override
@@ -118,6 +121,7 @@ public class UserDetailsDTO implements Serializable, UserDetails {
 
     /**
      * 用户是否可用
+     *
      * @return
      */
     @Override

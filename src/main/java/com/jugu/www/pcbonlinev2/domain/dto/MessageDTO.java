@@ -15,7 +15,7 @@ import lombok.Data;
  */
 @Data
 public class MessageDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
     @ApiModelProperty(value = "id")
     private Integer id;

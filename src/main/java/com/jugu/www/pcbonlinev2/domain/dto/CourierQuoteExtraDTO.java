@@ -16,13 +16,13 @@ import lombok.Data;
  */
 @Data
 public class CourierQuoteExtraDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "运费项名称")
-	private String itemName;
-		@ApiModelProperty(value = "运费项收费比")
-	private BigDecimal itemRate;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "运费项名称")
+    private String itemName;
+    @ApiModelProperty(value = "运费项收费比")
+    private BigDecimal itemRate;
+
 }

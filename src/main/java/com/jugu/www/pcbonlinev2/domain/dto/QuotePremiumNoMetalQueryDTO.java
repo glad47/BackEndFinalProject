@@ -18,15 +18,15 @@ import lombok.Data;
 @Data
 @ApiModel(value = "报价非金属配置表")
 public class QuotePremiumNoMetalQueryDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "对应参数名称")
-	private String name;
-		@ApiModelProperty(value = "参数值")
-	private BigDecimal noMetalPriceValue;
-		@ApiModelProperty(value = "单位")
-	private String unitName;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "对应参数名称")
+    private String name;
+    @ApiModelProperty(value = "参数值")
+    private BigDecimal noMetalPriceValue;
+    @ApiModelProperty(value = "单位")
+    private String unitName;
+
 }

@@ -26,5 +26,4 @@ public class OrderQueryAllDTO implements Serializable {
     private Integer orderType;
 
 
-
 }

@@ -15,17 +15,17 @@ import lombok.Data;
  */
 @Data
 public class ProductionLogDTO implements Serializable {
-	// TODO serialVersionUid
+    // TODO serialVersionUid
 
-		@ApiModelProperty(value = "id")
-	private Integer id;
-		@ApiModelProperty(value = "产品id")
-	private Integer productId;
-		@ApiModelProperty(value = "流程名")
-	private String processName;
-		@ApiModelProperty(value = "流程时间")
-	private Date processTime;
-		@ApiModelProperty(value = "产品类型(1pcb,2钢网,3贴片)")
-	private Integer processType;
-	
+    @ApiModelProperty(value = "id")
+    private Integer id;
+    @ApiModelProperty(value = "产品id")
+    private Integer productId;
+    @ApiModelProperty(value = "流程名")
+    private String processName;
+    @ApiModelProperty(value = "流程时间")
+    private Date processTime;
+    @ApiModelProperty(value = "产品类型(1pcb,2钢网,3贴片)")
+    private Integer processType;
+
 }

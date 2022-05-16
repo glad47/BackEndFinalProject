@@ -18,7 +18,7 @@ import lombok.Data;
 public class QuoteConfigDTO implements Serializable {
     private static final long serialVersionUID = -4227274842201430814L;
 
-    @ApiModelProperty(value = "id",example = "1")
+    @ApiModelProperty(value = "id", example = "1")
     private Integer id;
     @ApiModelProperty(value = "面积 id", example = "1")
     private Integer areaSq;
